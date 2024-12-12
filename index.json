@@ -1,0 +1,16 @@
+{
+    "00_preface.md": "Preface",
+    "01_under_the_hood": [
+        "1. Under the Hood",
+        {
+            "01_cortical_column_structure.md": "1.1 Cortical Column Structure",
+            "primary_electric_currents.md": "1.2 Calculation of Primary Electric Currents"
+        }
+    ],
+    "02_simulating_erps": [
+        "2 Simulating ERPs",
+        {
+            "01_overview_of_erps.md": "2.1 Review of ERPs"
+        }
+    ]
+}

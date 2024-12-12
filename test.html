@@ -5,45 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HNN Textbook</title>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
-    <!-- Sidebar -->
-    <div id="mySidebar" class="sidebar">
-        <p style="color:#e5a734">Human Neocortical Neurosolver</p>
-        <br>
-        <a href="#">Preface</a>
-        <a href="#">1. Under the Hood</a>
-        <a href="#">2. </a>
-        <a href="#">3. </a>
-    </div>
+	<div id="mySidebar" class="sidebar">
+		<p style="color:#e5a734">
+			Human Neocortical Neurosolver
+		</p>
+		<br>
+		<a href="00_preface.md">Preface</a>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+				1. Under the Hood
+			</a>
+			<div class="submenu">
+				<a href="01_cortical_column_structure.md">1.1 Cortical Column Structure</a>
+				<a href="primary_electric_currents.md">1.2 Calculation of Primary Electric Currents</a>
+			</div>
+		</div>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+				2 Simulating ERPs
+			</a>
+			<div class="submenu">
+				<a href="01_overview_of_erps.md">2.1 Review of ERPs</a>
+			</div>
+		</div>
+	</div>
 
     <div id="main">
-        <!-- Topbar -->
         <div class="topbar">
-            <button class="openbtn" onclick="toggleNav()">☰</button>
-            <div class="dropdown">
-                <button id="dropdownButton" class="dropdown-button">
-                    <span>A</span>
-                </button>
-                <div class="dropdown-content">
-                    <button class="fontsize-btn" onclick="decreaseFontSize()">A-</button>
-                    <button class="fontsize-btn" onclick="increaseFontSize()">A+</button>
-                </div>
+        <button class="openbtn" onclick="toggleNav()">☰</button>
+        <div class="dropdown">
+            <button id="dropdownButton" class="dropdown-button">
+                <span>A</span>
+            </button>
+            <div class="dropdown-content">
+                <button class="fontsize-btn" onclick="decreaseFontSize()">A-</button>
+                <button class="fontsize-btn" onclick="increaseFontSize()">A+</button>
             </div>
-            <img src="https://hnn.brown.edu/wp-content/uploads/hnn-medium.png"></img>
+        </div>
+        <img src="https://hnn.brown.edu/wp-content/uploads/hnn-medium.png"></img>
         </div>
 
         <div id="content-wrapper">
         <div id="content">
-        <h2>Preface: Introducing the Human Neocortical Neurosolver</h2>
-        <p> Human Neocortical Neurosolver (HNN) is a software tool developed by Dr. Stephanie Jones at Brown University </p>
+            <h2 id="preface-introducing-the-human-neocortical-neurosolver">
+                Preface:
+               Introducing the Human Neocortical Neurosolver
+               </h2>
+               <p>
+                Human Neocortical Neurosolver (HNN) is a software tool developed by
+               Dr. Stephanie Jones at Brown University
+               </p>
         </div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script>
         let isSidebarOpen = true; // Sidebar is initially open
 
@@ -115,6 +134,20 @@
                 dropdownContent.style.display = 'none';
             }
         };
+
+        function toggleSubmenu(event) {
+            const submenu = event.target.nextElementSibling; // Get the submenu for the clicked header
+
+            // If the submenu exists, toggle it
+            if (submenu && submenu.classList.contains('submenu')) {
+                submenu.classList.toggle('open'); // Toggle the 'open' class to control visibility
+            }
+        };
+
+        // This function will add the full text to the title attribute for all anchor tags
+        document.querySelectorAll('.sidebar a').forEach(anchor => {
+            anchor.setAttribute('title', anchor.textContent);
+        });
     </script>
    
 </body>
