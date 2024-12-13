@@ -36,11 +36,14 @@ def generate_navbar_html():
                 md_pages.update(get_relative_paths(item_path))
             else:
                 if not item == "README.md" and item.endswith(".md"):
-                    location = item_path.split(os.getcwd())[1]
-                    location = 'content' + location.split('content')[1]
-                    location = location.split('.md')[0] + '.html'
-                    md_pages[item] = location
+                    # get the relative path for the web content only
+                    location = item_path.split(os.getcwd()+os.sep)[1]
+                    location = location.split(item)[0]
 
+                    page = item.split("_", 1)[1]
+                    page = page.split(".md")[0] + ".html"
+
+                    md_pages[item] = location + page
         return md_pages
 
     def create_page_link(file, label, page_paths, indent):

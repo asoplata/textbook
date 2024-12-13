@@ -1,6 +1,6 @@
 # %%
 import os
-import re
+# import re
 import pypandoc
 from create_page_index import update_page_index
 from create_navbar import generate_navbar_html
