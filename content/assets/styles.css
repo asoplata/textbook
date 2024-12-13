@@ -175,6 +175,13 @@ h1, h2, h3 {
     word-wrap: break-word;
     white-space: normal;
 }
+
+#content img {
+    max-width: 100%;
+    height: auto; /* Keeps the aspect ratio intact */
+    display: block;
+    margin: 0 auto; /* Centers the image horizontally */
+}
     
 /* On smaller screens, where height is less than 450px, 
    change the style of the sidenav */
