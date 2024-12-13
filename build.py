@@ -1,5 +1,6 @@
 # %%
 import os
+import re
 import pypandoc
 from create_page_index import update_page_index
 from create_navbar import generate_navbar_html
@@ -80,9 +81,37 @@ def generate_page_html(page_paths):
 
     for page, path in page_paths.items():
         page_components = html_parts.copy()
-        out_path = path.split(".md")[0] + ".html"
+        # get path only
+        out_path = path.split(page)[0]
 
-        converted = pypandoc.convert_file(path, 'html')
+        # ENHANCEMENT
+        '''
+        # remove instances of `##_` from out_path
+        # build html to separate `build` folder
+        # this will make the urls look neater
+        '''
+        # out_path = re.sub(r"\d\d_", "", out_path)
+
+        # remove leading `##_` from page
+        page = page.split("_", 1)[1]
+        # change file extension for page
+        page = page.split(".md")[0] + ".html"
+
+        # combine path and page
+        out_path = out_path + page
+
+        # use pypandoc to convert md to html
+        try:
+            converted = pypandoc.convert_file(path, 'html')
+        except Exception as ex:
+            # download Pandoc dependency if needed
+            if "No pandoc was found" in ex:
+                print("Downloading pandoc dependency")
+                pypandoc.download_pandoc()
+                converted = pypandoc.convert_file(path, 'html')
+            else:
+                raise ex
+        # format html for readability
         converted = BeautifulSoup(converted, 'html.parser').prettify()
         page_components['body'] = converted
 
