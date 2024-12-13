@@ -6,19 +6,19 @@ from create_navbar import generate_navbar_html
 from bs4 import BeautifulSoup
 
 # %%
-test_path = os.getcwd()+'/content'
-test_file = '/00_preface.md'
+# test_path = os.getcwd()+'/content'
+# test_file = '/00_preface.md'
 
 # %%
-test_out = '/test_preface.html'
+# test_out = '/test_preface.html'
 
-converted = pypandoc.convert_file(test_path+test_file, 'html')
-converted = BeautifulSoup(converted, 'html.parser').prettify()
+# converted = pypandoc.convert_file(test_path+test_file, 'html')
+# converted = BeautifulSoup(converted, 'html.parser').prettify()
 
 # %%
-with open(test_path+test_out, 'w') as f:
-    for line in converted:
-        f.write(line)
+# with open(test_path+test_out, 'w') as f:
+#     for line in converted:
+#         f.write(line)
 
 
 # %% ######################################################################
