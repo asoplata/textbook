@@ -22,7 +22,7 @@ def generate_navbar_html():
     with open(index_path, 'r') as f:
         json_page_index = json.load(f)
 
-    def get_relative_paths(path=None):
+    def get_absolute_paths(path=None):
         """Get paths to all .md pages to be converted to html"""
         md_pages = {}
         if path is None:
@@ -33,7 +33,7 @@ def generate_navbar_html():
             item_path = os.path.join(path, item)
             if os.path.isdir(item_path):
                 # add items from new dict into md_pages
-                md_pages.update(get_relative_paths(item_path))
+                md_pages.update(get_absolute_paths(item_path))
             else:
                 if not item == "README.md" and item.endswith(".md"):
                     # get the relative path for the web content only
@@ -43,7 +43,7 @@ def generate_navbar_html():
                     page = item.split("_", 1)[1]
                     page = page.split(".md")[0] + ".html"
 
-                    md_pages[item] = location + page
+                    md_pages[item] = '/website_redesign/' + location + page
         return md_pages
 
     def create_page_link(file, label, page_paths, indent):
@@ -61,7 +61,7 @@ def generate_navbar_html():
 
     def build_navbar(json_page_index):
         navbar_html = ''
-        page_paths = get_relative_paths()
+        page_paths = get_absolute_paths()
         for section, contents in json_page_index.items():
             # For pages that are not nested in a toggle
             if isinstance(contents, str):
