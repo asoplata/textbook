@@ -97,8 +97,26 @@ def generate_page_html(page_paths):
         # change file extension for page
         page = page.split(".md")[0] + ".html"
 
+        # get relative path to the stylesheet
+        css_path = os.path.join(
+            os.getcwd(),
+            "content",
+            "assets",
+            "styles.css"
+        )
+        relative_css_path = os.path.relpath(
+            css_path,
+            start=out_path
+        )
+
         # combine path and page
         out_path = out_path + page
+
+        # Update header with the relative stylesheet path
+        page_components['header'] = page_components['header'].replace(
+            '<link rel="stylesheet" href="styles.css">',
+            f'<link rel="stylesheet" href="{relative_css_path}">'
+        )
 
         # use pypandoc to convert md to html
         try:
