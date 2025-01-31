@@ -1,144 +1,31 @@
+/* 
+# --------------------
+# Main HTML body 
+# -------------------- 
+*/
+
 body {
-    font-family: "Lato", sans-serif;
+    /* font-family: "Lato", sans-serif; */
+    font-family: 'Merriweather', Georgia, serif;
+    color: #333;
+    line-height: 1.6;
     transition: margin-left .5s;
     margin: 0px;
     padding: 0px;
 }
 
-h1, h2, h3 {
-    color: var(--hnn-violet);
+h1, h2, h3, h4 {
+    /* color: var(--hnn-violet); */
     font-family: "Fira Sans", Helvetica, Arial, sans-serif;
     font-weight: bold;
 }
 
-.sidebar {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: var(--hnn-violet);
-    /* overflow-x: hidden; */
-    overflow: hidden; 
-    transition: 0.3s;
-    padding-top: 10px;
+a {
+    color: var(--hnn-violet);
 }
 
-.sidebar a, p {
-    padding: 8px 24px 8px 24px;
-    text-decoration: none;
-    font-size: 17px;
-    color: #ffffff;
-    display: block;
-    transition: 0.3s;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sidebar p {
-    margin: 0px;
-}
-
-.sidebar a:hover {
-    color: var(--hnn-yellow);
-}
-
-.submenu {
-    display: none; /* Hide submenu by default */
-    padding-left: 20px; /* Optional: Indentation for the submenu items */
-}
-
-.sidebar-list .submenu {
-    display: none;  /* Hide submenus by default */
-    margin-left: 0px;  /* Optional: indentation for submenu items */
-}
-
-.sidebar-list .submenu.open {
-    display: block;  /* Show the submenu when the 'open' class is added */
-    transition: max-height 0.3s ease-in-out; /* Smooth transition for showing */
-}
-
-.topbar {
-    height: 50px;
-    display: flex;
-    align-items: center;
-    padding: 0 0px;
-    border-bottom: 2.5px solid lightgrey;
-    width: 100%;
-}
-
-.topbar img {
-    height: 30px;
-    width: auto;
-    margin-left: auto;
-    padding: 0px 20px;
-}
-
-.openbtn {
-    font-size: 25px;
-    cursor: pointer;
-    background: none;
-    color: #bababa;
-    padding: 0px 10px 2px 20px;
-    border: none;
-    height: inherit;
-}
-
-.openbtn:hover {
-    color: #444;
-}
-
-.dropdown {
-    height: inherit;
-    align-items: center;
-    position: relative;
-    display: inline-flex;
-    font-size: 20px;
-    cursor: pointer;
-    background: none;
-    color: #bababa;
-    border: none;
-  }
-
-.dropdown-button {
-    all: unset;  /* Remove default button styles */
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0px 10px;
-}
-  
-.dropdown-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    background-color: #f9f9f9;
-    min-width:  95px;
-    box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.2);
-    padding: 5px 5px;
-  }
-
-#dropdownButton span {
-    font-family: 'Merriweather', Georgia, serif;
-}
-
-.fontsize-btn {
-    font-family: 'Merriweather', Georgia, serif;
-    font-size: 20px;
-    cursor: pointer;
-    background: none;
-    color: #bababa;
-    padding: 5px 10px;
-    border: none;
-}
-
-.fontsize-btn:hover {
-    color: #444;
+a:hover {
+    color: var(--hnn-purple);
 }
 
 #main {
@@ -165,12 +52,12 @@ h1, h2, h3 {
 }
 
 #content p {
+    font-family: 'Merriweather', Georgia, serif;
     display: block;
-    color: #333;
+    color: inherit;
     font-size: inherit;
     padding: 0px;
     line-height: 1.6;
-    font-family: 'Merriweather', Georgia, serif;
     overflow-wrap: break-word; 
     word-wrap: break-word;
     white-space: normal;
@@ -178,20 +65,643 @@ h1, h2, h3 {
 
 #content img {
     max-width: 100%;
-    height: auto; /* Keeps the aspect ratio intact */
+    height: auto;
     display: block;
-    margin: 0 auto; /* Centers the image horizontally */
+    margin: 0 auto;
+}
+
+/* Inline code (single backtick) */
+code {
+    color: var(--hnn-violet);
+    background-color: #f6f8fa;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    display: inline;
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+    font-size: 85%;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; 
+    font-weight: normal;
+    border: 1px solid #e1e4e8;
+}
+  
+  /* Block code (triple backticks) */
+  pre code {
+    color: #24292e;
+    background-color: #f6f8fa;
+    display: block;
+    padding: 16px;
+    overflow-x: auto;
+    border-radius: 6px;
+    font-size: 85%;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    border: 1px solid #e1e4e8; /* Consistent border style */
+}
+
+/* 
+# --------------------
+# Sidebar 
+# -------------------- 
+*/
+
+.sidebar {
+    font-family: "Lato", sans-serif;
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #88548c;
+    /* overflow-x: hidden; */
+    /* overflow-y: scroll; */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overflow-x: hidden; 
+    transition: 0.3s;
+    padding-top: 10px;
+}
+
+/* hide scrollbar for WebKit browsers (Chrome, Safari) */
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Add bottom space to the last element when scrolling */
+.sidebar .sidebar-list:last-child {
+    margin-bottom: 40px;
+}
+
+.sidebar a {
+    position: relative;
+    padding: 4px 24px;
+    margin: 8px 0px;
+    text-decoration: none;
+    font-size: 17px;
+    color: #ffffff;
+    display: block;
+    transition: 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar a:hover {
+    color: var(--hnn-yellow);
+}
+
+/* Custom tooltip */
+.sidebar-tooltip {
+    font-family: "Lato", sans-serif;;
+    /* background: #ba83be; */
+    background: #fff;
+    border: 2px solid #555555;  /* Add a grey border */
+    color: #555555;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 9999;
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+/* Tooltip arrow */
+.sidebar-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -6px;  /* Adjust to position the arrow above the tooltip */
+    left: 10%;
+    transform: translateX(-50%);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #fff;  /* The arrow color */
+}
+
+/* Larger triangle behind the original arrow to simulate the border */
+.sidebar-tooltip::after {
+    content: '';
+    position: absolute;
+    top: -9px;  /* Slightly higher to position behind the original triangle */
+    left: 10%;
+    transform: translateX(-50%);
+    border-left: 9px solid transparent;  /* Larger size for the border */
+    border-right: 9px solid transparent;  /* Larger size for the border */
+    border-bottom: 9px solid #555;  /* Larger, darker border */
+    z-index: -1;
+}
+
+.sidebar .toggle-icon {
+    float: right;
+    font-weight: bold;
+    transition: transform 0.3s;
+}
+
+.submenu {
+    display: none; /* hide submenu by default */
+    padding-left: 20px; /* indentation for the submenu items */
+}
+
+.sidebar-list .submenu {
+    display: none;  /* hide submenus by default */
+    margin-left: 0px;  /* indentation for submenu items */
+}
+
+.sidebar-list .submenu.open {
+    display: block;  /* show the submenu when the 'open' class is added */
+    transition: max-height 0.3s ease-in-out; /* smooth transition */
+}
+
+/* collapse all button */
+.navbar-header {
+    display: flex;
+    padding: 10px 0px 20px 0px;
+    align-items: center;
+
+}
+
+.navbar-header a {
+    margin: 0px;
+}
+
+/* Styling for the SVG icon */
+.collapse-icon {
+    display: block;
+    margin-left: auto;
+    padding-right: 20px;
+    width: 20px; 
+    fill: #fff; 
+    cursor: pointer;
+    transition: fill 0.3s ease-in-out; 
+}
+
+.collapse-icon:hover {
+    fill: var(--hnn-yellow);
+}
+
+/* 
+# --------------------
+# Topbar
+# -------------------- 
+*/
+
+.topbar {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0 0px;
+    border-bottom: 2.5px solid lightgrey;
+    width: 100%;
+    position: relative; 
+        /* 'relative' needed for the img centering */
+
+}
+
+#topbar-logo {
+    height: 30px;
+    width: auto;
+
+    /* Center img around topbar */
+    position: absolute;
+        /* requires 'position: relative' in .topbar */
+    left: 50%;
+    transform: translateX(-50%);
+        /*  'transform' offsets the image's width */
+
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.topbar:hover #topbar-logo {
+    opacity: 1; 
+}
+
+/* Hide the logo on smaller screens */
+@media (max-width: 600px) {
+    #topbar-logo {
+        display: none;
+    }
+}
+
+/* Social media icons */
+/* ------------------ */
+
+.socials-container {
+    display: flex;
+    height: inherit;
+    padding: 0px 20px 0px 0px;
+    margin-left: auto;
+}
+
+.social-icons {
+    display: flex;
+    gap: 20px;
+    padding: 0px;
+}
+
+.social-icons a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.2s ease; /* zoom transition */
+}
+
+.social-icons a img {
+    width: auto;
+    height: 20px;
+    object-fit: contain;
+    display: block;
+    filter: grayscale(100%) brightness(70%);
+}
+
+.social-icons a:hover {
+    transform: scale(1.1);
+    filter: grayscale(100%) brightness(50%);
+}
+
+/* Topbar menu icons */
+/* ------------------ */
+
+.menu-container {
+    display: flex;
+    height: inherit;
+    padding: 0px 0px 0px 25px;
+}
+
+.menu-icons {
+    display: flex;
+    gap: 15px;
+    padding: 0px;
+}
+
+.menu-icons img {
+    width: auto;
+    height: 20px;
+    padding: 0px;
+    object-fit: contain;
+    display: block;
+    filter: grayscale(100%) brightness(70%);
+}
+
+.menu-icons img:hover {
+    transform: scale(1.15);
+    transition: transform 0.2s ease;
+    filter: grayscale(100%) brightness(30%);
+}
+
+
+/* Collapse navbar */
+/* --------------- */
+
+.openbtn {
+    font-size: 25px;
+    cursor: pointer;
+    background: none;
+    color: #bababa;
+    padding: 0px 0px 3px 0px;
+    border: none;
+    height: inherit;
+    transition: transform 0.2s ease;
+}
+
+.openbtn:hover {
+    transform: scale(1.1);
+    color: #444;
+}
+
+/* Home button */
+/* ----------- */
+
+.home-link {
+    display: inline-flex;
+    text-decoration: none;
+    height: inherit;
+    padding: 0px 0px;
+}
+
+.home-icon-container {
+    height: inherit;
+    align-items: center;
+    position: relative;
+    display: inline-flex;
+
+}
+
+.home-icon {
+    fill: #bababa; /* Default color */
+    height: 22px;
+    width: auto;
+    transition: transform 0.2s ease;
+}
+
+.home-icon:hover {
+    transform: scale(1.15);
+    fill: #444;
+}
+
+/* Light/dark button */
+/* ----------------- */
+
+.theme-toggle {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto; 
+    height: inherit; 
+    border: none; 
+    background: none;
+    padding: 0 0px; 
+    /* transition: transform 0.3s ease; */
+}
+
+.theme-toggle svg {
+    width: 20px; 
+    height: 19px;
+    fill: #bababa; 
+    transition: transform 0.2s ease;
+}
+
+.theme-toggle svg:hover {
+    transform: scale(1.1);
+    fill: #444; 
+}
+
+/* Dark mode theme */
+/* --------------- */
+
+body.dark-mode {
+    background-color: #14181e;
+    color: #d3d3d3;
+}
+
+body.dark-mode #content-wrapper a {
+    color: var(--hnn-yellow);
+}
+
+body.dark-mode #content-wrapper a:hover {
+    color: var(--hnn-violet);
+}
+
+body.dark-mode code {
+    color: var(--hnn-violet);
+    background-color: #d3d3d3;
+}
+
+.sidebar.dark-mode {
+    background-color: #313438;
+    border-right: 2px solid #d3d3d3 !important;
+}
+
+body.dark-mode .dropdown-content {
+    background-color: #313438;
+}
+
+body.dark-mode .dropdown-content::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 15px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 8px solid #313438;
+}
+
+
+/* Change font size */
+/* ---------------- */
+
+.dropdown {
+    height: inherit;
+    align-items: center;
+    position: relative;
+    display: inline-flex;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.dropdown-button {
+    all: unset;
+        /* Remove default button styles */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0px 0px;
+}
+
+.dropdown-button:hover {
+    color: #444;
+}
+  
+.dropdown-content {
+    display: none;
+    position: absolute;
+    width: auto;
+    white-space: nowrap;
+    top: 100%;
+    left: -12px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
+    padding: 5px 5px;
+    border: 3px solid #ba83be;
+}
+
+/* Triangle pointing to pressed button */
+.dropdown-content::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 15px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 8px solid #f9f9f9;
+}
+
+/* Second triangle to act as a border */
+.dropdown-content::after {
+    content: "";
+    position: absolute;
+    top: -12px; 
+        /* align vertically */
+    left: 11px;
+        /* align horizontally */
+    border-left: 10px solid transparent; 
+        /* larger side */
+    border-right: 10px solid transparent; 
+        /* larger side */
+    border-bottom: 12px solid #ba83be; 
+        /* larger triangle */
+    z-index: -1; 
+}
+
+.fontsize-btn {
+    display: inline-flex;
+    cursor: pointer;
+    background: none;
+    padding: 5px 7px;
+    border: none;
+    margin: 0px;
+}
+
+.fontsize-btn:hover {
+    color: #444;
+}
+
+/* 
+# --------------------
+# Notebook html 
+# -------------------- 
+*/
+
+/* markdown cells */
+.markdown-cell {
+    margin: 10px 0px;
+    padding: 0px;
+    /* background-color: #f2f2f2; */
+    /* color: #333; */
+    /* border: 1px solid #ddd; */
+}
+
+.code-cell {
+    font-family: 'Courier New', monospace;
+    word-wrap: break-word;
+    margin: 10px 0;
+    padding: 0px;
+    border-radius: 5px;
+    border: solid 2px #ba83be;
+    overflow: hidden;
+    /* overflow-y: hidden;
+    overflow-x: scroll; */
+}
+
+/* code cells */
+.code-cell code.language-python {
+    /* box-sizing: border-box !important; */
+    display: block;
+    background-color: #fff;
+    color: #3b3b3b;
+    padding: 15px 30px;
+    margin: 0px;
+    font-size: 0.85em;
+    border: none;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+body.dark-mode .code-cell code.language-python{
+    background-color: #313438;
+    color: #fff;
+    text-shadow: none;
+}
+
+/* Styling for the output cell */
+.output-cell {
+    display: flex;
+    align-items: flex-start;
+    font-family: 'Courier New', monospace;
+    margin: 10px 0;
+}
+
+.output-label {
+    font-family: 'Courier New', monospace;
+    /* font-weight: bold; */
+    /* color: #ba83be; */
+    color: #fe6565;
+    font-size: 0.9em;
+}
+
+body.dark-mode .output-label {
+    font-weight: bold;
+}
+
+.output-code {
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(1em * 10);
+        /* 10 lines max before scroll, adjust as needed */
+    flex-grow: 1; 
+        /* Allow code ouput to fill available space */
+    white-space: pre-line;
+    /* background-color: #fbfae1; */
+    color: #333 !important;
+    margin: 0px 10px;
+    margin-top: 0px;
+    padding: 0px 10px;
+    font-size: 0.9em;
+}
+
+body.dark-mode .output-code {
+    color: #fff !important;
+    font-weight: 500;
+}
+
+/* output images */
+.output-cell img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    padding: 20px;
+
+}
+
+/* Target specific syntax elements */
+.code-cell code .token {
+    background: none !important;
+}
+
+body.dark-mode .code-cell code .token.number {
+    color: #ef9f43;
+}
+
+body.dark-mode .code-cell code .token.string {
+    color: #56d131;
+}
+
+body.dark-mode .code-cell code .token.keyword {
+    color: #038dfd;
+}
+
+body.dark-mode .code-cell code .token.operator {
+    color: #decf03;
+}
+
+body.dark-mode .code-cell code .token.punctuation {
+    color: #ba83be;
 }
     
-/* On smaller screens, where height is less than 450px, 
-   change the style of the sidenav */
+/* 
+# --------------------
+# Responsiveness
+# -------------------- 
+*/
 
 @media screen and (max-height: 450px) {
     .sidebar {padding-top: 15px;}
     .sidebar a {font-size: 18px;}
 }
 
+/* 
+# --------------------
+# Variables 
+# -------------------- 
+*/
+
 /* Custom HNN colors */
+/* ----------------- */
 .hnn-blue { color: #1156A3; }
 .hnn-purple { color: #474095; }
 .hnn-violet { color: #812A89; }
