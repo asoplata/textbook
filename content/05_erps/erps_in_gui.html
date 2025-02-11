@@ -85,8 +85,8 @@
 				5. Simulating ERPs
 			</a>
 			<div class="submenu">
-				<a href="/website_redesign/content/05_erps/overview_of_erps.html">2.1 Review of ERPs</a>
-				<a href="/website_redesign/content/05_erps/hnn_core.html">2.2 Simulating ERPs in hnn-core</a>
+				<a href="/website_redesign/content/05_erps/erps_in_gui.html">2.1 GUI Tutorial of ERP Simulation</a>
+				<a href="/website_redesign/content/05_erps/hnn_core.html">2.2 API Tutorial of ERP Simulation</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -225,15 +225,14 @@
     <div id="content">
 
 <!--
-# Title: 2.1 Review of ERPs
+# Title: 2.1 GUI Tutorial of ERP Simulation
 # Updated: 2024-11-14
 #
 # Contributors:
     # Dylan Daniels
 -->
-<h1 id="event-related-potentials-erps">Event Related Potentials
-(ERPs)</h1>
-<h2 id="getting-started">Getting Started</h2>
+<h1>Event Related Potentials (ERPs)</h1>
+<h2>Getting Started</h2>
 <p>In order to understand the workflow and initial parameter sets
 provided with this tutorial, we must first briefly describe prior
 studies that led to the creation of the provided data and evoked
@@ -303,11 +302,11 @@ distal drive at ~60 ms, followed by a second proximal drive at ~122 ms.
 Given this background information, we can now walk you through the steps
 of simulating a similar ERP, using a subset of the data shown in Figure
 1.</p>
-<h2 id="tutorial-table-of-contents">Tutorial Table of Contents</h2>
+<h2>Tutorial Table of Contents</h2>
 <p><a href="#1-loadview-data">1. Load/view data</a></p>
 <p><a
-href="#2-loadview-parameters-to-define-network-structure---to-activate-the-network">2.
-Load/view parameters to define network structure &amp; to “activate” the
+href="#2-loadview-parameters-to-define-network-structure-and-to-activate-the-network">2.
+Load/view parameters to define network structure and to activate the
 network</a></p>
 <p><a
 href="#3-running-the-simulation-and-visualizing-net-current-dipole">3.
@@ -319,7 +318,7 @@ types</a></p>
 <p><a href="#5-comparing-model-output-and-recorded-data">5. Comparing
 model output and recorded data</a></p>
 <p><a id="toc_1"></a></p>
-<h2 id="loadview-data">1. Load/view data</h2>
+<h2>1. Load/view data</h2>
 <p>An example ERP dataset is provided in the
 <a href="https://github.com/jonescompneurolab/hnn-data">hnn-data GitHub
 repository</a>. We use the data as an orienting example for where to
@@ -343,18 +342,15 @@ shown below.</p>
 <p>Alternatively, if you have not cloned the hnn-data repository, you
 can download the file directly by clicking
 <a href="https://github.com/jonescompneurolab/hnn/blob/master/data/MEG_detection_data/yes_trial_S1_ERP_all_avg.txt">here</a>.</p>
-<section id="figure-2"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 2</h3>
 <p><img src="images/erp_fig_02.gif" /></p>
 </section>
 <p>Note, the software can be used without loading data. If you wish to
 play with simulations without data, proceed to Step 2 first.</p>
 <p><a id="toc_2"></a></p>
-<h2
-id="loadview-parameters-to-define-network-structure-to-activate-the-network">2.
-Load/view parameters to define network structure &amp; to “activate” the
-network</h2>
+<h2>2. Load/view parameters to define network structure &amp; to
+“activate” the network</h2>
 <p>An initial parameter set that will simulate the evoked drives that
 generate an evoked response in close agreement with the SI data
 described in Step 1 is distributed in the hnn-data repository. Click on
@@ -364,8 +360,7 @@ click the <code>Load external drives</code> button. Navigate to the
 select <code>ERPYes100Trials.json</code>, or
 <a href="https://github.com/jonescompneurolab/hnn/tree/master/param">download
 the parameter file</a> and load it into the GUI.</p>
-<section id="figure-3"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 3</h3>
 <p><img src="images/erp_fig_03.gif" /></p>
 </section>
@@ -392,8 +387,7 @@ simulation for your hypothesis testing goals by using the
 the location as either “proximal” or “distal”. Other types of drives can
 also be defined including poisson, rhythmic, and tonic, as detailed in
 other tutorials.</p>
-<section id="figure-4"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 4</h3>
 <p><img src="images/erp_fig_04.png" /></p>
 </section>
@@ -434,8 +428,7 @@ connectivity structure of the network, see the
 <a href="https://hnn.brown.edu/under-the-hood/">“HNN Template Model”</a>
 page.</p>
 <p><a id="toc_3"></a></p>
-<h2 id="running-the-simulation-and-visualizing-net-current-dipole">3.
-Running the simulation and visualizing net current dipole</h2>
+<h2>3. Running the simulation and visualizing net current dipole</h2>
 <p>Now that we have an initial parameter set, we can run a simulation
 for a set number or trials. Let’s start by defining 3 trials, by
 clicking on the <code>Simulation</code> tab and defining Trials=3. On
@@ -458,8 +451,7 @@ both backends are installed.</p>
 <p>Hit the <code>Run</code> button to run the simulation. A simulation
 log is shown under the Run button that will tell you the status of your
 simulaion.</p>
-<section id="figure-5"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 5</h3>
 <p><img src="images/erp_fig_05.png" /></p>
 </section>
@@ -483,8 +475,7 @@ then click <code>Add plot</code>.</p>
 <p>Note you can change what is shown in either of these subplots by
 selecting <code>clear axis</code>, picking the <code>Type</code> of data
 from the pulldown menu, and clicking <code>Add plot</code>.</p>
-<section id="figure-6"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 6</h3>
 <p><img src="images/erp_fig_06.gif" /></p>
 </section>
@@ -504,15 +495,12 @@ smoothing will occur. To turn off smoothing entirely, set the window
 size to 0. Below, we provide an example of the same simulation with
 smoothing turned off entirely. Note the higher-frequency content
 compared to the ERP simulation with smoothing turned on.</p>
-<section id="figure-7"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 7</h3>
 <p><img src="images/erp_fig_07.png" /></p>
 </section>
-<h2
-id="a-closer-look-inside-the-simulations-contribution-of-layers-and-cell-types">4.
-A closer look inside the simulations: contribution of layers and cell
-types</h2>
+<h2>4. A closer look inside the simulations: contribution of layers and
+cell types</h2>
 <p>One of the main advantages of simulating neocortical activity is that
 we can dive into the details of the simulation to investigate the
 contribution of different components in the network; e.g., layers, cell
@@ -527,8 +515,7 @@ from the <code>Layout template</code> dropdown menu. From the
 <code>Dataset</code> dropdown, select the simulation data you would like
 to visualize. Next, click <code>Make figure</code> to generate a new
 figure.</p>
-<section id="figure-8"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 8</h3>
 <p><img src="images/erp_fig_08.png" /></p>
 </section>
@@ -545,8 +532,7 @@ from the <code>Layout template</code> dropdown menu. From the
 <code>Dataset</code> dropdown, select the simulation data you would like
 to visualize. Next, click <code>Make figure</code> to generate a new
 figure.</p>
-<section id="figure-9"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 9</h3>
 <p><img src="images/erp_fig_09.png" /></p>
 </section>
@@ -571,13 +557,11 @@ matplotlib control at the top.</p>
 <p><strong>4.3 Viewing ERP Spectrograms</strong></p>
 <p>HNN also allows you to generate a time-frequency representation of
 ERP dipole signals.</p>
-<section id="figure-10-spectrogram"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 10 spectrogram</h3>
 <p><img src="images/erp_fig_10.png" /></p>
 </section>
-<h2 id="comparing-model-output-and-recorded-data">5. Comparing model
-output and recorded data</h2>
+<h2>5. Comparing model output and recorded data</h2>
 <p>When loading data, the root-mean-squared-error (RMSE) is calculate
 between the average simulated ERP waveform and the loaded waveform. Our
 <code>ERPyes-3trial</code> simulation yields an RMSE of 5.51.</p>
@@ -587,12 +571,11 @@ changes.</p>
 and the simulated average ERP changed to 5.59. Depending on the number
 of trials you run and what adjustments you make to the parameter values,
 you may be able to reduce the RMSE.</p>
-<section id="figure-11"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 11</h3>
 <p><img src="images/erp_fig_11.png" /></p>
 </section>
-<h2 id="adjusting-parameters">6. Adjusting parameters</h2>
+<h2>6. Adjusting parameters</h2>
 <p>Parameter adjustments will be key to developing and testing
 hypotheses on the circuit origin of your own ERP data. HNN is designed
 so that many of parameters in the model can be adjusted from the GUI
@@ -617,8 +600,7 @@ simulation data to a file with this new name.</p>
 <p>Then, to provide synchronous exogenous drives to all cells in the
 network, go to <code>External drives</code> and set the
 <code>Std dev time</code> for all drives to 0.</p>
-<section id="figure-12"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 12</h3>
 <p><img src="images/erp_fig_12.png" /></p>
 </section>
@@ -630,8 +612,7 @@ times in the histograms at the top of the figure (compare to evoked
 response inputs shown in Step 5), predicting (in this case) the evoked
 responses are more likely to be non-synchronous. Remember, however, that
 this simulation is only based on two trials.</p>
-<section id="figure-13"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 13</h3>
 <p><img src="images/erp_fig_13.png" /></p>
 </section>
@@ -712,8 +693,7 @@ threshold level data.</p>
 <p>First, let’s load the data from the supra-threshold detected trials
 <code>S1_SupraT.txt</code> and the data from the threshold-level
 detected trials <code>yes_trial_S1_ERP_all_avg</code>.</p>
-<section id="figure-18"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 18</h3>
 <p><img src="images/erp_fig_18.png" /></p>
 </section>
@@ -727,8 +707,7 @@ RMSE between the average model response and the loaded data) based on
 the threshold-level simulation, showing that
 <code>ERPYes100Trials.json</code> gives a poor fit to the
 supra-threshold data (RMSE = 30.31).</p>
-<section id="figure-19"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 19</h3>
 <p><img src="images/erp_fig_19.png" /></p>
 </section>
@@ -747,8 +726,7 @@ such changes and accurately reproduces the new data. Load the
 <code>External Drives</code>.</p>
 <p>You should see the new values in the dropdowns.</p>
 <p>Next, let’s run the simulation using the <code>Run</code> button.</p>
-<section id="figure-20"
-style="display:block; width:90%; margin: 0 auto;">
+<section style="display:block; width:90%; margin: 0 auto;">
 <h3>Figure 20</h3>
 <p><img src="images/erp_fig_20.png" /></p>
 </section>
@@ -771,17 +749,16 @@ RMSE.</li>
 <li>Try running the simulation for longer and adding an additional
 proximal or distal drive; how does this affect the simulation?</li>
 </ul>
-<h2 id="have-fun-exploring-your-own-data">7. Have fun exploring your own
-data!</h2>
+<h2>7. Have fun exploring your own data!</h2>
 <p>Follow steps 1-6 above using your data and parameter adjustments
 based on your own hypotheses.</p>
-<h2 id="additional-documents">8. Additional documents</h2>
+<h2>8. Additional documents</h2>
 <p><strong>8.1 Parameter files</strong> All parameter files for this
 tutorial can be found by clicking here or by visiting the following URL:
 https://github.com/jonescompneurolab/hnn/tree/master/param.</p>
 <p><strong>8.2 Video walkthrough</strong> A video walkthrough of an
 abridged version of the tutorial can be found by clicking here.</p>
-<h2 id="references">References</h2>
+<h2>References</h2>
 <p>Jones, S. R., Pritchett, D. L., Stufflebeam, S. M., Hämäläinen, M.
 &amp; Moore, C. I. Neural correlates of tactile detection: a combined
 magnetoencephalography and biophysically based computational modeling
@@ -791,11 +768,56 @@ behaviorally relevant N1 component of the somatosensory-evoked potential
 in SI cortex of awake monkeys: evidence that backward cortical
 projections signal conscious touch sensation. Exp. Brain Res. 84,
 607–619 (1991).</p>
-    </div> <!-- close content wrapper -->
+        <!-- footer area -->
+        <!----------------->
+        <div class="footer-area">
+            <div class="previous-area" data-link="None">
+                <div class="previous-icon">
+                    <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path class="arrow-path" d="M15 5L9 12L15 19" />
+                    </svg>
+                </div>
+                <div class="previous-text">
+                    <p>Previous</p>
+                    <a href="">PreviousTitle</a>
+                </div>
+            </div>
+            <div class="next-area" data-link="None">
+                <div class="next-text">
+                    <p>Next</p>
+                    <a href="">NextTitle</a>
+                </div>
+                <div class="next-icon">
+                    <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path class="arrow-path" d="M15 5L9 12L15 19" />
+                    </svg>
+                </div>
+            </div>
+        </div> <!-- close footer -->
     </div> <!-- close content -->
+    </div> <!-- close content wrapper -->
 </div> <!-- close main -->
-
 <script>
+    // ----------------------------------------
+    // Manage footer
+    // ----------------------------------------
+    // Hide the area if data-link is 'None'
+    document.querySelectorAll('.previous-area, .next-area').forEach(function(area) {
+        if (area.getAttribute('data-link') === 'None') {
+            area.style.display = 'none'; 
+        }
+    });
+
+    // Redirect to the specified link
+    document.querySelectorAll('.previous-area, .next-area').forEach(function(area) {
+        area.addEventListener('click', function() {
+            window.location.href = area.getAttribute('data-link');
+        });
+    });
+
+    // ----------------------------------------
+    // Manage sidebar
+    // ----------------------------------------
     let isSidebarOpen = true; // Sidebar is initially open
 
     function toggleNav() {
@@ -917,6 +939,7 @@ projections signal conscious touch sensation. Exp. Brain Res. 84,
         }
     });
 
+    // ----------------------------------------
     // Toggle between light and dark themes
     // ----------------------------------------
     // Wait for the DOM to be fully loaded

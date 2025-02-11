@@ -85,8 +85,8 @@
 				5. Simulating ERPs
 			</a>
 			<div class="submenu">
-				<a href="/website_redesign/content/05_erps/overview_of_erps.html">2.1 Review of ERPs</a>
-				<a href="/website_redesign/content/05_erps/hnn_core.html">2.2 Simulating ERPs in hnn-core</a>
+				<a href="/website_redesign/content/05_erps/erps_in_gui.html">2.1 GUI Tutorial of ERP Simulation</a>
+				<a href="/website_redesign/content/05_erps/hnn_core.html">2.2 API Tutorial of ERP Simulation</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -232,8 +232,7 @@
     # Dylan Daniels
 -->
 <!-- compare original: https://jonescompneurolab.github.io/hnn-under_the_hood/05_tonic-noisy-inputs/05_tonic-noisy-inputs -->
-<h1 id="tonic-and-noisy-driving-inputs">3.7 Tonic and Noisy Driving
-Inputs</h1>
+<h1>3.7 Tonic and Noisy Driving Inputs</h1>
 <p>HNN also provides Poisson-distributed inputs as well as tonic current
 clamps. The tonic inputs are modeled as somatic current clamps with a
 fixed current injection. These clamps can be used to adjust the resting
@@ -245,11 +244,56 @@ excitatory AMPAergic synaptic inputs to the somata of different neurons,
 which follow a Poisson Process. You can set the average frequency,
 strength, and timing of these inputs to individual neuron populations.
 See Tour of the GUI for details on how to set these inputs.</p>
-    </div> <!-- close content wrapper -->
+        <!-- footer area -->
+        <!----------------->
+        <div class="footer-area">
+            <div class="previous-area" data-link="None">
+                <div class="previous-icon">
+                    <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path class="arrow-path" d="M15 5L9 12L15 19" />
+                    </svg>
+                </div>
+                <div class="previous-text">
+                    <p>Previous</p>
+                    <a href="">PreviousTitle</a>
+                </div>
+            </div>
+            <div class="next-area" data-link="None">
+                <div class="next-text">
+                    <p>Next</p>
+                    <a href="">NextTitle</a>
+                </div>
+                <div class="next-icon">
+                    <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path class="arrow-path" d="M15 5L9 12L15 19" />
+                    </svg>
+                </div>
+            </div>
+        </div> <!-- close footer -->
     </div> <!-- close content -->
+    </div> <!-- close content wrapper -->
 </div> <!-- close main -->
-
 <script>
+    // ----------------------------------------
+    // Manage footer
+    // ----------------------------------------
+    // Hide the area if data-link is 'None'
+    document.querySelectorAll('.previous-area, .next-area').forEach(function(area) {
+        if (area.getAttribute('data-link') === 'None') {
+            area.style.display = 'none'; 
+        }
+    });
+
+    // Redirect to the specified link
+    document.querySelectorAll('.previous-area, .next-area').forEach(function(area) {
+        area.addEventListener('click', function() {
+            window.location.href = area.getAttribute('data-link');
+        });
+    });
+
+    // ----------------------------------------
+    // Manage sidebar
+    // ----------------------------------------
     let isSidebarOpen = true; // Sidebar is initially open
 
     function toggleNav() {
@@ -371,6 +415,7 @@ See Tour of the GUI for details on how to set these inputs.</p>
         }
     });
 
+    // ----------------------------------------
     // Toggle between light and dark themes
     // ----------------------------------------
     // Wait for the DOM to be fully loaded

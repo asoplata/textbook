@@ -1,5 +1,5 @@
 <!--
-# Title: 2.1 Review of ERPs
+# Title: 2.1 GUI Tutorial of ERP Simulation
 # Updated: 2024-11-14
 #
 # Contributors:
@@ -34,7 +34,7 @@ In summary, to simulate the SI evoked response, a sequence of exogenous excitato
 
 [1. Load/view data](#1-loadview-data)
 
-[2. Load/view parameters to define network structure \&  to “activate” the network](#2-loadview-parameters-to-define-network-structure---to-activate-the-network)
+[2. Load/view parameters to define network structure and to activate the network](#2-loadview-parameters-to-define-network-structure-and-to-activate-the-network)
 
 [3. Running the simulation and visualizing net current dipole](#3-running-the-simulation-and-visualizing-net-current-dipole)
 

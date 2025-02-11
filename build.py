@@ -12,7 +12,7 @@ def compile_page_components():
     """Compile base html components for building webpage"""
 
     templates_folder = os.path.join(os.getcwd(), 'templates')
-    templates = ['header', 'topbar', 'script']
+    templates = ['header', 'topbar', 'footer', 'script']
     html_parts = {}
 
     for template in templates:
@@ -21,9 +21,10 @@ def compile_page_components():
             html_parts[template] = f.read()
 
     update_page_index()
-    html_parts['navbar'] = generate_navbar_html()
+    navbar_html, ordered_links = generate_navbar_html()
+    html_parts['navbar'] = navbar_html
 
-    return html_parts
+    return html_parts, ordered_links
 
 
 def get_page_paths(path=None):
@@ -46,12 +47,14 @@ def get_page_paths(path=None):
 
 
 def generate_page_html(page_paths):
-    html_parts = compile_page_components()
+    html_parts, ordered_links = compile_page_components()
+    print(ordered_links)
     order = [
         'header',
         'navbar',
         'topbar',
         'body',
+        'footer',
         'script',
     ]
 
@@ -101,24 +104,39 @@ def generate_page_html(page_paths):
                 nb_path,
                 ):
             """"""
-            html_output = []
+            # html_output = []
             json_path = nb_path.split('.ipynb')[0] + '.json'
             with open(json_path, 'r') as file:
                 nb_outputs = json.load(file)
                 nb_outputs = nb_outputs.get(nb_name, {})
-                print(nb_outputs)
+                # print(nb_outputs)
                 agg_html = ''
                 for section, content in nb_outputs.items():
                     if isinstance(content, dict) and 'html' in content:
                         agg_html += content['html']
 
-            for line in agg_html.splitlines():
-                html_output.append(line)
+            # for line in agg_html.splitlines():
+            #     html_output.append(line)
 
-            return html_output
+            return agg_html
 
-        def add_html_notebooks_to_markdown():
-            """Pending"""
+        # use pypandoc to convert md to html
+        converted_html = pypandoc.convert_file(
+            path,
+            format='md',
+            to='html',
+            extra_args=[
+                "--mathml",
+                "-f",
+                "markdown-auto_identifiers",
+            ],
+        )
+
+        def add_notebook_to_html(converted_html):
+            """
+            Function to identify areas in a converted markdown page to insert
+            jupyter notebook html outputs
+            """
             # regex pattern match for "[[notebook_name.ipynb]" with only
             # a single closing bracket, as additional parameters may be
             # included in the notebook specification line
@@ -127,47 +145,33 @@ def generate_page_html(page_paths):
             # match the exact pattern ".ipynb][" as defined below
             nb_arguments_pattern = ".ipynb]["
 
-            with open(path, 'r') as file:
-                for line in file:
-                    match = nb_match_pattern.search(line)
-                    args = nb_arguments_pattern in line
-                    if match and args:
-                        print(f'nb with args found: {line}')
-                    elif match:
-                        notebook_name = match.group(1)
-                        nb_path = path.split(md_page)[0] + notebook_name
-                        new_lines = get_html_from_json(
-                            notebook_name,
-                            nb_path,
-                        )
-                        print(new_lines)
-                    else:
-                        continue
-            return
+            output_lines = []
+            for line in converted_html.splitlines():
+                match = nb_match_pattern.search(line)
+                args = nb_arguments_pattern in line
 
-        add_html_notebooks_to_markdown()
+                if match and args:
+                    notebook_name = match.group(1)
+                    nb_path = path.split(md_page)[0] + notebook_name
+                    print(f'nb with args found: {line}')
+                    print(
+                        'Argument handling will be added in a '
+                        'future update'
+                    )
+                    output_lines.append(line)
+                elif match:
+                    notebook_name = match.group(1)
+                    nb_path = path.split(md_page)[0] + notebook_name
+                    notebook_html = get_html_from_json(notebook_name, nb_path)
+                    output_lines.append(notebook_html)
+                else:
+                    output_lines.append(line)
 
-        # use pypandoc to convert md to html
-        try:
-            converted = pypandoc.convert_file(
-                path,
-                to='html',
-                extra_args=["--mathml"],
-            )
-        except Exception as ex:
-            # download Pandoc dependency if needed
-            if "No pandoc was found" in ex:
-                print("Downloading pandoc dependency")
-                pypandoc.download_pandoc()
-                converted = pypandoc.convert_file(
-                    path,
-                    to='html',
-                    extra_args=["--mathml"],
-                )
-            else:
-                raise ex
+            combined_html = "\n".join(output_lines)
+            return combined_html
 
-        page_components['body'] = converted
+        combined_html = add_notebook_to_html(converted_html)
+        page_components['body'] = combined_html
 
         file_contents = ""
         for section in order:
@@ -177,7 +181,7 @@ def generate_page_html(page_paths):
         with open(out_path, 'w') as out:
             out.write(file_contents)
 
-    return converted
+    return converted_html
 
 
 # %%
