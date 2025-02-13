@@ -236,10 +236,12 @@
 <table style="border:none">
 <tr>
 <td style="border:none" width>
-<img src="./images/synaptic-connectivity.png" />
+<img
+src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/synaptic-connectivity.png" />
 </td>
 <td style="border:none; vertical-align:middle;">
-<img src="./images/3d-column-model.png" />
+<img
+src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/3d-column-model.png" />
 </td>
 </tr>
 <tr>
@@ -273,7 +275,8 @@ the following color code is used for the different cell types in the
 model– red: layer 5 pyramidal neurons; green: layer 2/3 pyramidal
 neurons; white: layer 2/3 interneurons; blue: layer 5 interneurons.</p>
 <div style="display:block; width:100%; margin: 0 auto;">
-<p><img src="./images/colored-column-model.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/colored-column-model.png" /></p>
 </div>
 <p>The illustration below shows a schematic of local network
 connectivity. The blue cells are pyramidal cells, while the orange
@@ -292,7 +295,8 @@ in the figure, there are also inhibitory synaptic connections between
 interneurons within a layer. The connectivity details are based on the
 neocortical microcircuit wiring patterns determined in experiments.</p>
 <div style="display:block; width:50%; margin: 0 auto;">
-<p><img src="./images/detailed-connectivity.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/detailed-connectivity.png" /></p>
 </div>
 <p>Note that in the default model, within a layer, there is all-to-all
 connectivity between pyramidal neurons. The synaptic weights between
@@ -307,7 +311,8 @@ with of 3. The figure below represents one neuron located at the center
 distance from the center, the synaptic weights decay, while the synaptic
 delays increase.</p>
 <div style="display:block; width:100%; margin: 0 auto;">
-<p><img src="./images/weight-scaling.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/weight-scaling.png" /></p>
 </div>
 <p>In future versions of HNN, we will allow adjustments to the local
 circuit architecture and connection profiles. For more details of the
@@ -399,6 +404,8 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
     // Manage sidebar
     // ----------------------------------------
     let isSidebarOpen = true; // Sidebar is initially open
+    let isSidebarFullyOpen = true; // Sidebar is fully open
+    const maxWidth = '350px';
 
     function toggleNav() {
         const sidebar = document.getElementById("mySidebar");
@@ -408,14 +415,27 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
         if (isSidebarOpen) {
             sidebar.style.width = "0";
             main.style.marginLeft = "0";
+            isSidebarFullyOpen = false;
         } else {
-            sidebar.style.width = "350px";  // Adjust width as needed
-            main.style.marginLeft = "350px";  // Match margin to new width
+            sidebar.style.width = maxWidth;
+            main.style.marginLeft = maxWidth;  // Match margin to new width
         }
 
         // Toggle the sidebar state
         isSidebarOpen = !isSidebarOpen;
     }
+
+    // Always listen for the transitionend on the sidebar
+    const sidebar = document.getElementById("mySidebar");
+    sidebar.addEventListener('transitionend', function() {
+        if (sidebar.style.width === maxWidth) {
+            // Sidebar has fully opened
+            isSidebarFullyOpen = true;
+        } else {
+            // Sidebar is not fully open
+            isSidebarFullyOpen = false;
+        }
+    });
 
     // Open the sidebar on page load
     window.onload = function() {
@@ -425,8 +445,8 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 
         sidebar.style.transition = "none";
         main.style.transition = "none";
-        sidebar.style.width = "350px";
-        main.style.marginLeft = "350px";
+        sidebar.style.width = maxWidth;
+        main.style.marginLeft = maxWidth;
 
         // Re-enable transition for subsequent toggles
         setTimeout(() => {
@@ -574,7 +594,7 @@ class="footnote-back" role="doc-backlink">↩︎</a></p></li>
         link.addEventListener('mouseenter', function(event) {
             const tooltipText = event.target.getAttribute('sidebar-tooltip');
             
-            if (!tooltipText || isTooltipVisible) return; // Only show tooltip if none is visible
+            if (!tooltipText || isTooltipVisible || !isSidebarFullyOpen) return; // Only show tooltip if none is visible
 
             // Check if the text is overflowing
             if (event.target.scrollWidth > event.target.offsetWidth) {
