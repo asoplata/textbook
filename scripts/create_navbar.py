@@ -134,6 +134,7 @@ def generate_navbar_html():
 
     navbar_html, ordered_links = build_navbar(json_page_index)
     html += navbar_html
+    html += "\n\t<div style='height: 30px;'></div>"
     html += '\n\t</div>'
     return html, ordered_links
 

@@ -152,10 +152,32 @@ def generate_page_html(page_paths):
             f'<a>{next_title}</a>'
         )
 
-        # convert markdown file to html with pypandoc
+        # load markdown and add yaml metadata
         # ------------------------------------------------------------
-        converted_html = pypandoc.convert_file(
-            path,
+        # read markdown file into a string
+        with open(path, "r", encoding="utf-8") as f:
+            markdown_text = f.read()
+
+        path_md_yaml_metadata = os.path.join(
+            os.getcwd(),
+            'templates',
+            'md_yaml_metadata.txt',
+        )
+        with open(path_md_yaml_metadata) as f:
+            md_yaml_metadata = f.read()
+
+        # add check for title section in markdown file
+
+        markdown_text = markdown_text.replace(
+            '-->',
+            '-->\n\n'+md_yaml_metadata,
+            1
+        )
+
+        # convert markdown to html with pypandoc
+        # ------------------------------------------------------------
+        converted_html = pypandoc.convert_text(
+            markdown_text,
             format='md',
             to='html',
             extra_args=[

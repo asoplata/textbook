@@ -29,7 +29,9 @@
         "/website_redesign/content/05_erps/erps_in_gui.html",
         "/website_redesign/content/05_erps/hnn_core.html",
         "/website_redesign/content/06_alpha_beta/gui.html",
-        "/website_redesign/content/06_alpha_beta/api.html"
+        "/website_redesign/content/06_alpha_beta/api.html",
+        "/website_redesign/content/07_gamma/gamma_in_gui.html",
+        "/website_redesign/content/07_gamma/gamma_in_api.html"
     ],
     "titles": [
         "Preface",
@@ -61,6 +63,8 @@
         "2.1 GUI Tutorial of ERP Simulation",
         "2.2 API Tutorial of ERP Simulation",
         "6.1 GUI Tutorial of Alpha/Beta Rhythms",
-        "6.2 API Tutorial of Alpha/Beta Rhythms"
+        "6.2 API Tutorial of Alpha/Beta Rhythms",
+        "7.1 GUI Tutorial of Gamma Rhythms",
+        "7.2 API Tutorial of Gamma Rhythms"
     ]
 }

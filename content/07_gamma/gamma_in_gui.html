@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HNN Textbook</title>
+    <!-- <base href="/website_redesign/"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+	<div id="mySidebar" class="sidebar">
+		<div class="navbar-header">
+		<a>
+			Human Neocortical Neurosolver
+		</a>
+		<br>
+			<svg class="collapse-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+				<path d="M9 9H4v1h5V9z"/>
+				<path fill-rule="evenodd" clip-rule="evenodd" d="M5 3l1-1h7l1 1v7l-1 1h-2v2l-1 1H3l-1-1V6l1-1h2V3zm1 2h4l1 1v4h2V3H6v2zm4 1H3v7h7V6z"/>
+			</svg>
+		</div>
+		<a href="/website_redesign/content/preface.html">Preface</a>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+		<span class="toggle-icon">+</span>
+				1. Overview
+			</a>
+			<div class="submenu">
+				<a href="/website_redesign/content/01_overview/challange.html">1.1 Challenge in Connecting EEG MEG to Neural Circuits </a>
+				<a href="/website_redesign/content/01_overview/using_hnn.html">1.2 How HNN solve the Challenge by Bridging Scales</a>
+				<a href="/website_redesign/content/01_overview/sample_workflow.html">1.3 Overview of the Simulation Workflow</a>
+			</div>
+		</div>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+		<span class="toggle-icon">+</span>
+				2. Background
+			</a>
+			<div class="submenu">
+				<a href="/website_redesign/content/02_background/biophysical_modeling.html">2.1 Challenge in Connecting EEG MEG to Neural Circuits </a>
+				<a href="/website_redesign/content/02_background/signal_origins.html">2.2 The Origins of Source Localize MEG/EEG Primary Currents</a>
+				<a href="/website_redesign/content/02_background/glossary.html">2.3 Glossary of Terms</a>
+			</div>
+		</div>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+		<span class="toggle-icon">+</span>
+				3. Assumptions and Validation
+			</a>
+			<div class="submenu">
+				<a href="/website_redesign/content/03_assumptions/template_model.html">3.1 Template Model</a>
+				<a href="/website_redesign/content/03_assumptions/cortical_column_structure.html">3.2 Cortical Column Structure</a>
+				<a href="/website_redesign/content/03_assumptions/primary_electric_currents.html">3.3 Primary Electrical Currents</a>
+				<a href="/website_redesign/content/03_assumptions/neurons_morphology_and_physiology.html">3.4 Neurons: Morphology and Physiology</a>
+				<a href="/website_redesign/content/03_assumptions/synaptic_connectivity.html">3.5 Synaptic Connectivity</a>
+				<a href="/website_redesign/content/03_assumptions/evoked_and_rhythmic_driving_inputs.html">3.6 Evoked and Rhythmic Driving Inputs</a>
+				<a href="/website_redesign/content/03_assumptions/tonic_and_noisy_driving_inputs.html">3.7 Tonic and Noisy Driving Inputs</a>
+			</div>
+		</div>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+		<span class="toggle-icon">+</span>
+				4. Using HNN
+			</a>
+			<div class="submenu">
+				<a href="/website_redesign/content/04_using_hnn/installation.html">4.1 Installation</a>
+				<a href="/website_redesign/content/04_using_hnn/network_parameters.html">4.2 Network Parameters</a>
+				<a href="/website_redesign/content/04_using_hnn/drive_parameters.html">4.3 Drive Parameters</a>
+				<a href="/website_redesign/content/04_using_hnn/loading_data.html">4.4 Loading Data</a>
+				<a href="/website_redesign/content/04_using_hnn/running_simulations.html">4.5 Running Simulations</a>
+				<a href="/website_redesign/content/04_using_hnn/plotting_firing_patterns.html">4.6 Plotting Firing Patterns</a>
+				<a href="/website_redesign/content/04_using_hnn/recording_lfp.html">4.7 Recording and Plotting LFP</a>
+				<a href="/website_redesign/content/04_using_hnn/animating_simulations.html">4.8 Animating Simulations</a>
+				<a href="/website_redesign/content/04_using_hnn/more_visualizations.html">4.9 Additional Visualizations</a>
+				<a href="/website_redesign/content/04_using_hnn/parallelizing.html">4.10 Running Parallel Simulations</a>
+				<a href="/website_redesign/content/04_using_hnn/optimization.html">4.11 Optimizing Evoked Responses and Rhythms</a>
+				<a href="/website_redesign/content/04_using_hnn/batch_simulation.html">4.12 Running Batch Simulations</a>
+			</div>
+		</div>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+		<span class="toggle-icon">+</span>
+				5. Simulating ERPs
+			</a>
+			<div class="submenu">
+				<a href="/website_redesign/content/05_erps/erps_in_gui.html">2.1 GUI Tutorial of ERP Simulation</a>
+				<a href="/website_redesign/content/05_erps/hnn_core.html">2.2 API Tutorial of ERP Simulation</a>
+			</div>
+		</div>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+		<span class="toggle-icon">+</span>
+				6. Simulating Alpha/Beta Rhythms
+			</a>
+			<div class="submenu">
+				<a href="/website_redesign/content/06_alpha_beta/gui.html">6.1 GUI Tutorial of Alpha/Beta Rhythms</a>
+				<a href="/website_redesign/content/06_alpha_beta/api.html">6.2 API Tutorial of Alpha/Beta Rhythms</a>
+			</div>
+		</div>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+		<span class="toggle-icon">+</span>
+				7. Simulating Gamma Rhythms
+			</a>
+			<div class="submenu">
+				<a href="/website_redesign/content/07_gamma/gamma_in_gui.html">7.1 GUI Tutorial of Gamma Rhythms</a>
+				<a href="/website_redesign/content/07_gamma/gamma_in_api.html">7.2 API Tutorial of Gamma Rhythms</a>
+			</div>
+		</div>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+		<span class="toggle-icon">+</span>
+				8. From Data to Simulation
+			</a>
+			<div class="submenu">
+			</div>
+		</div>
+		<div class="sidebar-list">
+			<a id="sidebar-header" onclick="toggleSubmenu(event)">
+		<span class="toggle-icon">+</span>
+				9. Feature Demos
+			</a>
+			<div class="submenu">
+			</div>
+		</div>
+	<div style='height: 30px;'></div>
+	</div>
+
+<div id="main">
+    <div class="topbar">
+
+        <!-- Topbar menu -->
+        <div class="menu-container">
+            <div class="menu-icons">
+                <button class="openbtn" onclick="toggleNav()">
+                    ☰
+                </button>
+                <a href="" class="home-link">
+                    <div class="home-icon-container">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24" 
+                            height="24"
+                            viewBox="0 0 24 24" 
+                            class="home-icon">
+                            <path
+                                d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"
+                            />
+                        </svg>
+                    </div>
+                </a>
+                <button class="theme-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"></path>
+                    </svg>
+                </button>
+                <div class="dropdown">
+                    <button 
+                        id="dropdownButton" 
+                        class="dropdown-button">
+                            <img
+                                src="/website_redesign/content/assets/icons/fontsize.png"
+                                alt="fontsize"
+                            />
+                    </button>
+                    <div class="dropdown-content">
+                        <button 
+                            class="fontsize-btn" 
+                            onclick="decreaseFontSize()">
+                            <img
+                                src="/website_redesign/content/assets/icons/fontminus.png"
+                                alt="fontminus"
+                            />
+                        </button>
+                        <button 
+                            class="fontsize-btn" 
+                            onclick="increaseFontSize()">
+                            <img
+                                src="/website_redesign/content/assets/icons/fontplus.png"
+                                alt="fontplus"
+                            />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Topbar image -->
+        <img 
+            id="topbar-logo"
+            src="https://hnn.brown.edu/wp-content/uploads/hnn-medium.png"
+        />
+
+        <!-- Right side of topbar -->
+        <div class="socials-container">
+            <div class="social-icons">
+                <a 
+                    href="https://github.com/jonescompneurolab/hnn-core" 
+                    target="_blank" 
+                    aria-label="GitHub">
+                    <img 
+                        src="/website_redesign/content/assets/icons/github.png"
+                        alt="GitHub">
+                </a>
+                <a 
+                    href="https://bsky.app/profile/hnnsolver.bsky.social" 
+                    target="_blank"
+                    aria-label="BlueSky">
+                    <img 
+                        src="/website_redesign/content/assets/icons/bluesky.png"
+                        alt="BlueSky">
+                </a>
+                <a 
+                    href="https://www.linkedin.com/company/human-neocortical-neurosolver/" 
+                    target="_blank"
+                    aria-label="LinkedIn">
+                    <img 
+                        src="/website_redesign/content/assets/icons/linkedin.png"
+                        alt="LinkedIn">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="content-wrapper">
+    <div id="content">
+
+<!--
+# Title: 7.1 GUI Tutorial of Gamma Rhythms
+# Updated: 2025-02-14
+#
+# Contributors:
+    # Dylan Daniels
+-->
+<h1>Gamma Rhythms (30-80 Hz)</h1>
+<h2>Getting Started.</h2>
+<p>In order to understand the workflow and initial parameter sets
+provided with this tutorial, we must first briefly describe prior
+studies on the mechanistic origin of gamma rhythms, including our prior
+modeling work that led to the creation of the parameter sets you will
+work with [1].</p>
+<p>Gamma rhythms can encompass a wide band of frequencies from 30-150
+Hz. Here, we will focus on the generation of so called low gamma rhythms
+in the 30-80 Hz range. It has been well established through experiments
+and computational modeling that these rhythms can emerge in local
+spiking networks through interactions of excitatory cell and inhibitory
+cell interactions, with the period of the oscillation set by the time
+constant of decay of GABAA-mediated inhibitory currents [2–4], a
+mechanism that has been referred to as pyramidal-interneuronal gamma
+(PING). In normal regimes, the decay time constant of GABAA-mediated
+synapses (~25 ms) bounds oscillations to the low gamma frequency band
+(~40 Hz).</p>
+<p>In general, PING rhythms are initiated by “excitation” to the
+excitatory (E) cells that causes spiking, which in turn synaptically
+activates a spiking population of inhibitory (I) cells. In turn, these I
+cells inhibit the E cells, preventing further E cell activity until the
+E cells can overcome the effects of the inhibition (~25 ms later). The
+pattern is repeated, creating a gamma frequency oscillation (~40 Hz, 40
+spikes/second). This general principle is schematically described in
+Figure 1 below. The frequency of the rhythm is paced by this time
+constant of decay of inhibition, which is mediated by strong GABA-A
+currents, as well as the excitability of the E cells (if the E cells are
+very excitable, they can fire before the inhibition has completely worn
+off, and the oscillation will be faster).</p>
+<div class="stylefig" style="max-width:450px;">
+<h3>
+Figure 1
+</h3>
+<p>
+<a href="https://raw.githubusercontent.com/jonescompneurolab/hnn-tutorials/master/gamma/images/image19.png"><img src="https://raw.githubusercontent.com/jonescompneurolab/hnn-tutorials/master/gamma/images/image19.png" alt="image19" /></a>
+</p>
+<p style="text-align:center;">
+Schematic illustration of the circuit mechanisms underlying PING
+rhythms.
+</p>
+</div>
+<p>In this tutorial, we will explore the generation of PING rhythms in
+the HNN model. We will provide example parameter files and walk through
+simulations that generate low-frequency gamma activity in both Layers
+2/3 and Layer 5, as in [1]. This tutorial relies on a different type of
+exogenous drive to “activate” the local network than the other
+tutorials. Here, the necessary excitation to generate spiking in the
+pyramidal neurons (E cells) that initiates the rhythm (see PING
+description above) is provided by a continuous train of action
+potentials with a Poisson distribution (Poisson Input) that activate
+post-synaptic excitatory AMPA synapses on the pyramidal neurons. This
+Poisson drive causes the pyramidal neurons to fire, dependent on the
+chosen conductance of the AMPA currents. The inhibition in the network
+is strong enough to overcome the Poisson drive and entrain the network
+spiking into a gamma frequency rhythm.</p>
+<p>Of note, gamma rhythms can be generated by circuit mechanisms other
+than PING, including subthreshold rhythmic exogenous drive. Lee and
+Jones (2013) examined various mechanisms of generation of gamma activity
+and described ways to distinguish the mechanisms of generation based on
+features of current dipole signal [1]. After completing this tutorial,
+we encourage you to explore alternate mechanisms of gamma generation and
+to compare to your own gamma data.</p>
+<h2>Tutorial Table of Contents</h2>
+<ol start="0" type="1">
+<li><p><a href="#toc_0">Setup</a></p></li>
+<li><p><a href="#toc_1">Load/view parameters to define network structure
+&amp; to “activate” the network</a></p></li>
+<li><p><a href="#toc_2">Run the simulation and visualize net current
+dipole</a></p></li>
+<li><p><a href="#toc_3">Calculating and Viewing Spiking Activity and
+Power Spectral Density (PSD)</a></p></li>
+<li><p><a href="#toc_4">Adjusting parameters</a></p></li>
+<li><p><a href="#toc_5">Have fun exploring your own data!</a></p></li>
+</ol>
+<p><a id="toc_1"></a></p>
+<h2>0. Setup</h2>
+<p>The following tutorial will utilize the HNN-Core GUI.</p>
+<p>To install the latest version of the HNN-Core GUI, we recommend
+creating a new Python (or conda) virtual environment, and then running
+the appropriate command below within your environment:</p>
+<h4>For bash/Powershell</h4>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--pre</span> hnn-core<span class="pp">[</span><span class="ss">gui</span><span class="pp">]</span></span></code></pre></div>
+<h4>For zsh</h4>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--pre</span> hnn-core<span class="st">&#39;[gui]&#39;</span></span></code></pre></div>
+<p>If you need further assistance with installation, please see the
+installation instructions in our <a
+href="https://jonescompneurolab.github.io/hnn-core/dev/index.html">HNN-Core
+documentation</a>.</p>
+<p>Next, you can launch the GUI from within your environment with the
+following command:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hnn-gui</span></span></code></pre></div>
+<p>This will open the GUI in your local browser, as shown below</p>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_01.png" /></p>
+</div>
+<p>Configuration files that will simulate PING rhythms as described in
+the Getting Started section above are provided in the
+<a href="https://github.com/jonescompneurolab/hnn-data">hnn-data GitHub
+repository</a>. You will need to either clone the hnn-data repository or
+download its contents to your machine to follow along with this
+tutorial. The configuration file we will begin with is
+<code>gamma_L5weak_L2weak.json</code>.</p>
+<p>Before we load in the configuration file, let’s update the parameters
+in the <code>Simulation</code> tab.</p>
+<p>If you have the <a
+href="https://jonescompneurolab.github.io/hnn-core/stable/parallel.html">MPI
+backend</a> for parallel simulations installed, you can change the
+backend from Joblib to MPI for faster simulation times. Otherwise, you
+can leave this option as is. We will keep <code>Trials</code> (the
+number of trials to simulate) as 1 and the integration timestep
+<code>dt (ms)</code> as 0.025 for now. Next, we will change the
+<code>tstop (ms)</code> parameter to 250 for a longer simulation.
+Lastly, we will change the <code>Name</code> to
+<code>gamma_L5weak_L2weak</code> to refect the network configuration
+we’ll be starting with.</p>
+<h2>1. Load/view parameters to “activate” the network and to define the
+network structure</h2>
+<p>To load the initial parameters for the inputs that drive our network,
+navigate to the <code>External Drives</code> tab and click
+<code>Load External Drives</code>. From the popup window, navigate to
+the ‘network-configurations’ subfolder in the ‘hnn-data’ directory, and
+select the <code>gamma_L5weak_L2weak.json</code> configuration file.</p>
+<p>You should now see a dropdown menu labelled ‘extpois (proximal)’
+which contains the adjustable drive parameters, as shown in Figure 2
+below.</p>
+<h4>Figure 2</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_02.gif" /></p>
+</div>
+<p>In this simulation, the network will be “activated” with excitatory
+AMPA synaptic input, distributed in time as a Poisson process and
+delivered to the somas of the pyramidal neurons in Layer 2/3 (L2/3) and
+Layer 5 (L5). This noisy input will generate spiking activity in the
+pyramidal neurons that can initiate the PING rhythm.</p>
+<h3>Load Network Parameters</h3>
+<p>Next, navigate to the <code>Network</code> tab and select
+<code>Load local network connectivity</code>. From the popup window,
+select the <code>gamma_L5weak_L2weak.json</code> configuration file from
+the ‘network-configurations’ subfolder in the ‘hnn-data’ directory.</p>
+<p>The adjustable network parameters are displayed in the dropdown boxes
+under the <code>Connectivity</code> tab, as shown in Figure 3 below.</p>
+<h4>Figure 3</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_03.png" /></p>
+</div>
+<p>In our loaded configuration file, all synaptic connections within the
+network are turned off (weight = 0
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">\mu S</annotation></semantics></math>),
+except for the reciprocal connections between the excitatory (AMPA only)
+and inhibitory (GABAA only) cells within the same layer. In other words,
+the Layer 2/3 and Layer 5 networks are not connected to each other (see
+the <a href="https://hnn.brown.edu/under-the-hood/">Under the Hood</a>
+section of the HNN website for further details on connectivity
+structure).</p>
+<p>Note also that the inhibitory conductances within layers are stronger
+than the excitatory conductances, and there are also strong
+inhibitory-to-inhibitory (i.e., basket-to-basket) connections. This
+strong autonomous inhibition will cause synchrony among the basket
+cells, and hence strong inhibition onto the pyramidal neurons (note:
+this synapse was not depicted in Figure 1).</p>
+<div class="callout">
+<table class="callout-table">
+<tr>
+<td class="emoji-cell">
+❗
+</td>
+<td class="text-cell">
+Keep in mind that because Layer 2/3 and Layer 5 are not connected, this
+is not a biologically realistic network. We use this configuration as a
+starting point for illustrative purposes only, as it will prevent
+pyramidal-to-pyramidal interactions from disrupting the gamma rhythm.
+</td>
+<td class="emoji-cell">
+</td>
+</tr>
+</table>
+</div>
+<h2>2. Run the simulation and visualize net current dipole</h2>
+<p>Now that we have set our Simulation parameters and loaded in both our
+external drives and our network configuration, we are ready to run our
+simulation. To do so, click the <code>Run</code> button.</p>
+<div class="callout">
+<table class="callout-table">
+<tr>
+<td class="emoji-cell">
+❗
+</td>
+<td class="text-cell">
+Note that each new simulation you run will require a unique simulation
+<code>Name</code> as indicated in the <code>Simulation</code> tab. If
+you have run a simulation under the same name previously, you will get
+an error message stating that the simulation has failed.
+</td>
+<td class="emoji-cell">
+</td>
+</tr>
+</table>
+</div>
+<p>The console below the <code>Run</code> button will print progress as
+the simulation is running. Once it is complete, the input histogram and
+the dipole will be plotted in the right-most panel, as shown in Figure 4
+below.</p>
+<h4>Figure 4</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_04.png" /></p>
+</div>
+<p>A histogram displaying the Poisson drive to the excitatory cells is
+shown in the top panel, displaying no clear rhythmicity at the gamma
+frequency.</p>
+<p>We will show the spiking plot in the next section, but for now keep
+in mind that the Poisson drive provided causes pyramidal neurons to
+fire, which in-turn cause the inhibitory neurons to fire. Feedback
+inhibition from the interneurons to the pyramidal neurons generates a
+regular gamma rhythm via the PING mechanism described above, which we
+can see in the rhythmicity of the simulated dipole. The sharp downward
+deflections in the dipole are reflective of the strong inhibition onto
+the pyramidal neuron somas, which pulls current flow down the
+dendrites.</p>
+<p>To view the Spectrogram, select the <code>Visualization</code> tab.
+You will see a <code>Layout template</code> menu at the top, also shown
+in Figure 4 above. From this menu, select the
+<code>Dipole-Spectrogram (2x1)</code> option and then click the
+<code>Make Figure</code> button. This will generate a new figure, as
+shown below</p>
+<h4>Figure 5</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_05.png" /></p>
+</div>
+<p>The spectrogram confirms that, for this network and drive
+configuration, the dipole signal contains oscillatory components in the
+gamma range (~50 Hz).</p>
+<p><a id="toc_3"></a></p>
+<h2>3. Calculating and Viewing Spiking Activity and Power Spectral
+Density (PSD)</h2>
+<p>We can make a new figure to view the spiking activity generated by
+the different neuron populations in the network.</p>
+<p>From the <code>Layout template</code> menu in the
+<code>Visualization</code> tab, select
+<code>[Blank] single figure</code> and click the
+<code>Make figure</code> button. This will open up a new figure tab with
+a single subplot named <code>ax0</code>. Under the <code>Type</code>
+dropdown box, select <code>spikes</code> and click
+<code>Add plot</code>, as shown in Figure 6 below.</p>
+<h4>Figure 6</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_06.png" /></p>
+</div>
+<p>Notice that the excitatory pyramidal neurons in each layer (green and
+red dots / lines) fire before the inhibitory basket cells in each layer
+(white, blue dots / lines). The pyramidal neuron firing drives the
+basket cells to fire. The basket cells are highly synchronous due to the
+strong inhibitory-to-inhibitory connections. The basket cells then
+prevent the pyramidal neurons from firing for ~25 ms, generating the
+PING rhythms. The pyramidal neurons are firing periodically, but with
+lower synchrony due to the Poisson drive, which creates randomized spike
+times across the populations (once the inhibition sufficiently wears
+off). This type of dispersed pyramidal neuron firing is considered
+“weak” PING - hence the configuration file name including “weak” in the
+name.</p>
+<p>We can further confirm that this oscillation is in the gamma
+frequency range by viewing the power spectral density of the current
+dipole signal (average spectrogram across time).</p>
+<p>To view the PSD from this simulation, select the
+<code>PSD Layers (3x1)</code> option from the
+<code>Layout template</code> menu in the <code>Visualization</code> tab,
+and click the <code>Make figure</code> button.</p>
+<h4>Figure 7</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_07.png" /></p>
+</div>
+<p>Notice that the power in the gamma band is smaller in Layer 2/3 than
+in Layer 5. This is reflective, in part, of the fact that the length of
+the Layer 2/3 pyramidal neurons is smaller than Layer 5, and hence Layer
+2/3 cells produce smaller current dipole moments that can be masked by
+activity in Layer 5 (see [1] for further discussion).</p>
+<p><a id="toc_4"></a></p>
+<h2>4 Adjusting parameters</h2>
+<p>In the following sections, we explore the impacts of two key
+parameters controlling gamma rhythmicity: cell excitability and network
+connectivity</p>
+<p>Cell “excitability” can be adjusted in many ways, reflecting the
+intrinsic properties of a neuron (e.g. membrane resting potential)
+and/or the influence of external factors such as noisy background inputs
+neuromodulation.</p>
+<p>Parameters controlling network connectivity include the synaptic
+connection strengths between cells and/or the time constants of synaptic
+activation.</p>
+<h3>4.1</h3>
+<p>To explore the influence of these factors on gamma rhythmicity, we
+will examine activity in only one of the layers, namely Layer 5, by
+setting all inputs and connectivity in Layer 2/3 to zero.</p>
+<p>First, navigate to the <code>Simulation</code> tab and change the
+<code>Name</code> to reflect the fact that we will be running a new
+simulation. We’ll use the name <code>gamma_L5weak_only</code>.</p>
+<p>Next, navigate to the <code>Connectivity</code> section under the
+<code>Network</code> tab and change all of the Layer 2/3 weights to
+0.</p>
+<p>Finally, select the <code>extpois (proximal)</code> drive under the
+<code>External drives</code> tab and set the Layer 2/3 weights to 0.</p>
+<p>Once you’ve set all of the Layer 2/3 weights to zero, click the
+<code>Run</code> button to run the simulation. The simulation will yield
+a gamma rhythm that looks similar to the one we observed previously, as
+shown in Figure 8 below.</p>
+<h4>Figure 8</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_08.png" /></p>
+</div>
+<p>However, if you view the Simulation Spiking Activity and the PSD (see
+step 3 above) you will see activity from only Layer 5.</p>
+<p>You can follow the same steps as outlined in Section 3 above to
+generate these visualizations. Note, however, that you need to have the
+correct simulation selected via the <code>Dataset</code> dropdown box
+under the <code>Vizualization</code> tab and above the
+<code>Make figure</code> button, as shown in Figure 9b below.</p>
+<h4>Figure 9.A</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_09_01.png" /></p>
+</div>
+<h4>Figure 9.B</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_09_02.png" /></p>
+</div>
+<p>Notice the weak PING rhythm in Layer 5 consisting of weakly
+synchronous pyramidal neuron firing, followed by synchronous inhibitory
+neuron firing, that gates the network dipole rhythm to ~50 Hz.</p>
+<h3>4.1.1 Increasing cell excitability via a weak tonic input</h3>
+<p>To examine the impact of cell excitability on gamma expression, we
+can increase the excitability of the Layer 5 pyramidal neurons by adding
+a tonic applied current that might represent a neuromodulatory
+influence.</p>
+<p>To do so, first select the <code>External drives</code> tab, then
+select the <code>Tonic</code> option under <code>Drive</code> and click
+the <code>Add drive</code> button. This will create a new external drive
+titled <code>Tonic1</code>, as shown in Figure 10 below. Select the new
+drive, and then set the amplitude of the tonic drive to the Layer 5
+pyramidal neuron to be 2 nA. This level of injected current will be
+applied to the soma of the L5 Pyramidal neurons for the duration of the
+simulation.</p>
+<h4>Figure 10.A</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_10_01.png" /></p>
+</div>
+<h4>Figure 10.B</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_10_02.png" /></p>
+</div>
+<p>After adding the tonic drives, change the simulation name to
+<code>gamma_L5weak_tonic</code>, and then click the <code>Run</code>
+button. The simulation will yield the output shown in Figure 11
+below.</p>
+<h4>Figure 11.A</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_11_01.png" /></p>
+</div>
+<h4>Figure 11.B</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_11_02.png" /></p>
+</div>
+<h4>Figure 11.C</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_11_03.png" /></p>
+</div>
+<p>Note that network takes longer to stabilize due to the initial impact
+of the tonic current. From about 50 ms onward, we see that the initial
+impact of the tonic input has subsided and the influence of both the
+tonic and Poisson drives is more evident.</p>
+<p>Figure 11.B shows the spike plot from the previous simulation
+(<code>gamma_L5weak</code>) on the top and the spike plot from the
+latest simulation (<code>gamma_L5weak_tonic</code>) on the bottom. We
+see that by introducing a weak tonic input, the pyramidal neuron spiking
+is visibly more synchronous, though with some noise still present from
+the Poisson drive.</p>
+<p>Figure 11.C similarly shows the spectrograms, with previous
+simulation (<code>gamma_L5weak</code>) on the top and the latest
+simulation (<code>gamma_L5weak_tonic</code>) on the bottom. We observe
+that after the network stabilizes, the frequency of gamma appears to
+have decreased slightly.</p>
+<p>We see that while increasing the excitability causes the PNs to fire
+more synchronously, interpreting the competing effects of the excitation
+and inhibition is not always straightforward. The more synchronous
+pyramidal neuron firing is not strong enough to induce a “strong” PING
+in the local network, as there is still some apparent noise from the
+Poisson input. However, the overall increase in the pyramidal neuron
+firing rate appears to more strongly recruit the inhibitory
+interneurons, which has the net effect of slightly lowering the
+frequency of the observed gamma rhythm.</p>
+<h3>4.1.2 Weakening the excitatory connections</h3>
+<p>We’ll now explore the impact of adjusting synaptic connectivity
+parameters in the network.</p>
+<p>First navigate to the <code>Connectivity</code> section of the
+<code>Network</code> tab. From there, change the weight of the
+<code>L5_pyramidal-&gt;L5_basket</code> connection from 0.00091 to
+0.000091, making it 10 times weaker.</p>
+<p>Change the <code>Name</code> of the simulation to
+<code>gamma_L5weak_tonic_02</code>, and run the simulation. As we’ve
+done in previous sections, you’ll want to generate visualizations that
+show the spike plot and the spectrogram. In Figure 12.B, we display the
+spiking and the spectrogram in a single plot rather than two separate
+plots.</p>
+<h4>Figure 12.A</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_12_01.png" /></p>
+</div>
+<h4>Figure 12.B</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_12_02.png" /></p>
+</div>
+<p>It is also instructive to view visualizations for different
+simulations in the same figure to compare differences. Figure 13 below
+shows the PSD for <code>gamma_L5weak_tonic</code> (top subplot) and
+<code>gamma_L5weak_tonic_02</code> (bottom subplot)</p>
+<h4>Figure 13</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_13.png" /></p>
+</div>
+<p>Notice that the gamma rhythm has now slowed from ~45 Hz to ~40 Hz.
+This slowing is due to the fact that the excitatory-to-inhibitory
+connection was weakened. Due to this change, it now takes longer for the
+basket cells to respond to the excitation, and hence the rhythm is
+slowed.</p>
+<h3>4.1.3 Removing the inhibitory connections</h3>
+<p>Next, we’ll explore the importance of the inhibitory connections in
+setting gamma rhythmicity.</p>
+<p>First from the <code>Network</code> section of the
+<code>Connectivity</code> tab, change the weight of the
+<code>L5_pyramidal-&gt;L5_basket</code> connection back to 0.00091.</p>
+<p>Then navigate to the <code>External drives</code> tab and select the
+<code>Tonic1</code> drive. Click the <code>Delete drive</code> button to
+remove this drive.</p>
+<p>We are now back to the Layer 5 weak PING configuration
+(<code>gamma_L5weak_only</code>) that we simulated previously.</p>
+<p>Next, let’s experiment with remove the inhibitory-to-inhibitory
+connections. To do so, navigate to the <code>Network</code> section of
+the <code>Connectivity</code> tab and change the weight of the
+<code>L5_basket-&gt;L5_basket</code> connection from 0.0075 to 0</p>
+<p>From the <code>Simulation</code> tab, change the <code>Name</code> to
+<code>gamma_L5weak_only_noinh</code> and click the <code>Run</code>
+button. Then create new visualizations to show the spike plot and the
+spectrogram for your simulation, as shown in Figure 14 below.</p>
+<h4>Figure 14.A</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_14_01.png" /></p>
+</div>
+<h4>Figure 14.B</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_14_02.png" /></p>
+</div>
+<p>Notice that the rhythm is still present but less regular and noisier
+(compare with first waveform image in this section 4.1 above). You can
+also observe this in the Simulation Spiking Activity (below). This lack
+of regularity is due to the fact that removal of the inhibitory to
+inhibitory connections caused the inhibition to be less synchronous and
+noiser, in turn yielding a noisier PING rhythm.</p>
+<h3>4.1.4 Reducing the GABAA decay time</h3>
+<p>Lastly, we’ll show that the time constant of inhibitory decay is an
+essential parameter controlling the frequency of the PING rhythm.</p>
+<p>In the <code>Network</code> section of the <code>Connectivity</code>
+tab, change the weight of the <code>L5_basket-&gt;L5_basket</code>
+connection back to 0.0075</p>
+<p>Next, select the <code>Cell parameters</code> section of the
+<code>Network</code> tab. Set the <code>Cell type</code> to
+<code>L5 Pyramidal</code> and the <code>Cell Properties</code> to
+<code>Synapses</code>, then change the <code>GABAA decay time</code>
+from 5.0 ms to 2.0 ms, as shown in Figure 15 below.</p>
+<h4>Figure 15</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_15.png" /></p>
+</div>
+<div class="callout">
+<table class="callout-table">
+<tr>
+<td class="emoji-cell">
+❗
+</td>
+<td class="text-cell">
+Note in these simulations the weights of the GABAB synapses are all set
+to zero
+</td>
+<td class="emoji-cell">
+</td>
+</tr>
+</table>
+</div>
+<p>From the <code>Simulation</code> tab, change the <code>Name</code> to
+<code>gamma_L5weak_only_fasterinh</code> and click the <code>Run</code>
+button. Then create new visualizations to show the spike plot and the
+spectrogram for your simulation, as shown in Figure 16 below.</p>
+<h4>Figure 16.A</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_16_01.png" /></p>
+</div>
+<h4>Figure 16.B</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_16_02.png" /></p>
+</div>
+<p>Notice that the rhythm is now faster at ~ 60 Hz. As illustrated in
+the spiking activity, the faster decay of inhibition allows the
+pyramidal neurons to recover more quickly from the inhibition and
+respond to the Poisson drive, resulting in a faster network
+oscillation.</p>
+<h3>4.1.5 Exercises for further exploration</h3>
+<ul>
+<li><p>How else might the excitability of the cells be adjusted? What
+happens to the network dynamics? Can you make the oscillation faster or
+slower?</p></li>
+<li><p>How else might the synaptic connections in the network be
+adjusted to impact gamma? What happens to the network dynamics? Can you
+make the oscillation faster or slower?</p></li>
+<li><p>Gamma rhythms can be created in neworks where the pyramidal
+neurons do not fire on their own but their activity is still regulated
+by interneuron firing (interneuron mediated gamma: ING). Can you adjust
+parameters to create such an oscillation in the network?</p></li>
+</ul>
+<h3>5.1 “Strong” gamma can arise from tonic inputs to pyramidal
+neurons</h3>
+<p>The next exercise involves setting up a PING rhythm in both Layer 2/3
+and Layer 5 by providing tonic inputs to the pyramidal neurons, as
+opposed to the stochastic Poisson inputs described above. To do so, we
+will apply a constant depolarizing current injection to the soma of
+neurons, representative of a “tonic input”.</p>
+<p>Navigate to the <code>Network</code> tab and load the
+<code>gamma_L5ping_L2ping.json</code> configuration file. Then select
+the <code>External drives</code> tab and similarly load in the
+<code>gamma_L5ping_L2ping.json</code> file.</p>
+<p>Next, we will add a tonic input to the pyramidal neurons in Layer 2/3
+and Layer 5 will generate spiking that initiates PING.</p>
+<p>From the <code>External drives</code> tab, set the <code>Drive</code>
+parameter to <code>Tonic</code> and click the <code>Add drive</code>
+button. A new <code>Tonic0</code> dropdown will appear. From the
+dropdown, set <code>L2_pyramidal</code> to 4, and set
+<code>L5_pyramidal</code> to 6, as shown in Figure 17 below.</p>
+<div class="callout">
+<table class="callout-table">
+<tr>
+<td class="emoji-cell">
+❗
+</td>
+<td class="text-cell">
+Note that only the pyramidal neurons are set to receive depolarizing
+current injections (i.e., our tonic inputs)
+</td>
+<td class="emoji-cell">
+</td>
+</tr>
+</table>
+</div>
+<h4>Figure 17</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_17.png" /></p>
+</div>
+<p>Next, change the <code>Name</code> in the <code>Simulation</code> tab
+to <code>gamma_L5ping_L2ping</code> and click the <code>Run</code>
+button to run the simulation.</p>
+<p>Once completed, navigate to the <code>Visualization</code> tab and
+set the <code>Layout template</code> to <code>Dipole-Spectrogram</code>.
+Make sure you’ve sected the proper <code>Dataset</code>
+(<code>gamma_L5ping_L2ping</code>), and then click the
+<code>Make figure</code> button. You will see an ourput similar to that
+shown in Figure 18 below.</p>
+<h4>Figure 18</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_18.png" /></p>
+</div>
+<p>In this simulation, there are no spiking inputs provided to the
+model; instead, a current clamp provides a constant depolarizing current
+to the pyramidal neuron somas, causing the cells to fire. This firing
+initiates the PING rhythm through mechanisms similar to that described
+above. In contrast to the Poisson drive, the constant depolarization to
+pyramidal neurons creates higher excitability in the pyramidal neurons,
+causing more synchronous firing. In turn, this causes the interneurons
+to fire synchronously, producing a higher amplitude gamma
+oscillation.</p>
+<p>In Figure 18 above we see that the dipole displays even sharper
+downward deflections, caused by the strong synchronous inhibition onto
+the pyramidal neuron somas that pulls current flow down the dendrites.
+This PING rhythm has less variability and would thus be considered
+“strong” PING rather than “weak” PING.</p>
+<p>Let’s further explore this simulation by looking at the
+layer-specific dipoles and the PSD. To generate this visualization,
+select the <code>PSD Layers</code> option from the
+<code>Layout template</code> dropdown in the <code>Visualization</code>
+tab. Make sure you’ve sected the proper <code>Dataset</code>
+(<code>gamma_L5ping_L2ping</code>), and then click the
+<code>Make figure</code> button. You will see an ourput similar to that
+shown in Figure 19 below.</p>
+<h4>Figure 19</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_19.png" /></p>
+</div>
+<p>When looked at together, the spectrogram (Figure 18) and the PSD
+(Figure 19) illustrate that the dipole signal contains strong
+oscillatory components in the gamma range in the net dipole, which is
+being driven by the strong Layer 5 activity. Layer 2/3 is oscillating at
+higher frequency with a lower amplitude (note the scaling of the y-axes
+in the layer-specific dipoles).</p>
+<div class="callout">
+<table class="callout-table">
+<tr>
+<td class="emoji-cell">
+❗
+</td>
+<td class="text-cell">
+Keep in mind that Layer 2/3 and Layer 5 are not synaptically connected
+to each other in this simulation
+</td>
+<td class="emoji-cell">
+</td>
+</tr>
+</table>
+</div>
+<p>A closer look at the spiking activity will reveal the mechanisms
+creating these waveform shapes, as shown in Figure 20 below</p>
+<h4>Figure 20</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_20.png" /></p>
+</div>
+<p>The PING mechanism is seen in each layer where the pyramidal neurons
+fire, causing the inhibitory neurons to fire, which consequently keep
+the pyramidal neurons from firing until their excitation outweighs the
+inhibition. Notice that the firing rate of Layer 2/3 pyramidal and
+basket neurons is faster than that of Layer 5 neurons. This is because
+although the Layer 2/3 pyramidal neurons receive a lower current
+injection, they have shorter dendrites and therefore the current flow up
+and down the dendrites is faster. Further, the Layer 2/3 pyramidal
+neurons have lower spiking thresholds due to their intrinsic
+properties.</p>
+<p>In each layer, the inhibitory neurons are firing synchronously and
+causing strong somatic inhibition on the pyramidal neurons, resulting in
+fast downward current flow that creates the sharp dipole deflections
+seen in the dipole waveforms above.</p>
+<div class="callout">
+<table class="callout-table">
+<tr>
+<td class="emoji-cell">
+❗
+</td>
+<td class="text-cell">
+While not shown in the figures above, there is an additional
+higher-frequency component near 80 Hz in Layer 5 that can be seen in the
+layer-specific PSD. The higher-frequency activity in Layer 5 comes from
+the sharp deflections in the dipole waveform along with a
+small-amplitude peak that together create high power at 80 Hz in the
+frequency domain. These deflections are driven by the strong
+depolarizing current on the pyramidal neurons that causes their voltage
+to rise quickly even before the inhibitory neurons fire.
+</td>
+<td class="emoji-cell">
+</td>
+</tr>
+</table>
+</div>
+<p>As an exercise, play with the current injection amplitude provided to
+the different neurons to see how it affects the generated rhythm.</p>
+<h3>5.2 Gamma can emerge from rhythmic subthreshold synaptic inputs to
+pyramidal neurons</h3>
+<p>In the next example, we will apply 50 Hz rhythmic synaptic inputs
+through proximal and distal projection patterns to produce gamma
+oscillations similar to those shown in Figure 8A of (Lee &amp; Jones,
+2013) [1].</p>
+<p>In this simulation, the strength of the input is set so that the
+cells remain subthreshold and gamma rhythms emerge from subthreshold
+current flow in the pyramidal neuron dendrites, rather than local
+spiking interactions as in the PING mechanisms described above.</p>
+<p>First, navigate to the <code>Network</code> tab and load the
+<code>gamma_rhythmic_drive</code> configuration from the
+<code>hnn_data</code> folder. Next, select the
+<code>External drives</code> tab and similarly load the subthreshold
+drives from the <code>gamma_rhythmic_drive</code> file. You will see two
+drives named <code>bursty1 (proximal)</code> and
+<code>bursty2 (distal)</code></p>
+<p>In this example, the pyramidal neurons receive inputs, and the
+interneurons do not. The proximal and distal inputs start at 50.0 and
+55.0 ms, respectively, and are slightly out of phase to allow synaptic
+inputs to effectively push current flow up the dendrites, followed 5 ms
+later by current flow down the dendrites. Additionally, the input
+frequency (as indicated by the <code>burst rate</code> parameter) for
+both proximal and distal inputs is set to a 50 Hz, representing “bursts”
+of excitatory synaptic input. The driving burst has an
+inter-burst-interval of 20 ms, with minimal noise within each driving
+burst (as indicated by the <code>Burst std dev</code> of 2.5 ms).</p>
+<div class="callout">
+<table class="callout-table">
+<tr>
+<td class="emoji-cell">
+❗
+</td>
+<td class="text-cell">
+For a detailed description of the driving bursts, please review the
+Alpha/Beta tutorial.
+</td>
+<td class="emoji-cell">
+</td>
+</tr>
+</table>
+</div>
+<p>Note also that the amplitude of the inputs, which are only provided
+to the Layer 5 pyramidal neurons, is set to a small value 0.00004, which
+produces only subthreshold responses in the Layer 5 pyramidal neurons.
+As a result, the gamma mechanism shown in this simulation is
+fundamentally different from the previous examples, since it does not
+rely on the local spiking interactions that underlie the PING
+mechanism.</p>
+<p>Next, change the <code>Name</code> in the <code>Simulation</code> tab
+to <code>gamma_rhythmic_drive</code> and click the <code>Run</code>
+button to run the simulation.</p>
+<p>Once completed, navigate to the <code>Visualization</code> tab and
+set the <code>Layout template</code> to <code>Dipole-Spectrogram</code>.
+Make sure you’ve sected the proper <code>Dataset</code>
+(<code>gamma_L5ping_L2ping</code>), and then click the
+<code>Make figure</code> button. Similarly, we’ll generate the PSD
+vizualization nby selecting <code>PSD Layers</code> from the
+<code>Layout template</code> and then clicking the
+<code>Make figure</code> button. You will see outputs similar to those
+shown in Figure 21 below.</p>
+<h4>Figure 21.A</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_21_01.png" /></p>
+</div>
+<h4>Figure 21.B</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_21_02.png" /></p>
+</div>
+<h4>Figure 21.C</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_21_03.png" /></p>
+</div>
+<p>The net dipole signal in this simulation shows a clear gamma rhythm
+at ~50 Hz, produced by the Layer 5 pyramidal neurons. Note, here the
+Layer 2/3 pyramidal neurons are not receiving any drive and hence do not
+contribute to the dipole current. There is only minor stochasticity to
+the synaptic inputs (burst stdev of 2.5 ms). Also note that the waveform
+shape in this simulation is distinct from the previous examples, lacking
+the sharp deflections produced by neuronal firing and strong somatic
+inhibition during PING.</p>
+<h3>5.2.1 Adding noise to gamma generated through rhythmic subthreshold
+synaptic inputs</h3>
+<p>In the final simulation of this section, we will add more noise to
+the previously applied 50 Hz rhythmic drive.</p>
+<p>For each of the drives in the <code>External drives</code> tab,
+change the value of the <code>Burst std dev</code> from 2.5 ms to 5 ms.
+This increase adds variability to the timing of the burst of synaptic
+drive each input provides, and hence adds more “noise” to the
+network.</p>
+<p>Next, change the <code>Name</code> in the <code>Simulation</code> tab
+to <code>gamma_rhythmic_more_noise</code> and click the <code>Run</code>
+button to run the simulation.</p>
+<p>Once completed, navigate to the <code>Visualization</code> tab and
+set the <code>Layout template</code> to <code>Dipole-Spectrogram</code>.
+Make sure you’ve sected the proper <code>Dataset</code>, and then click
+the <code>Make figure</code> button. Similarly, we’ll generate the PSD
+vizualization by selecting <code>PSD Layers</code> from the
+<code>Layout template</code> and then clicking the
+<code>Make figure</code> button. You will see outputs similar to those
+shown in Figure 22 below.</p>
+<h4>Figure 22.A</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_22_01.png" /></p>
+</div>
+<h4>Figure 22.B</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_22_02.png" /></p>
+</div>
+<h4>Figure 22.C</h4>
+<div style="display:block; width:90%; max-width:800px; margin: 0 auto;">
+<p><img src="images/gamma_fig_22_03.png" /></p>
+</div>
+<p>Due to the higher variability in synaptic input timing, there is now
+more variability in the temporal dynamics and frequency content seen in
+the dipole signal in the simulation above. This is seen in the
+intermittent 50 Hz gamma events visible in the wavelet spectrogram.</p>
+<p>With the added noise, we also observe lower-frequency peaks with
+relatively high power in the average PSD, though the intermittent gamma
+events still yield the highest-power peak observed in the PSD.</p>
+<h3>5.2.2 Exercises for further exploration</h3>
+<ul>
+<li><p>Go back to the <code>gamma_L5weak_L2weak</code> configuration and
+add recurrent synaptic connectivity between pyramidal neurons within a
+layer (e.g., L5 Pyr -&gt; L5 Pyr weight = 0.00091e-4); how does that
+change influence the gamma rhythm? What happens as you change the
+strength of this connection?</p></li>
+<li><p>Adjust the synaptic time constants of GABAA or other synapses;
+can you alter the peak gamma frequency?</p></li>
+<li><p>Add connectivity between Layer 2/3 and Layer 5? Is gamma
+rhythmicity retained? Under what circumstances might gamma
+persist?</p></li>
+</ul>
+<h2>6. Have fun exploring your own data!</h2>
+<p>We have not observed strong gamma activity in our SI dipole data, and
+as such have not provided an example data set to compare simulation
+results to, as in the other tutorials. However, simulation results can
+be compared to recorded data, as described in the ERP and Alpha/Beta
+tutorials. Follow steps 1-4 above using your data and parameter
+adjustments based on your own hypotheses.</p>
+<h2>References</h2>
+<ol type="1">
+<li><p>Lee, S. &amp; Jones, S. R. Distinguishing mechanisms of gamma
+frequency oscillations in human current source signals using a
+computational model of a laminar neocortical network. Front. Hum.
+Neurosci. 7, 869 (2013).</p></li>
+<li><p>Cardin, J. A. et al. Driving fast-spiking cells induces gamma
+rhythm and controls sensory responses. Nature 459, 663–667
+(2009).</p></li>
+<li><p>Vierling-Claassen, D., Cardin, J. A., Moore, C. I. &amp; Jones,
+S. R. Computational modeling of distinct neocortical oscillations driven
+by cell-type selective optogenetic drive: separable resonant circuits
+controlled by low-threshold spiking and fast-spiking interneurons.
+Front. Hum. Neurosci. 4, 198 (2010).</p></li>
+<li><p>Buzsáki, G. &amp; Wang, X.-J. Mechanisms of gamma oscillations.
+Annu. Rev. Neurosci. 35, 203–225 (2012).</p></li>
+</ol>
+        <!-- footer area -->
+        <!----------------->
+        <div class="footer-area">
+            <div class="previous-area" data-link="/website_redesign/content/06_alpha_beta/api.html">
+                <div class="previous-icon">
+                    <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path class="arrow-path" d="M15 5L9 12L15 19" />
+                    </svg>
+                </div>
+                <div class="previous-text">
+                    <p>Previous</p>
+                    <a>6.2 API Tutorial of Alpha/Beta Rhythms</a>
+                </div>
+            </div>
+            <div class="next-area" data-link="/website_redesign/content/07_gamma/gamma_in_api.html">
+                <div class="next-text">
+                    <p>Next</p>
+                    <a>7.2 API Tutorial of Gamma Rhythms</a>
+                </div>
+                <div class="next-icon">
+                    <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path class="arrow-path" d="M15 5L9 12L15 19" />
+                    </svg>
+                </div>
+            </div>
+        </div> <!-- close footer -->
+    </div> <!-- close content -->
+    </div> <!-- close content wrapper -->
+</div> <!-- close main -->
+<script>
+    // ----------------------------------------
+    // Manage footer
+    // ----------------------------------------
+    // This function will update the footer links when a page is loaded
+    // locally so that naivagation remains functional without a server
+    // Note: this solution is specific to MacOS
+    document.addEventListener("DOMContentLoaded", function() {
+        if (window.location.protocol === "file:") {
+            // Get the current local directory path
+            const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+
+            // Process both previous and next links
+            document.querySelectorAll('.previous-area, .next-area').forEach(function(area) {
+                const link = area.getAttribute('data-link');
+                
+                if (link && link.startsWith("/")) {
+                    // Extract the local root directory
+                    const rootPath = currentDir.split("/website_redesign/")[0];
+                    // Prepend root path to link
+                    const resolvedLink = "file://" + rootPath + link;
+                    area.setAttribute("data-link", resolvedLink);
+                }
+            });
+        }
+    });
+    // Hide the area if data-link is 'None'
+    document.querySelectorAll('.previous-area, .next-area').forEach(function(area) {
+        if (area.getAttribute('data-link') === 'None') {
+            area.style.display = 'none'; 
+        }
+    });
+
+    // Redirect to the specified link
+    document.querySelectorAll('.previous-area, .next-area').forEach(function(area) {
+        area.addEventListener('click', function() {
+            window.location.href = area.getAttribute('data-link');
+        });
+    });
+
+    // ----------------------------------------
+    // Manage sidebar
+    // ----------------------------------------
+    let isSidebarOpen = true; // Sidebar is initially open
+    let isSidebarFullyOpen = true; // Sidebar is fully open
+    const maxWidth = '350px';
+
+    function toggleNav() {
+        const sidebar = document.getElementById("mySidebar");
+        const main = document.getElementById("main");
+
+        // Toggle sidebar state
+        if (isSidebarOpen) {
+            sidebar.style.width = "0";
+            main.style.marginLeft = "0";
+            isSidebarFullyOpen = false;
+        } else {
+            sidebar.style.width = maxWidth;
+            main.style.marginLeft = maxWidth;  // Match margin to new width
+        }
+
+        // Toggle the sidebar state
+        isSidebarOpen = !isSidebarOpen;
+    }
+
+    // Always listen for the transitionend on the sidebar
+    const sidebar = document.getElementById("mySidebar");
+    sidebar.addEventListener('transitionend', function() {
+        if (sidebar.style.width === maxWidth) {
+            // Sidebar has fully opened
+            isSidebarFullyOpen = true;
+        } else {
+            // Sidebar is not fully open
+            isSidebarFullyOpen = false;
+        }
+    });
+
+    // Open the sidebar on page load
+    // -----------------------------
+    window.onload = function() {
+        // Set initial styles for open state without animation
+        const sidebar = document.getElementById("mySidebar");
+        const main = document.getElementById("main");
+
+        sidebar.style.transition = "none";
+        main.style.transition = "none";
+        sidebar.style.width = maxWidth;
+        main.style.marginLeft = maxWidth;
+
+        // Re-enable transition for subsequent toggles
+        setTimeout(() => {
+            sidebar.style.transition = "width 0.5s";
+            main.style.transition = "margin-left 0.5s";
+        }, 10);
+    }
+
+    function toggleSubmenu(event) {
+        const header = event.target.closest('#sidebar-header'); // Get the clicked header
+        const submenu = header.nextElementSibling; // Get the submenu
+        const toggleIcon = header.querySelector('.toggle-icon'); // Get the icon
+
+        if (submenu && submenu.classList.contains('submenu')) {
+            submenu.classList.toggle('open'); // Toggle the 'open' class to control visibility
+            toggleIcon.textContent = submenu.classList.contains('open') ? '-' : '+'; // Update icon
+        }
+    }
+
+    // Resolve sidebar links for local development
+    // -------------------------------------------
+    // This function will update the sidebar links when a page is loaded
+    // locally so that sidebar naivagation remains functional without a server
+    // Note: this solution is specific to MacOS
+    document.addEventListener("DOMContentLoaded", function() {
+        if (window.location.protocol === "file:") {
+            // get the current local directory path
+            const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+
+            // get 'absolute' links with root of 'website_redesign'
+            const links = document.querySelectorAll("#mySidebar a");
+            links.forEach(link => {
+                const href = link.getAttribute("href");
+
+                if (href && href.startsWith("/")) {
+                    // extract the local root directory
+                    const rootPath = currentDir.split("/website_redesign/")[0];
+                    // prepend root path to link
+                    const resolvedHref = "file://" + rootPath + href;
+                    link.setAttribute("href", resolvedHref);
+                }
+            });
+
+            // Update image sources for icons
+            const images = document.querySelectorAll(".social-icons img, .menu-icons img");
+            images.forEach(img => {
+                const src = img.getAttribute("src");
+
+                if (src && src.startsWith("/")) {
+                    // extract the local root directory
+                    const rootPath = currentDir.split("/website_redesign/")[0];
+                    // prepend root path to image source
+                    const resolvedSrc = "file://" + rootPath + src;
+                    img.setAttribute("src", resolvedSrc);
+                }
+            });
+        }
+    });
+
+    // Custom tooltips for the sidebar
+    // -------------------------------
+    // Flag to track tooltip visibility
+    let isTooltipVisible = false;
+
+    // Add text to the 'sidebar-tooltip' attribute for sidebar anchor tags
+    document.querySelectorAll('.sidebar a').forEach(anchor => {
+        const cleanedText = anchor.textContent.replace(/[+\-]/g, '').trim();
+        anchor.setAttribute('sidebar-tooltip', cleanedText);
+    });
+
+    // Handle sidebar tooltips
+    document.querySelectorAll('.sidebar a').forEach(function(link) {
+        link.addEventListener('mouseenter', function(event) {
+            const tooltipText = event.target.getAttribute('sidebar-tooltip');
+            
+            if (!tooltipText || isTooltipVisible || !isSidebarFullyOpen) return; // Only show tooltip if none is visible
+
+            // Check if the text is overflowing
+            if (event.target.scrollWidth > event.target.offsetWidth) {
+                const delay = 500; // Set the delay time (in ms), adjust as needed
+
+                // Create the tooltip after the delay
+                setTimeout(function() {
+                    // Remove any existing tooltips
+                    const existingTooltip = document.querySelector('.sidebar-tooltip');
+                    if (existingTooltip) {
+                        existingTooltip.remove();
+                    }
+
+                    // Create the tooltip element dynamically
+                    const tooltip = document.createElement('div');
+                    tooltip.classList.add('sidebar-tooltip');  // Use the existing class
+                    tooltip.innerText = tooltipText;
+
+                    // Append the tooltip to the sidebar container
+                    const sidebarContainer = document.querySelector('.sidebar');
+                    sidebarContainer.appendChild(tooltip);
+
+                    // Get the position of the link and the sidebar container
+                    const rect = event.target.getBoundingClientRect();
+                    const sidebarRect = sidebarContainer.getBoundingClientRect();
+
+                    // Position the tooltip relative to the sidebar container
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.left = `${rect.left - sidebarRect.left + sidebarContainer.scrollLeft + 20}px`;
+                    tooltip.style.top = `${rect.bottom - sidebarRect.top + sidebarContainer.scrollTop + 5}px`;
+
+                    // Make sure the tooltip is visible
+                    tooltip.style.opacity = '1';
+
+                    // Set the flag to true indicating that the tooltip is visible
+                    isTooltipVisible = true;
+                }, delay); // Delay the tooltip creation
+            }
+        });
+
+        link.addEventListener('mouseleave', function(event) {
+            // Remove the tooltip when the mouse leaves
+            const tooltip = document.querySelector('.sidebar-tooltip');
+            if (tooltip) {
+                tooltip.remove();
+            }
+
+            // Reset the flag to false when the tooltip is removed
+            isTooltipVisible = false;
+        });
+    });
+
+    // Close all open submenus in the sidebar
+    // --------------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+        // Function to close all open submenus in the navbar
+        function closeAllSubmenus() {
+            const allSubmenus = document.querySelectorAll('.submenu.open'); // Select all open submenus
+            allSubmenus.forEach(submenu => {
+                submenu.classList.remove('open'); // Remove 'open' class to collapse
+                const toggleIcon = submenu.previousElementSibling.querySelector('.toggle-icon');
+                if (toggleIcon) {
+                    toggleIcon.textContent = '+'; // Reset icon to '+'
+                }
+            });
+        }
+
+        // Add functionality to collapse button (SVG icon)
+        const collapseIcon = document.querySelector('.collapse-icon');
+        if (collapseIcon) {
+            collapseIcon.addEventListener('click', function(event) {
+                event.stopPropagation(); // Prevent event propagation to avoid unwanted behavior
+                closeAllSubmenus(); // Close all open submenus when the icon is clicked
+            });
+        }
+    });
+
+    // Keep the current page open in the sidebar
+    // -----------------------------------------
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the full path relative to the 'content' folder
+        const currentPage = window.location.pathname.split("/content/")[1].split("?")[0];
+
+        // Find the active link using the full path
+        const activeLink = document.querySelector(`#mySidebar a[href$='${currentPage}']`);
+
+        if (activeLink) {
+            // Apply the active class
+            activeLink.classList.add("active");
+             // Find the closest submenu
+            const submenu = activeLink.closest('.submenu');
+
+            if (submenu) {
+                // Keep the submenu open
+                submenu.classList.add('open');
+                const toggleIcon = submenu.previousElementSibling.querySelector('.toggle-icon');
+
+                if (toggleIcon) {
+                    // Ensure the toggle icon reflects the open state
+                    toggleIcon.textContent = '-';
+                }
+            }
+        }
+    });
+
+    // ------------------------------
+    // Font size buttons and dropdown
+    // ------------------------------
+    function increaseFontSize() {
+        event.stopPropagation();  // Prevent dropdown from closing
+        const content = document.getElementById("content");
+        const currentSize = window.getComputedStyle(content).fontSize;
+        content.style.fontSize = (parseFloat(currentSize) + 2) + "px";
+    }
+
+    function decreaseFontSize() {
+        event.stopPropagation();  // Prevent dropdown from closing
+        const content = document.getElementById("content");
+        const currentSize = window.getComputedStyle(content).fontSize;
+        content.style.fontSize = (parseFloat(currentSize) - 2) + "px";
+    }
+
+    // Dropdown for font buttons
+    function toggleDropdown() {
+        const dropdownContent = document.querySelector('.dropdown-content');
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Open/close dropdown on click of the button
+    document.getElementById('dropdownButton').onclick = function(event) {
+        event.stopPropagation();  // Prevent the click from triggering the window.onclick event
+        toggleDropdown();
+    };
+
+    // Close dropdown if clicking outside
+    window.onclick = function(event) {
+        const dropdownContent = document.querySelector('.dropdown-content');
+        if (!event.target.closest('.dropdown')) {  // Close if click outside the dropdown
+            dropdownContent.style.display = 'none';
+        }
+    };
+
+    // ----------------------------------------
+    // Toggle between light and dark themes
+    // ----------------------------------------
+    // Wait for the DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.querySelector('.theme-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const sunSVG = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"></path>
+            </svg>
+        `;
+        const moonSVG = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"></path>
+            </svg>
+        `;
+
+        // Check the saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.classList.toggle('dark-mode', savedTheme === 'dark');
+            themeToggle.innerHTML = savedTheme === 'dark' ? moonSVG : sunSVG;
+            sidebar.classList.toggle('dark-mode', savedTheme === 'dark');
+        } else {
+            // Default to light theme if no saved preference
+            themeToggle.innerHTML = sunSVG;
+        }
+
+        // Add click event to toggle theme
+        themeToggle.addEventListener('click', () => {
+            const isDarkMode = document.body.classList.toggle('dark-mode');
+            themeToggle.innerHTML = isDarkMode ? moonSVG : sunSVG;
+            sidebar.classList.toggle('dark-mode', isDarkMode);
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        });
+    });
+
+</script>
+
+<!------------------------ #
+# Code syntax highlighting #
+# ------------------------->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+
+<script>
+    // Remove the leading whitespace/newlines around code blocks 
+    // caused by the html structure used for readability
+    document.addEventListener("DOMContentLoaded", function() {
+        // Select all code blocks
+        const codeBlocks = document.querySelectorAll('.code-cell code.language-python');
+
+        codeBlocks.forEach(function(block) {
+            // Apply syntax highlighting to the code block
+            // Note: The below line is not needed with this setup
+            //  but may be useful in the case that the method
+            //  is later changed
+            // Prism.highlightElement(block);
+
+            // Get the code with highlighted classes
+            const highlightedHTML = block.innerHTML;
+
+            // Remove leading/trailing whitespace/newlines
+            block.innerHTML = highlightedHTML.trim();
+        });
+
+        // Select all output-code blocks
+        const outputBlocks = document.querySelectorAll('.output-cell .output-code');
+
+        outputBlocks.forEach(function(block) {
+            // Remove unwanted leading/trailing whitespace or newlines
+            block.textContent = block.textContent.trim();
+        });
+    });
+
+</script>
+
+</body>
+</html>

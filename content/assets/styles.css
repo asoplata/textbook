@@ -81,7 +81,7 @@ a:hover {
 /* Inline code (single backtick) */
 code {
     color: var(--hnn-violet);
-    background-color: #f6f8fa;
+    background: none;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
     display: inline;
@@ -90,20 +90,33 @@ code {
     font-size: 85%;
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; 
     font-weight: normal;
-    border: 1px solid #e1e4e8;
+    border: 2px solid #e1e4e8;
+}
+
+body.dark-mode code {
+    color: #ba83be;
+    border: solid 2px #ba83be;
 }
   
   /* Block code (triple backticks) */
   pre code {
     color: #24292e;
-    background-color: #f6f8fa;
+    background-color: none;
     display: block;
     padding: 16px;
     overflow-x: auto;
     border-radius: 6px;
-    font-size: 85%;
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-    border: 1px solid #e1e4e8; /* Consistent border style */
+    font-family: 'Courier New', monospace;
+    border: solid 2px #ba83be;
+    border-radius: 5px;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+body.dark-mode pre code {
+    background-color: #313438;
+    color: #fff;
+    text-shadow: none;
 }
 
 /* 
@@ -160,7 +173,7 @@ code {
 
 /* Style active page in sidebar */
 .sidebar a.active {
-    color: var(--hnn-yellow); 
+    color: #fff; 
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 6px;
@@ -168,7 +181,7 @@ code {
 }
 
 .sidebar a.active:hover {
-    color: #fff;
+    color: var(--hnn-yellow);
 }
 
 /* Custom tooltip */
@@ -262,8 +275,6 @@ code {
 .collapse-icon:hover {
     fill: var(--hnn-yellow);
 }
-
-
 
 /* 
 # --------------------
@@ -470,10 +481,10 @@ body.dark-mode #content-wrapper a:hover {
     color: var(--hnn-violet);
 }
 
-body.dark-mode code {
+/* body.dark-mode code {
     color: var(--hnn-violet);
     background-color: #d3d3d3;
-}
+} */
 
 .sidebar.dark-mode {
     background-color: #313438;
@@ -585,6 +596,53 @@ body.dark-mode .dropdown-content::before {
 
 /* 
 # --------------------
+# Callout box
+# -------------------- 
+*/
+
+.callout {
+    background-color: #fedfdf;
+    padding: 2px; /* Padding around the callout */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px;
+    margin: 1.2em 0; /* Margin for spacing */
+}
+
+.callout code {
+    border: 2px solid #ba83be;
+}
+
+body.dark-mode .callout {
+    /* background-color: rgb(251, 237, 237); */
+    background-color: #313438;
+    padding: 2px; /* Padding around the callout */
+    border-radius: 5px; /* Rounded corners */
+    border: 2px solid #ff7777;
+    padding: 10px;
+    margin: 1.2em 0; /* Margin for spacing */
+}
+  
+.callout-table {
+    width: 100%; 
+    border-collapse: collapse; /* Prevent double borders */
+    margin: 0;
+}
+
+.emoji-cell {
+    width: 5px; 
+    vertical-align: top !important; 
+    text-align: justify !important;
+    padding-right: 20px;
+}
+
+.text-cell {
+    vertical-align: top !important;
+    text-align: justify !important;
+    padding-right: 20px;
+}  
+
+/* 
+# --------------------
 # Footer
 # -------------------- 
 */
@@ -658,6 +716,7 @@ body.dark-mode .dropdown-content::before {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+            line-clamp: 2;
     max-height: 2.2em; 
 }
 
@@ -713,8 +772,8 @@ body.dark-mode .dropdown-content::before {
     border-radius: 5px;
     border: solid 2px #ba83be;
     overflow: hidden;
-    /* overflow-y: hidden;
-    overflow-x: scroll; */
+    /* overflow-y: hidden; */
+    /* overflow-x: scroll; */
 }
 
 /* code cells */
@@ -722,7 +781,6 @@ body.dark-mode .dropdown-content::before {
     /* box-sizing: border-box !important; */
     display: block;
     background-color: #fff;
-    color: #3b3b3b;
     padding: 15px 30px;
     margin: 0px;
     font-size: 0.85em;

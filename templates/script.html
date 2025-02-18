@@ -77,6 +77,7 @@
     });
 
     // Open the sidebar on page load
+    // -----------------------------
     window.onload = function() {
         // Set initial styles for open state without animation
         const sidebar = document.getElementById("mySidebar");
@@ -94,40 +95,6 @@
         }, 10);
     }
 
-    function increaseFontSize() {
-        event.stopPropagation();  // Prevent dropdown from closing
-        const content = document.getElementById("content");
-        const currentSize = window.getComputedStyle(content).fontSize;
-        content.style.fontSize = (parseFloat(currentSize) + 2) + "px";
-    }
-
-    function decreaseFontSize() {
-        event.stopPropagation();  // Prevent dropdown from closing
-        const content = document.getElementById("content");
-        const currentSize = window.getComputedStyle(content).fontSize;
-        content.style.fontSize = (parseFloat(currentSize) - 2) + "px";
-    }
-
-    // Dropdown for font buttons
-    function toggleDropdown() {
-        const dropdownContent = document.querySelector('.dropdown-content');
-        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-    }
-
-    // Open/close dropdown on click of the button
-    document.getElementById('dropdownButton').onclick = function(event) {
-        event.stopPropagation();  // Prevent the click from triggering the window.onclick event
-        toggleDropdown();
-    };
-
-    // Close dropdown if clicking outside
-    window.onclick = function(event) {
-        const dropdownContent = document.querySelector('.dropdown-content');
-        if (!event.target.closest('.dropdown')) {  // Close if click outside the dropdown
-            dropdownContent.style.display = 'none';
-        }
-    };
-
     function toggleSubmenu(event) {
         const header = event.target.closest('#sidebar-header'); // Get the clicked header
         const submenu = header.nextElementSibling; // Get the submenu
@@ -139,6 +106,8 @@
         }
     }
 
+    // Resolve sidebar links for local development
+    // -------------------------------------------
     // This function will update the sidebar links when a page is loaded
     // locally so that sidebar naivagation remains functional without a server
     // Note: this solution is specific to MacOS
@@ -177,6 +146,165 @@
         }
     });
 
+    // Custom tooltips for the sidebar
+    // -------------------------------
+    // Flag to track tooltip visibility
+    let isTooltipVisible = false;
+
+    // Add text to the 'sidebar-tooltip' attribute for sidebar anchor tags
+    document.querySelectorAll('.sidebar a').forEach(anchor => {
+        const cleanedText = anchor.textContent.replace(/[+\-]/g, '').trim();
+        anchor.setAttribute('sidebar-tooltip', cleanedText);
+    });
+
+    // Handle sidebar tooltips
+    document.querySelectorAll('.sidebar a').forEach(function(link) {
+        link.addEventListener('mouseenter', function(event) {
+            const tooltipText = event.target.getAttribute('sidebar-tooltip');
+            
+            if (!tooltipText || isTooltipVisible || !isSidebarFullyOpen) return; // Only show tooltip if none is visible
+
+            // Check if the text is overflowing
+            if (event.target.scrollWidth > event.target.offsetWidth) {
+                const delay = 500; // Set the delay time (in ms), adjust as needed
+
+                // Create the tooltip after the delay
+                setTimeout(function() {
+                    // Remove any existing tooltips
+                    const existingTooltip = document.querySelector('.sidebar-tooltip');
+                    if (existingTooltip) {
+                        existingTooltip.remove();
+                    }
+
+                    // Create the tooltip element dynamically
+                    const tooltip = document.createElement('div');
+                    tooltip.classList.add('sidebar-tooltip');  // Use the existing class
+                    tooltip.innerText = tooltipText;
+
+                    // Append the tooltip to the sidebar container
+                    const sidebarContainer = document.querySelector('.sidebar');
+                    sidebarContainer.appendChild(tooltip);
+
+                    // Get the position of the link and the sidebar container
+                    const rect = event.target.getBoundingClientRect();
+                    const sidebarRect = sidebarContainer.getBoundingClientRect();
+
+                    // Position the tooltip relative to the sidebar container
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.left = `${rect.left - sidebarRect.left + sidebarContainer.scrollLeft + 20}px`;
+                    tooltip.style.top = `${rect.bottom - sidebarRect.top + sidebarContainer.scrollTop + 5}px`;
+
+                    // Make sure the tooltip is visible
+                    tooltip.style.opacity = '1';
+
+                    // Set the flag to true indicating that the tooltip is visible
+                    isTooltipVisible = true;
+                }, delay); // Delay the tooltip creation
+            }
+        });
+
+        link.addEventListener('mouseleave', function(event) {
+            // Remove the tooltip when the mouse leaves
+            const tooltip = document.querySelector('.sidebar-tooltip');
+            if (tooltip) {
+                tooltip.remove();
+            }
+
+            // Reset the flag to false when the tooltip is removed
+            isTooltipVisible = false;
+        });
+    });
+
+    // Close all open submenus in the sidebar
+    // --------------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+        // Function to close all open submenus in the navbar
+        function closeAllSubmenus() {
+            const allSubmenus = document.querySelectorAll('.submenu.open'); // Select all open submenus
+            allSubmenus.forEach(submenu => {
+                submenu.classList.remove('open'); // Remove 'open' class to collapse
+                const toggleIcon = submenu.previousElementSibling.querySelector('.toggle-icon');
+                if (toggleIcon) {
+                    toggleIcon.textContent = '+'; // Reset icon to '+'
+                }
+            });
+        }
+
+        // Add functionality to collapse button (SVG icon)
+        const collapseIcon = document.querySelector('.collapse-icon');
+        if (collapseIcon) {
+            collapseIcon.addEventListener('click', function(event) {
+                event.stopPropagation(); // Prevent event propagation to avoid unwanted behavior
+                closeAllSubmenus(); // Close all open submenus when the icon is clicked
+            });
+        }
+    });
+
+    // Keep the current page open in the sidebar
+    // -----------------------------------------
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the full path relative to the 'content' folder
+        const currentPage = window.location.pathname.split("/content/")[1].split("?")[0];
+
+        // Find the active link using the full path
+        const activeLink = document.querySelector(`#mySidebar a[href$='${currentPage}']`);
+
+        if (activeLink) {
+            // Apply the active class
+            activeLink.classList.add("active");
+             // Find the closest submenu
+            const submenu = activeLink.closest('.submenu');
+
+            if (submenu) {
+                // Keep the submenu open
+                submenu.classList.add('open');
+                const toggleIcon = submenu.previousElementSibling.querySelector('.toggle-icon');
+
+                if (toggleIcon) {
+                    // Ensure the toggle icon reflects the open state
+                    toggleIcon.textContent = '-';
+                }
+            }
+        }
+    });
+
+    // ------------------------------
+    // Font size buttons and dropdown
+    // ------------------------------
+    function increaseFontSize() {
+        event.stopPropagation();  // Prevent dropdown from closing
+        const content = document.getElementById("content");
+        const currentSize = window.getComputedStyle(content).fontSize;
+        content.style.fontSize = (parseFloat(currentSize) + 2) + "px";
+    }
+
+    function decreaseFontSize() {
+        event.stopPropagation();  // Prevent dropdown from closing
+        const content = document.getElementById("content");
+        const currentSize = window.getComputedStyle(content).fontSize;
+        content.style.fontSize = (parseFloat(currentSize) - 2) + "px";
+    }
+
+    // Dropdown for font buttons
+    function toggleDropdown() {
+        const dropdownContent = document.querySelector('.dropdown-content');
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Open/close dropdown on click of the button
+    document.getElementById('dropdownButton').onclick = function(event) {
+        event.stopPropagation();  // Prevent the click from triggering the window.onclick event
+        toggleDropdown();
+    };
+
+    // Close dropdown if clicking outside
+    window.onclick = function(event) {
+        const dropdownContent = document.querySelector('.dropdown-content');
+        if (!event.target.closest('.dropdown')) {  // Close if click outside the dropdown
+            dropdownContent.style.display = 'none';
+        }
+    };
+
     // ----------------------------------------
     // Toggle between light and dark themes
     // ----------------------------------------
@@ -213,100 +341,6 @@
             sidebar.classList.toggle('dark-mode', isDarkMode);
             localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
         });
-    });
-
-    // -------------------------------
-    // Custom tooltips for the sidebar
-    // -------------------------------
-
-    // Flag to track tooltip visibility
-    let isTooltipVisible = false;
-
-    // Add text to the 'sidebar-tooltip' attribute for sidebar anchor tags
-    document.querySelectorAll('.sidebar a').forEach(anchor => {
-        const cleanedText = anchor.textContent.replace(/[+\-]/g, '').trim();
-        anchor.setAttribute('sidebar-tooltip', cleanedText);
-    });
-
-    // Handle sidebar tooltips
-    document.querySelectorAll('.sidebar a').forEach(function(link) {
-        link.addEventListener('mouseenter', function(event) {
-            const tooltipText = event.target.getAttribute('sidebar-tooltip');
-            
-            if (!tooltipText || isTooltipVisible || !isSidebarFullyOpen) return; // Only show tooltip if none is visible
-
-            // Check if the text is overflowing
-            if (event.target.scrollWidth > event.target.offsetWidth) {
-                const delay = 500; // Set the delay time (in ms), adjust as needed
-
-                // Create the tooltip after the delay
-                setTimeout(function() {
-                    // Remove any existing tooltips
-                    const existingTooltip = document.querySelector('.sidebar-tooltip');
-                    if (existingTooltip) {
-                        existingTooltip.remove();
-                    }
-
-                    // Create the tooltip element dynamically
-                    const tooltip = document.createElement('div');
-                    tooltip.classList.add('sidebar-tooltip');  // Use the existing class
-                    tooltip.innerText = tooltipText;
-
-                    // Append the tooltip to the body (outside sidebar)
-                    document.body.appendChild(tooltip);
-
-                    // Get the position of the link
-                    const rect = event.target.getBoundingClientRect();
-                    
-                    // Position the tooltip based on the link's position
-                    tooltip.style.position = 'absolute';
-                    tooltip.style.left = `${rect.left + window.scrollX + 20}px`;
-                    tooltip.style.top = `${rect.bottom + window.scrollY}px`;  // Adjust with spacing
-
-                    // Make sure the tooltip is visible
-                    tooltip.style.opacity = '1';
-
-                    // Set the flag to true indicating that the tooltip is visible
-                    isTooltipVisible = true;
-                }, delay); // Delay the tooltip creation
-            }
-        });
-
-        link.addEventListener('mouseleave', function(event) {
-            // Remove the tooltip when the mouse leaves
-            const tooltip = document.querySelector('.sidebar-tooltip');
-            if (tooltip) {
-                tooltip.remove();
-            }
-
-            // Reset the flag to false when the tooltip is removed
-            isTooltipVisible = false;
-        });
-    });
-
-    // Function to close all open submenus in the navbar
-    // --------------------------------------------------
-    document.addEventListener("DOMContentLoaded", function() {
-        // Function to close all open submenus in the navbar
-        function closeAllSubmenus() {
-            const allSubmenus = document.querySelectorAll('.submenu.open'); // Select all open submenus
-            allSubmenus.forEach(submenu => {
-                submenu.classList.remove('open'); // Remove 'open' class to collapse
-                const toggleIcon = submenu.previousElementSibling.querySelector('.toggle-icon');
-                if (toggleIcon) {
-                    toggleIcon.textContent = '+'; // Reset icon to '+'
-                }
-            });
-        }
-
-        // Add functionality to collapse button (SVG icon)
-        const collapseIcon = document.querySelector('.collapse-icon');
-        if (collapseIcon) {
-            collapseIcon.addEventListener('click', function(event) {
-                event.stopPropagation(); // Prevent event propagation to avoid unwanted behavior
-                closeAllSubmenus(); // Close all open submenus when the icon is clicked
-            });
-        }
     });
 
 </script>
@@ -348,25 +382,6 @@
             // Remove unwanted leading/trailing whitespace or newlines
             block.textContent = block.textContent.trim();
         });
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const currentPage = window.location.pathname.split("/").pop(); // Get current page filename
-
-        // Find the active link
-        const activeLink = document.querySelector(`#mySidebar a[href$='${currentPage}']`);
-        if (activeLink) {
-            activeLink.classList.add("active"); // Apply the active class
-
-            const submenu = activeLink.closest('.submenu'); // Find the closest submenu
-            if (submenu) {
-                submenu.classList.add('open'); // Keep the submenu open
-                const toggleIcon = submenu.previousElementSibling.querySelector('.toggle-icon');
-                if (toggleIcon) {
-                    toggleIcon.textContent = '-'; // Ensure the toggle icon reflects the open state
-                }
-            }
-        }
     });
 
 </script>
