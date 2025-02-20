@@ -242,16 +242,20 @@ studies that led to the creation of the provided data and evoked
 response parameter set that you will work with. This tutorial is based
 on results from our 2007 study where we recorded and simulated tactile
 evoked responses source localized to the primary somatosensory cortex
-(SI) [1].</p>
+(SI) <span class="citation" data-cites="jones_neural_2007">(<a
+href="#ref-jones_neural_2007" role="doc-biblioref">Jones et al.
+2007</a>)</span>.</p>
 <p>In our 2007 study, we investigated the early evoked activity (0-175
 ms) elicited by a brief tap to the D3 digit and source localized to an
 an equivalent current dipole in the contralateral hand area of the
-primary somatosensory cortex (SI) [1]. The strength of the tap was set
-at either suprathreshold (100% detection probability) or perceptual
-threshold (50% detection) levels (see Figure 1, left panel below). Note,
-to be precise, this data represents source localized event related field
-(ERF) activity because it was collected using MEG. We use the
-terminology ERP for simplicity, since the primary current dipoles
+primary somatosensory cortex (SI) <span class="citation"
+data-cites="jones_neural_2007">(<a href="#ref-jones_neural_2007"
+role="doc-biblioref">Jones et al. 2007</a>)</span>. The strength of the
+tap was set at either suprathreshold (100% detection probability) or
+perceptual threshold (50% detection) levels (see Figure 1, left panel
+below). Note, to be precise, this data represents source localized event
+related field (ERF) activity because it was collected using MEG. We use
+the terminology ERP for simplicity, since the primary current dipoles
 generating evoked fields and potentials are the same.</p>
 <p>We found that we could reproduce evoked responses that accurately
 reflected the recorded waveform in our neocortical model from a layer
@@ -267,7 +271,9 @@ sequence of drive can be interpreted as initial “feedforward” input from
 the lemniscal thalamus, followed by “feedback” input from higher order
 cortex or non-lemniscal thalamus, followed by a re-emergent leminsical
 thalamic drive. Intracranial recordings in non-human primates motivated
-and supported this assumption [2].</p>
+and supported this assumption <span class="citation"
+data-cites="cauller_neural_1991">(<a href="#ref-cauller_neural_1991"
+role="doc-biblioref">Cauller and Kulics 1991</a>)</span>.</p>
 <p>In our model, the exogenous driving inputs were simulated as
 predefined trains of action potentials (pre-synaptic spikes) that
 activated excitatory synapses in the local cortical circuit in proximal
@@ -277,7 +283,9 @@ GUI Model Schematics). The number, timing and strength (post-synaptic
 conductance) of the driving spikes were manually adjusted in the model
 until a close representation of the data was found (all other model
 parameters were tuned and fixed based on the morphology, physiology and
-connectivity within layered neocortical circuits) [1]. Note, a scaling
+connectivity within layered neocortical circuits) <span class="citation"
+data-cites="jones_neural_2007">(<a href="#ref-jones_neural_2007"
+role="doc-biblioref">Jones et al. 2007</a>)</span>. Note, a scaling
 factor was applied to net dipole output to match to the magnitude of the
 recorded ERP data and used to predict the number of neurons contributing
 to the recorded ERP (purple circle, Figure 1, right panel). The dipole
@@ -290,12 +298,15 @@ output due to the biophysical detail in our model.</p>
 </figure>
 </div>
 <p style="text-align:justify; display: block; margin: 0 auto;width: 90%; font-size: 1em;">
-Adapted from Jones et al. 2007 [1]. Comparison of SI evoked response in
-experiment and neural model simulation. Left: MEG data showing tactile
-evoked response (ERP) source localized to the hand area of SI. Red:
-suprathreshold stimulation; Blue: Threshold stimulation (avg. n=100
-trials). Right: Neural model simulation depicting proximal/distal inputs
-needed to replicate the ERP waveform (avg. n=25 trials)
+Adapted from Jones et al. 2007 <span class="citation"
+data-cites="jones_neural_2007">(<a href="#ref-jones_neural_2007"
+role="doc-biblioref">Jones et al. 2007</a>)</span>. Comparison of SI
+evoked response in experiment and neural model simulation. Left: MEG
+data showing tactile evoked response (ERP) source localized to the hand
+area of SI. Red: suprathreshold stimulation; Blue: Threshold stimulation
+(avg. n=100 trials). Right: Neural model simulation depicting
+proximal/distal inputs needed to replicate the ERP waveform (avg. n=25
+trials)
 </p>
 <p>In summary, to simulate the SI evoked response, a sequence of
 exogenous excitatory synaptic drive was simulated (by creating
@@ -626,7 +637,7 @@ Data Diople Scaling in <code>Visualization</code> - Dipole Smooth Window
 in <code>Visualization</code></p>
 <!-- **6.2 Changing the timing and strength (post-synaptic conductance) of the evoked inputs**
 
-For this part of the tutorial, we’ll load a different experimental data set into the GUI. The new experimental data represents the evoked response from non-detected threshold level stimuli in the experiment described in the “Getting Started” section above [1]. We will adjust the parameters to better fit our simulation to the non-detected threshold level data.
+For this part of the tutorial, we’ll load a different experimental data set into the GUI. The new experimental data represents the evoked response from non-detected threshold level stimuli in the experiment described in the “Getting Started” section above [@jones_neural_2007]. We will adjust the parameters to better fit our simulation to the non-detected threshold level data.
 
 First, let's load the data from the non-detected trials `no_trial_S1_ERP_all_avg.json`.
 
@@ -761,16 +772,29 @@ tutorial can be found by clicking here or by visiting the following URL:
 https://github.com/jonescompneurolab/hnn/tree/master/param.</p>
 <p><strong>8.2 Video walkthrough</strong> A video walkthrough of an
 abridged version of the tutorial can be found by clicking here.</p>
-<h2>References</h2>
-<p>Jones, S. R., Pritchett, D. L., Stufflebeam, S. M., Hämäläinen, M.
-&amp; Moore, C. I. Neural correlates of tactile detection: a combined
-magnetoencephalography and biophysically based computational modeling
-study. J. Neurosci. 27, 10751–10764 (2007).</p>
-<p>Cauller, L. J. &amp; Kulics, A. T. The neural basis of the
-behaviorally relevant N1 component of the somatosensory-evoked potential
-in SI cortex of awake monkeys: evidence that backward cortical
-projections signal conscious touch sensation. Exp. Brain Res. 84,
-607–619 (1991).</p>
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent"
+data-entry-spacing="0" role="list">
+<div id="ref-cauller_neural_1991" class="csl-entry" role="listitem">
+Cauller, L. J., and A. T. Kulics. 1991. <span>“The Neural Basis of the
+Behaviorally Relevant <span>N1</span> Component of the
+Somatosensory-Evoked Potential in <span>SI</span> Cortex of Awake
+Monkeys: Evidence That Backward Cortical Projections Signal Conscious
+Touch Sensation.”</span> <em>Experimental Brain Research</em> 84 (3):
+607–19. <a
+href="https://doi.org/10.1007/BF00230973">https://doi.org/10.1007/BF00230973</a>.
+</div>
+<div id="ref-jones_neural_2007" class="csl-entry" role="listitem">
+Jones, S. R., D. L. Pritchett, S. M. Stufflebeam, M. Hamalainen, and C.
+I. Moore. 2007. <span>“Neural <span>Correlates</span> of
+<span>Tactile</span> <span>Detection</span>: <span>A</span>
+<span>Combined</span> <span>Magnetoencephalography</span> and
+<span>Biophysically</span> <span>Based</span> <span>Computational</span>
+<span>Modeling</span> <span>Study</span>.”</span> <em>Journal of
+Neuroscience</em> 27 (40): 10751–64. <a
+href="https://doi.org/10.1523/JNEUROSCI.0482-07.2007">https://doi.org/10.1523/JNEUROSCI.0482-07.2007</a>.
+</div>
+</div>
         <!-- footer area -->
         <!----------------->
         <div class="footer-area">

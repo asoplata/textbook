@@ -6,10 +6,6 @@
     # Dylan Daniels
 -->
 
----
-link-citations: true
----
-
 <!-- compare original: https://jonescompneurolab.github.io/hnn-under_the_hood/02_morphology-physiology/02_morphology-physiology -->
 
 # 3.4 Neurons: Morphology and Physiology

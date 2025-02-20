@@ -6,10 +6,6 @@
     # Dylan Daniels
 -->
 
----
-link-citations: true
----
-
 <!-- compare original: https://jonescompneurolab.github.io/hnn-under_the_hood/06_primary-electrical-currents/06_primary-electrical-currents -->
 
 # 3.3 Primary Electrical Currents
