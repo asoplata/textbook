@@ -1,5 +1,5 @@
-# %%
 import os
+import argparse
 import re
 import pypandoc
 import json
@@ -286,14 +286,35 @@ def generate_page_html(page_paths):
     return
 
 
-# %%
-content_path = os.path.join(os.getcwd(), "content")
-hash_path = os.path.join(os.getcwd(), "scripts", "notebook_hashes.json")
+def main():
+    """
+    Main function to generate html pages for deployment
+    """
 
-_ = convert_notebooks_to_html(
-    input_folder=content_path,
-    hash_path=hash_path,
-    write_html=True,
-)
-page_paths = get_page_paths()
-generate_page_html(page_paths)
+    # accept command line arguments
+    parser = argparse.ArgumentParser(
+        description="Generate html pages for deployment"
+    )
+    parser.add_argument(
+        "--execute-notebooks",
+        action="store_true",
+        help="Execute notebooks before converting them to HTML."
+    )
+    args = parser.parse_args()
+
+    content_path = os.path.join(os.getcwd(), "content")
+    hash_path = os.path.join(os.getcwd(), "scripts", "notebook_hashes.json")
+
+    convert_notebooks_to_html(
+        input_folder=content_path,
+        hash_path=hash_path,
+        write_html=True,
+        execute_notebooks=args.execute_notebooks,
+    )
+
+    page_paths = get_page_paths()
+    generate_page_html(page_paths)
+
+
+if __name__ == "__main__":
+    main()

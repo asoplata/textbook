@@ -1,4 +1,5 @@
 {
+    "full_executed": true,
     "plot_simulate_evoked.ipynb": {
         "01. Simulate Event Related Potentials (ERPs)": {
             "level": 1,

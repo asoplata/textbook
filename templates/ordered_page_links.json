@@ -31,7 +31,13 @@
         "/website_redesign/content/06_alpha_beta/gui.html",
         "/website_redesign/content/06_alpha_beta/api.html",
         "/website_redesign/content/07_gamma/gamma_in_gui.html",
-        "/website_redesign/content/07_gamma/gamma_in_api.html"
+        "/website_redesign/content/07_gamma/gamma_in_api.html",
+        "/website_redesign/content/09_feature_demos/plot_firing_pattern.html",
+        "/website_redesign/content/09_feature_demos/record_and_plot_extracellular_potentials.html",
+        "/website_redesign/content/09_feature_demos/modifying_local_connectivity.html",
+        "/website_redesign/content/09_feature_demos/animating_hnn_simulations.html",
+        "/website_redesign/content/09_feature_demos/batch_simulation.html",
+        "/website_redesign/content/09_feature_demos/simulate_beta_modulated_erp.html"
     ],
     "titles": [
         "Preface",
@@ -65,6 +71,12 @@
         "6.1 GUI Tutorial of Alpha/Beta Rhythms",
         "6.2 API Tutorial of Alpha/Beta Rhythms",
         "7.1 GUI Tutorial of Gamma Rhythms",
-        "7.2 API Tutorial of Gamma Rhythms"
+        "7.2 API Tutorial of Gamma Rhythms",
+        "9.1 Plot Firing Pattern",
+        "9.2 Record & Plot Extracellular Potentials",
+        "9.3 Modifying Local Connectivity",
+        "9.4 Animating HNN Simulations",
+        "9.5 Batch Simulation",
+        "9.6 Simulate beta-modulated ERP"
     ]
 }
