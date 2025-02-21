@@ -237,40 +237,24 @@
     <div id="content">
 
 <!--
-# Title: 2.2 API Tutorial of ERP Simulation
-# Updated: 2025-01-29
+# Title: 9.9 Optimize simulated rhythmic response parameters
+# Updated: 2025-02-04
 #
 # Contributors:
-    # Dylan Daniels
-    # Mainak Jas <mmjas@mgh.harvard.edu>
-    # Sam Neymotin <samnemo@gmail.com>
-    # Blake Caldwell <blake_caldwell@brown.edu>
-    # Christopher Bailey <cjb@cfin.au.dk>
+    # Carolina Fernandez <cxf418@miami.edu>
 -->
 <div class='markdown-cell'>
-    <h1>01. Simulate Event Related Potentials (ERPs)</h1>
-
-</div>
-<div class='markdown-cell'>
-    <p>This example demonstrates how to simulate a threshold level tactile
-evoked response, as detailed in the <a href="">HNN GUI ERP tutorial</a>,
-using HNN-core. We recommend you first review the GUI tutorial.</p>
-<p>The workflow below recreates an example of the threshold level
-tactile evoked response, as observed in Jones et al. J. Neuroscience
-2007 [1], albeit without a direct comparison to the recorded data.</p>
+    <h1>9.9: Optimize simulated rhythmic response parameters</h1>
+<p>This example demonstrates how to optimize the power spectral density
+(PSD) of a current dipole signal with significant alpha and beta
+spectral components.</p>
 
 </div>
 <div class='code-cell'>
     <code class='language-python'>
-        # Authors: Mainak Jas <mmjas@mgh.harvard.edu>
-#          Sam Neymotin <samnemo@gmail.com>
-#          Blake Caldwell <blake_caldwell@brown.edu>
-#          Christopher Bailey <cjb@cfin.au.dk>
+        # Authors: Carolina Fernandez <cxf418@miami.edu>
 
-import os.path as op
-import tempfile
-
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
     </code>
 </div>
 <div class='markdown-cell'>
@@ -279,446 +263,133 @@ import matplotlib.pyplot as plt
 </div>
 <div class='code-cell'>
     <code class='language-python'>
-        import hnn_core
-from hnn_core import simulate_dipole, jones_2009_model
-from hnn_core.viz import plot_dipole
+        from hnn_core import (MPIBackend, jones_2009_model, simulate_dipole)
+
+# The number of cores may need modifying depending on your current machine.
+n_procs = 10
     </code>
 </div>
 <div class='markdown-cell'>
-    <p>Let us first create our default network and visualize the cells
-inside it.</p>
+    <p>First, we define a function that will tell the optimization routine
+how to modify the network drive parameters. The function will take in
+the Network object with no attached drives, and a dictionary of the
+parameters we wish to optimize.</p>
 
 </div>
 <div class='code-cell'>
     <code class='language-python'>
-        net = jones_2009_model()
-net.plot_cells()
-net.cell_types['L5_pyramidal'].plot_morphology();
+        def set_params(net, params):
+
+    # Proximal (alpha)
+    weights_ampa_p = {'L2_pyramidal': params['alpha_prox_weight'],
+                      'L5_pyramidal': 4.4e-5}
+    syn_delays_p = {'L2_pyramidal': 0.1, 'L5_pyramidal': 1.}
+
+    net.add_bursty_drive('alpha_prox',
+                         tstart=params['alpha_prox_tstart'],
+                         burst_rate=params['alpha_prox_burst_rate'],
+                         burst_std=params['alpha_prox_burst_std'],
+                         numspikes=2,
+                         spike_isi=10,
+                         n_drive_cells=10,
+                         location='proximal',
+                         weights_ampa=weights_ampa_p,
+                         synaptic_delays=syn_delays_p)
+
+    # Distal (beta)
+    weights_ampa_d = {'L2_pyramidal': params['alpha_dist_weight'],
+                      'L5_pyramidal': 4.4e-5}
+    syn_delays_d = {'L2_pyramidal': 5., 'L5_pyramidal': 5.}
+
+    net.add_bursty_drive('alpha_dist',
+                         tstart=params['alpha_dist_tstart'],
+                         burst_rate=params['alpha_dist_burst_rate'],
+                         burst_std=params['alpha_dist_burst_std'],
+                         numspikes=2,
+                         spike_isi=10,
+                         n_drive_cells=10,
+                         location='distal',
+                         weights_ampa=weights_ampa_d,
+                         synaptic_delays=syn_delays_d)
     </code>
 </div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        &lt;Figure size 640x480 with 1 Axes&gt;
-    </div>
-</div>
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_01.png'/>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        &lt;Figure size 640x480 with 1 Axes&gt;
-    </div>
-</div>
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_02.png'/>
-</div>
 <div class='markdown-cell'>
-    <p>The network of cells is now defined, to which we add external drives
-as required. Weights are prescribed separately for AMPA and NMDA
-receptors (receptors that are not used can be omitted or set to zero).
-The possible drive types include the following:</p>
-<ul>
-<li><code>hnn_core.Network.add_evoked_drive</code></li>
-<li><code>hnn_core.Network.add_poisson_drive</code></li>
-<li><code>hnn_core.Network.add_bursty_drive</code></li>
-</ul>
-
-</div>
-<div class='markdown-cell'>
-    <p>First, we add a distal evoked drive</p>
+    <p>Then, we define the constraints.</p>
+<p>The constraints must be a dictionary of tuples where the first value
+in each tuple is the lower bound and the second value is the upper bound
+for the corresponding parameter.</p>
+<p>The following synaptic weight parameter ranges (units of
+micro-siemens) were chosen so as to keep the model in physiologically
+realistic regimes.</p>
 
 </div>
 <div class='code-cell'>
     <code class='language-python'>
-        weights_ampa_d1 = {
-    'L2_basket': 0.006562,
-    'L2_pyramidal': .000007,
-    'L5_pyramidal': 0.142300
-}
-weights_nmda_d1 = {
-    'L2_basket': 0.019482,
-    'L2_pyramidal': 0.004317,
-    'L5_pyramidal': 0.080074
-}
-synaptic_delays_d1 = {
-    'L2_basket': 0.1,
-    'L2_pyramidal': 0.1,
-    'L5_pyramidal': 0.1
-}
-
-net.add_evoked_drive(
-    'evdist1',
-    mu=63.53,
-    sigma=3.85,
-    numspikes=1,
-    weights_ampa=weights_ampa_d1,
-    weights_nmda=weights_nmda_d1,
-    location='distal',
-    synaptic_delays=synaptic_delays_d1,
-    event_seed=274
-)
+        constraints = dict()
+constraints.update({'alpha_prox_weight': (4.4e-5, 6.4e-5),
+                    'alpha_prox_tstart': (45, 55),
+                    'alpha_prox_burst_rate': (1, 30),
+                    'alpha_prox_burst_std': (10, 30),
+                    'alpha_dist_weight': (4.4e-5, 6.4e-5),
+                    'alpha_dist_tstart': (45, 55),
+                    'alpha_dist_burst_rate': (1, 30),
+                    'alpha_dist_burst_std': (10, 30)})
     </code>
 </div>
 <div class='markdown-cell'>
-    <p>Then, we add two proximal drives</p>
+    <p>Now we define and fit the optimizer.</p>
 
 </div>
 <div class='code-cell'>
     <code class='language-python'>
-        weights_ampa_p1 = {
-    'L2_basket': 0.08831,
-    'L2_pyramidal': 0.01525,
-    'L5_basket': 0.19934,
-    'L5_pyramidal': 0.00865
-    }
-synaptic_delays_prox = {
-    'L2_basket': 0.1,
-    'L2_pyramidal': 0.1,
-    'L5_basket': 1.,
-    'L5_pyramidal': 1.
-    }
+        from hnn_core.optimization import Optimizer
 
-# all NMDA weights are zero; pass None explicitly
-net.add_evoked_drive(
-    'evprox1',
-    mu=26.61,
-    sigma=2.47,
-    numspikes=1,
-    weights_ampa=weights_ampa_p1,
-    weights_nmda=None,
-    location='proximal',
-    synaptic_delays=synaptic_delays_prox,
-    event_seed=544
-)
+tstop = 300
+scale_factor = 3000
+smooth_window_len = 20
 
-# Second proximal evoked drive. NB: only AMPA weights differ from first
-weights_ampa_p2 = {
-    'L2_basket': 0.000003,
-    'L2_pyramidal': 1.438840,
-    'L5_basket': 0.008958,
-    'L5_pyramidal': 0.684013
-    }
+net = jones_2009_model()
+optim = Optimizer(net, tstop=tstop, constraints=constraints,
+                  set_params=set_params, obj_fun='maximize_psd')
 
-# all NMDA weights are zero; omit weights_nmda (defaults to None)
-net.add_evoked_drive(
-    'evprox2',
-    mu=137.12,
-    sigma=8.33,
-    numspikes=1,
-    weights_ampa=weights_ampa_p2,
-    location='proximal',
-    synaptic_delays=synaptic_delays_prox,
-    event_seed=814
-)
+# 8-15 Hz (alpha) and 15-30 Hz (beta) are the frequency bands whose
+# power we wish to maximize in a ratio of 1 to 2.
+with MPIBackend(n_procs=n_procs, mpi_cmd='mpiexec'):
+    optim.fit(f_bands=[(9, 11), (19, 21)], relative_bandpower=(1, 2),
+              scale_factor=scale_factor, smooth_window_len=smooth_window_len)
     </code>
 </div>
 <div class='markdown-cell'>
-    <p>Now let's simulate the dipole, running 2 trials with the
-<code>hnn_core.parallel_backends.Joblib</code> backend. To run them in
-parallel we could set <code>n_jobs</code> to equal the number of trials.
-The <code>Joblib</code> backend allows running the simulations in
-parallel across trials.</p>
+    <p>Finally, we can plot the optimized dipole, power spectral density
+(PSD), and convergence plot.</p>
 
 </div>
 <div class='code-cell'>
     <code class='language-python'>
-        from hnn_core import JoblibBackend
+        from hnn_core.viz import plot_psd
 
-with JoblibBackend(n_jobs=2):
-    dpls = simulate_dipole(net, tstop=170., n_trials=2)
+with MPIBackend(n_procs=n_procs, mpi_cmd='mpiexec'):
+    opt_dpl = simulate_dipole(optim.net_, tstop=tstop, n_trials=1)[0]
+opt_dpl.scale(scale_factor)
+opt_dpl.smooth(smooth_window_len)
+
+fig, axes = plt.subplots(2, 1, figsize=(6, 6))
+
+# plot dipole
+opt_dpl.plot(ax=axes[0], layer='agg', show=False, color='tab:green')
+axes[0].legend(['optimized'])
+
+# plot psd
+plot_psd(opt_dpl, fmax=50, ax=axes[1], show=False)
+
+# convergence
+fig1 = optim.plot_convergence()
     </code>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        Joblib will run 2 trial(s) in parallel by distributing trials over 2 jobs.
-
-        Loading custom mechanism files from /opt/homebrew/Caskroom/miniconda/base/envs/website-redesign/lib/python3.12/site-packages/hnn_core/mod/arm64/.libs/libnrnmech.so
-Building the NEURON model
-Loading custom mechanism files from /opt/homebrew/Caskroom/miniconda/base/envs/website-redesign/lib/python3.12/site-packages/hnn_core/mod/arm64/.libs/libnrnmech.so
-Building the NEURON model
-[Done]
-[Done]
-Trial 1: 0.03 ms...
-Trial 2: 0.03 ms...
-Trial 1: 10.0 ms...
-Trial 2: 10.0 ms...
-Trial 1: 20.0 ms...
-Trial 2: 20.0 ms...
-Trial 1: 30.0 ms...
-Trial 2: 30.0 ms...
-Trial 1: 40.0 ms...
-Trial 2: 40.0 ms...
-Trial 1: 50.0 ms...
-Trial 2: 50.0 ms...
-Trial 1: 60.0 ms...
-Trial 2: 60.0 ms...
-Trial 1: 70.0 ms...
-Trial 2: 70.0 ms...
-Trial 1: 80.0 ms...
-Trial 2: 80.0 ms...
-Trial 1: 90.0 ms...
-Trial 2: 90.0 ms...
-Trial 1: 100.0 ms...
-Trial 2: 100.0 ms...
-Trial 1: 110.0 ms...
-Trial 2: 110.0 ms...
-Trial 1: 120.0 ms...
-Trial 2: 120.0 ms...
-Trial 1: 130.0 ms...
-Trial 2: 130.0 ms...
-Trial 1: 140.0 ms...
-Trial 2: 140.0 ms...
-Trial 1: 150.0 ms...
-Trial 2: 150.0 ms...
-Trial 1: 160.0 ms...
-Trial 2: 160.0 ms...
-
-    </div>
-</div>
-<div class='markdown-cell'>
-    <p>Rather than reading smoothing and scaling parameters from file, we
-recommend explicit use of the
-<code>~hnn_core.dipole.Dipole.smooth</code> and
-<code>~hnn_core.dipole.Dipole.scale</code> methods instead. Note that
-both methods operate in-place, i.e., the objects are modified.</p>
-
-</div>
-<div class='code-cell'>
-    <code class='language-python'>
-        window_len, scaling_factor = 30, 3000
-for dpl in dpls:
-    dpl.smooth(window_len).scale(scaling_factor)
-    </code>
-</div>
-<div class='markdown-cell'>
-    <p>Plot the amplitudes of the simulated aggregate dipole moments over
-time</p>
-
-</div>
-<div class='code-cell'>
-    <code class='language-python'>
-        import matplotlib.pyplot as plt
-fig, axes = plt.subplots(
-    2,
-    1, 
-    sharex=True,
-    figsize=(6, 6),
-    constrained_layout=True
-)
-
-plot_dipole(
-    dpls,
-    ax=axes[0],
-    layer='agg',
-    show=False
-)
-
-net.cell_response.plot_spikes_hist(
-    ax=axes[1],
-    spike_types=['evprox', 'evdist']
-);
-    </code>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        &lt;Figure size 600x600 with 2 Axes&gt;
-    </div>
-</div>
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_03.png'/>
-</div>
-<div class='markdown-cell'>
-    <p>If you want to analyze how the different cortical layers contribute
-to different net waveform features, then instead of passing
-<code>agg</code> to <code>layer</code>, you can provide a list of layers
-to be visualized and optionally a list of axes to <code>ax</code> to
-visualize the dipole moments separately.</p>
-
-</div>
-<div class='code-cell'>
-    <code class='language-python'>
-        plot_dipole(
-    dpls,
-    average=False,
-    layer=['L2', 'L5', 'agg'],
-    show=False
-);
-    </code>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        &lt;Figure size 640x480 with 3 Axes&gt;
-    </div>
-</div>
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_04.png'/>
-</div>
-<div class='markdown-cell'>
-    <p>Now, let us try to make the exogenous driving inputs to the cells
-synchronous and see what happens. This is achieved by setting
-<code>n_drive_cells=1</code> and <code>cell_specific=False</code> when
-adding each drive.</p>
-
-</div>
-<div class='code-cell'>
-    <code class='language-python'>
-        net_sync = jones_2009_model()
-
-n_drive_cells=1
-cell_specific=False
-
-net_sync.add_evoked_drive(
-    'evdist1',
-    mu=63.53,
-    sigma=3.85,
-    numspikes=1,
-    weights_ampa=weights_ampa_d1,
-    weights_nmda=weights_nmda_d1,
-    location='distal',
-    n_drive_cells=n_drive_cells,
-    cell_specific=cell_specific,
-    synaptic_delays=synaptic_delays_d1,
-    event_seed=274
-)
-
-net_sync.add_evoked_drive(
-    'evprox1',
-    mu=26.61,
-    sigma=2.47,
-    numspikes=1,
-    weights_ampa=weights_ampa_p1,
-    weights_nmda=None,
-    location='proximal',
-    n_drive_cells=n_drive_cells,
-    cell_specific=cell_specific,
-    synaptic_delays=synaptic_delays_prox,
-    event_seed=544
-)
-
-net_sync.add_evoked_drive(
-    'evprox2',
-    mu=137.12,
-    sigma=8.33,
-    numspikes=1,
-    weights_ampa=weights_ampa_p2,
-    location='proximal',
-    n_drive_cells=n_drive_cells,
-    cell_specific=cell_specific,
-    synaptic_delays=synaptic_delays_prox,
-    event_seed=814
-)
-    </code>
-</div>
-<div class='markdown-cell'>
-    <p>You may interrogate current values defining the spike event time
-dynamics by</p>
-
-</div>
-<div class='code-cell'>
-    <code class='language-python'>
-        print(net_sync.external_drives['evdist1']['dynamics'])
-    </code>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        {&#x27;mu&#x27;: 63.53, &#x27;sigma&#x27;: 3.85, &#x27;numspikes&#x27;: 1}
-
-    </div>
-</div>
-<div class='markdown-cell'>
-    <p>Finally, let's simulate this network. Rather than modifying the
-dipole object, this time we make a copy of it before smoothing and
-scaling.</p>
-
-</div>
-<div class='code-cell'>
-    <code class='language-python'>
-        dpls_sync = simulate_dipole(
-    net_sync,
-    tstop=170.,
-    n_trials=1
-)
-
-trial_idx = 0
-
-dpls_sync[trial_idx].copy().smooth(window_len).scale(scaling_factor).plot()
-net_sync.cell_response.plot_spikes_hist();
-    </code>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        Joblib will run 1 trial(s) in parallel by distributing trials over 1 jobs.
-Loading custom mechanism files from /opt/homebrew/Caskroom/miniconda/base/envs/website-redesign/lib/python3.12/site-packages/hnn_core/mod/arm64/.libs/libnrnmech.so
-Building the NEURON model
-[Done]
-Trial 1: 0.03 ms...
-Trial 1: 10.0 ms...
-Trial 1: 20.0 ms...
-Trial 1: 30.0 ms...
-Trial 1: 40.0 ms...
-Trial 1: 50.0 ms...
-Trial 1: 60.0 ms...
-Trial 1: 70.0 ms...
-Trial 1: 80.0 ms...
-Trial 1: 90.0 ms...
-Trial 1: 100.0 ms...
-Trial 1: 110.0 ms...
-Trial 1: 120.0 ms...
-Trial 1: 130.0 ms...
-Trial 1: 140.0 ms...
-Trial 1: 150.0 ms...
-Trial 1: 160.0 ms...
-
-        &lt;Figure size 640x480 with 1 Axes&gt;
-    </div>
-</div>
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_05.png'/>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        &lt;Figure size 640x480 with 1 Axes&gt;
-    </div>
-</div>
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_06.png'/>
-</div><div class='markdown-cell'>
-    <h4>Warning</h4>
-<ul>
-<li><p>Always look at dipoles in conjunction with raster plots and spike
-histogram to avoid misinterpretation.</p></li>
-<li><p>Run multiple trials of your simulation to get an average of
-different drives seeds before drawing conclusions.</p></li>
-</ul>
-
-</div><div class='markdown-cell'>
-    <h2>References</h2>
-<p>[1] Jones, Stephanie R., et al. "Neural correlates of tactile
-detection: a combined magnetoencephalography and biophysically based
-computational modeling study." Journal of Neuroscience 27.40 (2007):
-10751-10764.</p>
-
 </div>
         <!-- footer area -->
         <!----------------->
         <div class="footer-area">
-            <div class="previous-area" data-link="/website_redesign/content/05_erps/erps_in_gui.html">
+            <div class="previous-area" data-link="/website_redesign/content/09_feature_demos/optimize_evoked.html">
                 <div class="previous-icon">
                     <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path class="arrow-path" d="M15 5L9 12L15 19" />
@@ -726,13 +397,13 @@ computational modeling study." Journal of Neuroscience 27.40 (2007):
                 </div>
                 <div class="previous-text">
                     <p>Previous</p>
-                    <a>2.1 GUI Tutorial of ERP Simulation</a>
+                    <a>9.8 Optimize simulated evoked response parameters</a>
                 </div>
             </div>
-            <div class="next-area" data-link="/website_redesign/content/06_alpha_beta/gui.html">
+            <div class="next-area" data-link="None">
                 <div class="next-text">
                     <p>Next</p>
-                    <a>6.1 GUI Tutorial of Alpha/Beta Rhythms</a>
+                    <a>None</a>
                 </div>
                 <div class="next-icon">
                     <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

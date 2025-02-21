@@ -1,11 +1,14 @@
 {
     "skip_execution": [
         "api_alpha_beta.ipynb",
-        "plot_hnn_animation.ipynb",
-        "plot_firing_pattern_notebook.ipynb",
-        "plot_connectivity.ipynb",
+        "optimize_evoked_notebook.ipynb",
+        "optimize_rhythmic_notebook.ipynb",
         "plot_batch_simulate.ipynb",
+        "plot_connectivity.ipynb",
+        "plot_firing_pattern_notebook.ipynb",
+        "plot_hnn_animation.ipynb",
         "plot_record_extracellular_potentials.ipynb",
-        "plot_simulate_beta.ipynb"
+        "plot_simulate_beta.ipynb",
+        "use_mpi_backend_for_parallelization_notebook.ipynb"
     ]
 }
