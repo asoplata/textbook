@@ -68,7 +68,9 @@
     ],
     "08_data_to_simulation": [
         "8. From Data to Simulation",
-        {}
+        {
+            "01_from_meg_to_hnn.md": "8.1 From MEG sensor-space data to HNN simulation"
+        }
     ],
     "09_feature_demos": [
         "9. Feature Demos",
