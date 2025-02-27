@@ -11,5 +11,6 @@
     "optimize_rhythmic_notebook.ipynb": "665bf1f20e338a09db4b0ac61814f464746ca91e5dd2982e34ef80847c3a7985",
     "optimize_evoked_notebook.ipynb": "c55ba449f465bc267a0fadf278c9cb6e7821c9b66afc035073c7d71a7006d3dd",
     "use_mpi_backend_for_parallelization_notebook.ipynb": "2e95017fdf86ce3e77923745eec4a8627fece8e860ed3a1838230f42c03ac52d",
-    "from_meg_to_hnn_notebook.ipynb": "2e56c47dbfe0581fd7da8f7beee055b3dd995d9e643fcb835303b07879b06cc0"
+    "from_meg_to_hnn_notebook.ipynb": "2e56c47dbfe0581fd7da8f7beee055b3dd995d9e643fcb835303b07879b06cc0",
+    "api_alpha_beta_short.ipynb": "640275afaa3af921fc98ed21193447fb7c5c651259e2bca902760f0ea4e2163e"
 }
