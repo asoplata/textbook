@@ -129,10 +129,10 @@
 				<a href="/website_redesign/content/09_feature_demos/modifying_local_connectivity.html">9.3 Modifying Local Connectivity</a>
 				<a href="/website_redesign/content/09_feature_demos/animating_hnn_simulations.html">9.4 Animating HNN Simulations</a>
 				<a href="/website_redesign/content/09_feature_demos/batch_simulation.html">9.5 Batch Simulation</a>
-				<a href="/website_redesign/content/09_feature_demos/simulate_beta_modulated_erp.html">9.6 Simulate beta-modulated ERP</a>
+				<a href="/website_redesign/content/09_feature_demos/simulate_beta_modulated_erp.html">9.6 Simulate Beta-modulated ERP</a>
 				<a href="/website_redesign/content/09_feature_demos/use_mpi_backend_for_parallelization.html">9.7 Use MPI Backend for Parallelization</a>
-				<a href="/website_redesign/content/09_feature_demos/optimize_evoked.html">9.8 Optimize simulated evoked response parameters</a>
-				<a href="/website_redesign/content/09_feature_demos/optimize_rhythmic.html">9.9 Optimize simulated rhythmic response parameters</a>
+				<a href="/website_redesign/content/09_feature_demos/optimize_simulated_evoked_response_parameters.html">9.8 Optimize simulated evoked response parameters</a>
+				<a href="/website_redesign/content/09_feature_demos/optimize_simulated_rhythmic_response_parameters.html">9.9 Optimize simulated rhythmic response parameters</a>
 			</div>
 		</div>
 	<div style='height: 30px;'></div>
@@ -198,10 +198,12 @@
         </div>
 
         <!-- Topbar image -->
-        <img 
-            id="topbar-logo"
-            src="https://hnn.brown.edu/wp-content/uploads/hnn-medium.png"
-        />
+        <div class="topbar-logo-container">
+            <img 
+                id="topbar-logo"
+                src="https://hnn.brown.edu/wp-content/uploads/hnn-medium.png"
+            />
+        </div>
 
         <!-- Right side of topbar -->
         <div class="socials-container">
@@ -263,6 +265,8 @@ and running a simulation that we would like to animate.</p>
     <code class='language-python'>
         import os.path as op
 
+import matplotlib.pyplot as plt
+
 import hnn_core
 from hnn_core import jones_2009_model, simulate_dipole, read_params
 from hnn_core.network_models import add_erp_drives_to_jones_model
@@ -284,8 +288,9 @@ net.set_cell_positions(inplane_distance=300)
     </code>
 </div>
 <div class='markdown-cell'>
-    <p>The :class:<code>hnn_core.viz.NetworkPlotter</code> class can be used
-to visualize the 3D structure of the network.</p>
+    <p>The <a
+href="https://jonescompneurolab.github.io/hnn-core/stable/generated/hnn_core.viz.NetworkPlotter.html#hnn_core.viz.NetworkPlotter">NetworkPlotter</a>
+class can be used to visualize the 3D structure of the network.</p>
 
 </div>
 <div class='code-cell'>
@@ -293,7 +298,6 @@ to visualize the 3D structure of the network.</p>
         from hnn_core.viz import NetworkPlotter
 
 net_plot = NetworkPlotter(net)
-net_plot.fig
     </code>
 </div>
 <div class='markdown-cell'>
@@ -310,13 +314,13 @@ net_plot.fig
 </div>
 <div class='markdown-cell'>
     <p>Next we add event related potential (ERP) producing drives to the
-network and run the simulation (see
-<code>evoked example &amp;lt;sphx_glr_auto_examples_plot_simulate_evoked.py&amp;gt;</code>
-for more details). To visualize the membrane potential of cells in the
-network, we need use
-<code>simulate_dipole(..., record_vsec=&amp;#x27;all&amp;#x27;)</code>
-which turns on the recording of voltages in all sections of all cells in
-the network.</p>
+network and run the simulation (see the <a
+href="https://dylansdaniels.github.io/website_redesign/content/05_erps/hnn_core.html">ERP
+simulation</a> for more details). To visualize the membrane potential of
+cells in the network, we need to pass
+<code>record_vsec=&amp;#x27;all&amp;#x27;</code> to
+<code>simulate_dipole(...)</code>, which turns on the recording of
+voltages in all sections of all cells in the network.</p>
 
 </div>
 <div class='code-cell'>
@@ -434,6 +438,9 @@ plot to better visualize the network.</p>
 
         // Toggle the sidebar state
         isSidebarOpen = !isSidebarOpen;
+
+        // Store the sidebar state in localStorage
+        localStorage.setItem("sidebarState", isSidebarOpen ? "open" : "closed");
     }
 
     // Always listen for the transitionend on the sidebar
@@ -451,14 +458,28 @@ plot to better visualize the network.</p>
     // Open the sidebar on page load
     // -----------------------------
     window.onload = function() {
-        // Set initial styles for open state without animation
         const sidebar = document.getElementById("mySidebar");
         const main = document.getElementById("main");
 
+        // Retrieve stored state
+        const savedState = localStorage.getItem("sidebarState");
+
+        // Determine initial state
+        if (savedState === "closed") {
+            sidebar.style.width = "0";
+            main.style.marginLeft = "0";
+            isSidebarOpen = false;
+            isSidebarFullyOpen = false;
+        } else {
+            sidebar.style.width = maxWidth;
+            main.style.marginLeft = maxWidth;
+            isSidebarOpen = true;
+            isSidebarFullyOpen = true;
+        }
+
+        // Disable transition for the initial state
         sidebar.style.transition = "none";
         main.style.transition = "none";
-        sidebar.style.width = maxWidth;
-        main.style.marginLeft = maxWidth;
 
         // Re-enable transition for subsequent toggles
         setTimeout(() => {
@@ -643,18 +664,38 @@ plot to better visualize the network.</p>
     // ------------------------------
     // Font size buttons and dropdown
     // ------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+        const content = document.getElementById("content");
+
+        // Retrieve and apply the saved font size
+        const savedFontSize = localStorage.getItem("fontSize");
+        if (savedFontSize && content) {
+            content.style.fontSize = savedFontSize + "px";
+        }
+    });
+
     function increaseFontSize() {
         event.stopPropagation();  // Prevent dropdown from closing
         const content = document.getElementById("content");
-        const currentSize = window.getComputedStyle(content).fontSize;
-        content.style.fontSize = (parseFloat(currentSize) + 2) + "px";
+        const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
+        const newSize = currentSize + 1;
+
+        content.style.fontSize = newSize + "px";
+
+        // save font size to localStorage
+        localStorage.setItem("fontSize", newSize);
     }
 
     function decreaseFontSize() {
         event.stopPropagation();  // Prevent dropdown from closing
         const content = document.getElementById("content");
-        const currentSize = window.getComputedStyle(content).fontSize;
-        content.style.fontSize = (parseFloat(currentSize) - 2) + "px";
+        const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
+        const newSize = currentSize - 1;
+
+        content.style.fontSize = newSize + "px";
+
+        // save font size to localStorage
+        localStorage.setItem("fontSize", newSize);
     }
 
     // Dropdown for font buttons

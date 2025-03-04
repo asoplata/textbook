@@ -129,10 +129,10 @@
 				<a href="/website_redesign/content/09_feature_demos/modifying_local_connectivity.html">9.3 Modifying Local Connectivity</a>
 				<a href="/website_redesign/content/09_feature_demos/animating_hnn_simulations.html">9.4 Animating HNN Simulations</a>
 				<a href="/website_redesign/content/09_feature_demos/batch_simulation.html">9.5 Batch Simulation</a>
-				<a href="/website_redesign/content/09_feature_demos/simulate_beta_modulated_erp.html">9.6 Simulate beta-modulated ERP</a>
+				<a href="/website_redesign/content/09_feature_demos/simulate_beta_modulated_erp.html">9.6 Simulate Beta-modulated ERP</a>
 				<a href="/website_redesign/content/09_feature_demos/use_mpi_backend_for_parallelization.html">9.7 Use MPI Backend for Parallelization</a>
-				<a href="/website_redesign/content/09_feature_demos/optimize_evoked.html">9.8 Optimize simulated evoked response parameters</a>
-				<a href="/website_redesign/content/09_feature_demos/optimize_rhythmic.html">9.9 Optimize simulated rhythmic response parameters</a>
+				<a href="/website_redesign/content/09_feature_demos/optimize_simulated_evoked_response_parameters.html">9.8 Optimize simulated evoked response parameters</a>
+				<a href="/website_redesign/content/09_feature_demos/optimize_simulated_rhythmic_response_parameters.html">9.9 Optimize simulated rhythmic response parameters</a>
 			</div>
 		</div>
 	<div style='height: 30px;'></div>
@@ -198,10 +198,12 @@
         </div>
 
         <!-- Topbar image -->
-        <img 
-            id="topbar-logo"
-            src="https://hnn.brown.edu/wp-content/uploads/hnn-medium.png"
-        />
+        <div class="topbar-logo-container">
+            <img 
+                id="topbar-logo"
+                src="https://hnn.brown.edu/wp-content/uploads/hnn-medium.png"
+            />
+        </div>
 
         <!-- Right side of topbar -->
         <div class="socials-container">
@@ -238,17 +240,17 @@
     <div id="content">
 
 <!--
-# Title: 9.6 Simulate beta-modulated ERP
+# Title: 9.6 Simulate Beta-modulated ERP
 # Updated: 2025-02-04
 #
 # Contributors:
     # Dylan Daniels
 -->
 <div class='markdown-cell'>
-    <h1>05. Simulate beta modulated ERP</h1>
+    <h1>9.6: Simulate Beta-modulated ERP</h1>
 <p>This example demonstrates how event related potentials (ERP) are
 modulated by prestimulus beta events. Specifically, this example
-reproduces Figure 5 from Law et al. 2021 [1]_. To be consistent with the
+reproduces Figure 5 from (Law et al. 2021). To be consistent with the
 publication, the default network connectivity is altered. These
 modifications demonstrate a potential mechanism by which transient beta
 activity in the neocortex can suppress the perceptibility of sensory
@@ -265,8 +267,8 @@ from hnn_core.viz import plot_dipole
     </code>
 </div>
 <div class='markdown-cell'>
-    <p>We begin by instantiating the network model from Law et al. 2021
-[1]_.</p>
+    <p>We begin by instantiating the network model from (Law et
+al. 2021):</p>
 
 </div>
 <div class='code-cell'>
@@ -275,8 +277,8 @@ from hnn_core.viz import plot_dipole
     </code>
 </div>
 <div class='markdown-cell'>
-    <p>The Law 2021 model is based on the network model described in Jones
-et al. 2009 [2]_ with several important modifications. One of the most
+    <p>The Law 2021 model is based on the network model described in (Jones
+et al. 2009) with several important modifications. One of the most
 significant changes is substantially increasing the rise and fall time
 constants of GABAb-conductances on L2 and L5 pyramidal. Another
 important change is the removal of calcium channels from basal dendrites
@@ -303,26 +305,11 @@ print("\nBasal Dendrite Channels ('ca' missing):")
 print(net.cell_types['L5_pyramidal'].sections['basal_1'].mechs.keys())
     </code>
 </div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        GABAb Rise (ms): 1.0 -&gt; 45.0
-GABAb Fall (ms): 20.0 -&gt; 200.0
-
-Apical Dendrite Channels:
-dict_keys([&#x27;hh2&#x27;, &#x27;ca&#x27;, &#x27;cad&#x27;, &#x27;kca&#x27;, &#x27;km&#x27;, &#x27;cat&#x27;, &#x27;ar&#x27;])
-
-Basal Dendrite Channels (&#x27;ca&#x27; missing):
-dict_keys([&#x27;hh2&#x27;, &#x27;cad&#x27;, &#x27;kca&#x27;, &#x27;km&#x27;, &#x27;cat&#x27;, &#x27;ar&#x27;])
-
-    </div>
-</div>
 <div class='markdown-cell'>
     <p>A major change to the Jones 2009 model is the addition of a
-Martinotti-like recurrent tuft connection [3]_. This new connection
-originates from L5 basket cells, and provides GABAa inhibition on the
-distal dendrites of L5 pyramidal cells.</p>
+Martinotti-like recurrent tuft connection (Silberberg and Markram 2007).
+This new connection originates from L5 basket cells, and provides GABAa
+inhibition on the distal dendrites of L5 pyramidal cells.</p>
 
 </div>
 <div class='code-cell'>
@@ -330,20 +317,6 @@ distal dendrites of L5 pyramidal cells.</p>
         print('Recurrent Tuft Connection')
 print(net.connectivity[16])
     </code>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        Recurrent Tuft Connection
-L5_basket -&gt; L5_pyramidal
-cell counts: 35 srcs, 100 targets
-connection probability: 1.0 
-loc: &#x27;distal&#x27;; receptor: &#x27;gabaa&#x27;
-weight: 0.025; delay: 1.0; lamtha: 70.0
- 
-
-    </div>
 </div>
 <div class='markdown-cell'>
     <p>The remaining changes to the connectivity was the removal of an
@@ -360,38 +333,16 @@ print('\nConnection Removed from Law Model')
 print(net_jones.connectivity[10])
     </code>
 </div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        New GABAb connection
-L2_basket -&gt; L5_pyramidal
-cell counts: 35 srcs, 100 targets
-connection probability: 1.0 
-loc: &#x27;distal&#x27;; receptor: &#x27;gabab&#x27;
-weight: 0.0002; delay: 1.0; lamtha: 50.0
- 
-
-Connection Removed from Law Model
-L2_basket -&gt; L5_pyramidal
-cell counts: 35 srcs, 100 targets
-connection probability: 1.0 
-loc: &#x27;distal&#x27;; receptor: &#x27;gabaa&#x27;
-weight: 0.001; delay: 1.0; lamtha: 50.0
- 
-
-    </div>
-</div>
 <div class='markdown-cell'>
     <p>To demonstrate sensory depression, we will add the drives necessary
-to generate and ERP similar to
-<code>evoked example &amp;lt;sphx_glr_auto_examples_plot_simulate_evoked.py&amp;gt;</code>,
-but modified to reflect the parameters used in Law et al. 2021.
-Specifically, we are considering the case where a tactile stimulus is
-delivered at 150 ms. 25 ms later, the first input to sensory cortex
-arrives as a proximal drive to the cortical column. Proximal drive
-corresponds to projections from the direct thalamic nuclei. This is
-followed by one :term:<code>distal</code> drive representing projections
+to generate and ERP similar to our <a
+href="https://dylansdaniels.github.io/website_redesign/content/05_erps/hnn_core.html">ERP
+example</a>, but modified to reflect the parameters used in (Law et
+al. 2021). Specifically, we are considering the case where a tactile
+stimulus is delivered at 150 ms. 25 ms later, the first input to sensory
+cortex arrives as a proximal drive to the cortical column. Proximal
+drive corresponds to projections from the direct thalamic nuclei. This
+is followed by one <code>distal</code> drive representing projections
 from indirect thalamic nuclei, and a final late proximal drive. It is
 important to note that the parameter values for each are different from
 previous examples of the evoked response. This reflects the altered
@@ -473,8 +424,13 @@ network, and ultimately suppressed sensory detection.</p>
     </code>
 </div>
 <div class='markdown-cell'>
-    <p>We can now use our functions to create three distinct simulations: 1)
-beta event only, 2) ERP only, and 3) beta event + ERP.</p>
+    <p>We can now use our functions to create three distinct
+simulations:</p>
+<ol type="1">
+<li>beta event only,</li>
+<li>ERP only, and</li>
+<li>beta event + ERP.</li>
+</ol>
 
 </div>
 <div class='code-cell'>
@@ -501,166 +457,15 @@ events can influence sensory input to the cortical column.</p>
         dpls_beta = simulate_dipole(net_beta, tstop=400)
     </code>
 </div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        Joblib will run 1 trial(s) in parallel by distributing trials over 1 jobs.
-Loading custom mechanism files from /opt/anaconda3/envs/website-redesign/lib/python3.12/site-packages/hnn_core/mod/arm64/.libs/libnrnmech.so
-Building the NEURON model
-[Done]
-Trial 1: 0.03 ms...
-Trial 1: 10.0 ms...
-Trial 1: 20.0 ms...
-Trial 1: 30.0 ms...
-Trial 1: 40.0 ms...
-Trial 1: 50.0 ms...
-Trial 1: 60.0 ms...
-Trial 1: 70.0 ms...
-Trial 1: 80.0 ms...
-Trial 1: 90.0 ms...
-Trial 1: 100.0 ms...
-Trial 1: 110.0 ms...
-Trial 1: 120.0 ms...
-Trial 1: 130.0 ms...
-Trial 1: 140.0 ms...
-Trial 1: 150.0 ms...
-Trial 1: 160.0 ms...
-Trial 1: 170.0 ms...
-Trial 1: 180.0 ms...
-Trial 1: 190.0 ms...
-Trial 1: 200.0 ms...
-Trial 1: 210.0 ms...
-Trial 1: 220.0 ms...
-Trial 1: 230.0 ms...
-Trial 1: 240.0 ms...
-Trial 1: 250.0 ms...
-Trial 1: 260.0 ms...
-Trial 1: 270.0 ms...
-Trial 1: 280.0 ms...
-Trial 1: 290.0 ms...
-Trial 1: 300.0 ms...
-Trial 1: 310.0 ms...
-Trial 1: 320.0 ms...
-Trial 1: 330.0 ms...
-Trial 1: 340.0 ms...
-Trial 1: 350.0 ms...
-Trial 1: 360.0 ms...
-Trial 1: 370.0 ms...
-Trial 1: 380.0 ms...
-Trial 1: 390.0 ms...
-
-    </div>
-</div>
 <div class='code-cell'>
     <code class='language-python'>
         dpls_erp = simulate_dipole(net_erp, tstop=400)
     </code>
 </div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        Joblib will run 1 trial(s) in parallel by distributing trials over 1 jobs.
-Building the NEURON model
-[Done]
-Trial 1: 0.03 ms...
-Trial 1: 10.0 ms...
-Trial 1: 20.0 ms...
-Trial 1: 30.0 ms...
-Trial 1: 40.0 ms...
-Trial 1: 50.0 ms...
-Trial 1: 60.0 ms...
-Trial 1: 70.0 ms...
-Trial 1: 80.0 ms...
-Trial 1: 90.0 ms...
-Trial 1: 100.0 ms...
-Trial 1: 110.0 ms...
-Trial 1: 120.0 ms...
-Trial 1: 130.0 ms...
-Trial 1: 140.0 ms...
-Trial 1: 150.0 ms...
-Trial 1: 160.0 ms...
-Trial 1: 170.0 ms...
-Trial 1: 180.0 ms...
-Trial 1: 190.0 ms...
-Trial 1: 200.0 ms...
-Trial 1: 210.0 ms...
-Trial 1: 220.0 ms...
-Trial 1: 230.0 ms...
-Trial 1: 240.0 ms...
-Trial 1: 250.0 ms...
-Trial 1: 260.0 ms...
-Trial 1: 270.0 ms...
-Trial 1: 280.0 ms...
-Trial 1: 290.0 ms...
-Trial 1: 300.0 ms...
-Trial 1: 310.0 ms...
-Trial 1: 320.0 ms...
-Trial 1: 330.0 ms...
-Trial 1: 340.0 ms...
-Trial 1: 350.0 ms...
-Trial 1: 360.0 ms...
-Trial 1: 370.0 ms...
-Trial 1: 380.0 ms...
-Trial 1: 390.0 ms...
-
-    </div>
-</div>
 <div class='code-cell'>
     <code class='language-python'>
         dpls_beta_erp = simulate_dipole(net_beta_erp, tstop=400)
     </code>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        Joblib will run 1 trial(s) in parallel by distributing trials over 1 jobs.
-Building the NEURON model
-[Done]
-Trial 1: 0.03 ms...
-Trial 1: 10.0 ms...
-Trial 1: 20.0 ms...
-Trial 1: 30.0 ms...
-Trial 1: 40.0 ms...
-Trial 1: 50.0 ms...
-Trial 1: 60.0 ms...
-Trial 1: 70.0 ms...
-Trial 1: 80.0 ms...
-Trial 1: 90.0 ms...
-Trial 1: 100.0 ms...
-Trial 1: 110.0 ms...
-Trial 1: 120.0 ms...
-Trial 1: 130.0 ms...
-Trial 1: 140.0 ms...
-Trial 1: 150.0 ms...
-Trial 1: 160.0 ms...
-Trial 1: 170.0 ms...
-Trial 1: 180.0 ms...
-Trial 1: 190.0 ms...
-Trial 1: 200.0 ms...
-Trial 1: 210.0 ms...
-Trial 1: 220.0 ms...
-Trial 1: 230.0 ms...
-Trial 1: 240.0 ms...
-Trial 1: 250.0 ms...
-Trial 1: 260.0 ms...
-Trial 1: 270.0 ms...
-Trial 1: 280.0 ms...
-Trial 1: 290.0 ms...
-Trial 1: 300.0 ms...
-Trial 1: 310.0 ms...
-Trial 1: 320.0 ms...
-Trial 1: 330.0 ms...
-Trial 1: 340.0 ms...
-Trial 1: 350.0 ms...
-Trial 1: 360.0 ms...
-Trial 1: 370.0 ms...
-Trial 1: 380.0 ms...
-Trial 1: 390.0 ms...
-
-    </div>
 </div>
 <div class='markdown-cell'>
     <p>By inspecting the activity during the beta event, we can see that
@@ -685,28 +490,9 @@ axes[2].set_title('Spike Raster')
 
 # Create a fixed-step tiling of frequencies from 1 to 40 Hz in steps of 1 Hz
 freqs = np.arange(10., 60., 1.)
-dpls_beta[0].plot_tfr_morlet(freqs, n_cycles=7, ax=axes[3])
+dpls_beta[0].plot_tfr_morlet(freqs, n_cycles=7, ax=axes[3], show=False)
+plt.show()
     </code>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        &lt;Figure size 700x700 with 5 Axes&gt;
-    </div>
-</div>
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_beta/fig_01.png'/>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        &lt;Figure size 700x700 with 5 Axes&gt;
-    </div>
-</div>
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_beta/fig_02.png'/>
 </div>
 <div class='markdown-cell'>
     <p>Next we will inspect what happens when a sensory stimulus is
@@ -728,18 +514,8 @@ net_beta_erp.cell_response.plot_spikes_hist(ax=axes[1], show=False)
 axes[1].set_title('Input Drives Histogram')
 net_beta_erp.cell_response.plot_spikes_raster(ax=axes[2], show=False)
 axes[2].set_title('Spike Raster')
+plt.show()
     </code>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        Text(0.5, 1.0, &#x27;Spike Raster&#x27;)
-        &lt;Figure size 700x700 with 3 Axes&gt;
-    </div>
-</div>
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_beta/fig_03.png'/>
 </div>
 <div class='markdown-cell'>
     <p>To help understand the effect of beta mediated inhibition on the
@@ -765,31 +541,26 @@ net_erp.cell_response.plot_spikes_raster(ax=axes[2], show=False)
 axes[2].set_title('ERP Spike Raster')
 plt.show()
     </code>
-</div>
-<div class='output-cell'><div class='output-label'>
-    Out:
-</div>
-    <div class='output-code'>
-        &lt;Figure size 700x700 with 3 Axes&gt;
-    </div>
-</div>
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_beta/fig_04.png'/>
 </div><div class='markdown-cell'>
     <h2>References</h2>
-<p>.. [1] Law, R. G., Pugliese, S., Shin, H., Sliva, D. D., Lee, S.,
-Neymotin, S., Moore, C., &amp; Jones, S. R. (2021). Thalamocortical
-mechanisms regulating the relationship between transient beta events and
-human tactile perception. BioRxiv, 2021.04.16.440210.
-https://doi.org/10.1101/2021.04.16.440210 .. [2] Jones, S. R.,
-Pritchett, D. L., Sikora, M. A., Stufflebeam, S. M., Hämäläinen, M.,
-&amp; Moore, C. I. (2009). Quantitative Analysis and Biophysically
-Realistic Neural Modeling of the MEG Mu Rhythm: Rhythmogenesis and
-Modulation of Sensory-Evoked Responses. Journal of Neurophysiology,
-102(6), 3554–3572. https://doi.org/10.1152/jn.00535.2009 .. [3]
-Silberberg, G., &amp; Markram, H. (2007). Disynaptic Inhibition between
-Neocortical Pyramidal Cells Mediated by Martinotti Cells. Neuron, 53(5),
-735–746. https://doi.org/10.1016/j.neuron.2007.02.012</p>
+<ul>
+<li><p>Jones, Stephanie R., Dominique L. Pritchett, Michael A. Sikora,
+Steven M. Stufflebeam, Matti Hämäläinen, and Christopher I. Moore. 2009.
+“Quantitative Analysis and Biophysically Realistic Neural Modeling of
+the MEG Mu Rhythm: Rhythmogenesis and Modulation of Sensory-Evoked
+Responses.” Journal of Neurophysiology 102 (6): 3554–72. <a
+href="https://doi.org/10.1152/jn.00535.2009">https://doi.org/10.1152/jn.00535.2009</a>
+.</p></li>
+<li><p>Law, Robert G., Sarah Pugliese, Hyeyoung Shin, Danielle D. Sliva,
+Shane Lee, Samuel Neymotin, Christopher Moore, and Stephanie R. Jones.
+2021. “Thalamocortical Mechanisms Regulating the Relationship between
+Transient Beta Events and Human Tactile Perception.” bioRxiv. <a
+href="https://doi.org/10.1101/2021.04.16.440210">https://doi.org/10.1101/2021.04.16.440210</a>.</p></li>
+<li><p>Silberberg, Gilad, and Henry Markram. 2007. “Disynaptic
+Inhibition between Neocortical Pyramidal Cells Mediated by Martinotti
+Cells.” Neuron 53 (5): 735–46. <a
+href="https://doi.org/10.1016/j.neuron.2007.02.012">https://doi.org/10.1016/j.neuron.2007.02.012</a>.</p></li>
+</ul>
 
 </div>
         <!-- footer area -->
@@ -884,6 +655,9 @@ Neocortical Pyramidal Cells Mediated by Martinotti Cells. Neuron, 53(5),
 
         // Toggle the sidebar state
         isSidebarOpen = !isSidebarOpen;
+
+        // Store the sidebar state in localStorage
+        localStorage.setItem("sidebarState", isSidebarOpen ? "open" : "closed");
     }
 
     // Always listen for the transitionend on the sidebar
@@ -901,14 +675,28 @@ Neocortical Pyramidal Cells Mediated by Martinotti Cells. Neuron, 53(5),
     // Open the sidebar on page load
     // -----------------------------
     window.onload = function() {
-        // Set initial styles for open state without animation
         const sidebar = document.getElementById("mySidebar");
         const main = document.getElementById("main");
 
+        // Retrieve stored state
+        const savedState = localStorage.getItem("sidebarState");
+
+        // Determine initial state
+        if (savedState === "closed") {
+            sidebar.style.width = "0";
+            main.style.marginLeft = "0";
+            isSidebarOpen = false;
+            isSidebarFullyOpen = false;
+        } else {
+            sidebar.style.width = maxWidth;
+            main.style.marginLeft = maxWidth;
+            isSidebarOpen = true;
+            isSidebarFullyOpen = true;
+        }
+
+        // Disable transition for the initial state
         sidebar.style.transition = "none";
         main.style.transition = "none";
-        sidebar.style.width = maxWidth;
-        main.style.marginLeft = maxWidth;
 
         // Re-enable transition for subsequent toggles
         setTimeout(() => {
@@ -1093,18 +881,38 @@ Neocortical Pyramidal Cells Mediated by Martinotti Cells. Neuron, 53(5),
     // ------------------------------
     // Font size buttons and dropdown
     // ------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+        const content = document.getElementById("content");
+
+        // Retrieve and apply the saved font size
+        const savedFontSize = localStorage.getItem("fontSize");
+        if (savedFontSize && content) {
+            content.style.fontSize = savedFontSize + "px";
+        }
+    });
+
     function increaseFontSize() {
         event.stopPropagation();  // Prevent dropdown from closing
         const content = document.getElementById("content");
-        const currentSize = window.getComputedStyle(content).fontSize;
-        content.style.fontSize = (parseFloat(currentSize) + 2) + "px";
+        const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
+        const newSize = currentSize + 1;
+
+        content.style.fontSize = newSize + "px";
+
+        // save font size to localStorage
+        localStorage.setItem("fontSize", newSize);
     }
 
     function decreaseFontSize() {
         event.stopPropagation();  // Prevent dropdown from closing
         const content = document.getElementById("content");
-        const currentSize = window.getComputedStyle(content).fontSize;
-        content.style.fontSize = (parseFloat(currentSize) - 2) + "px";
+        const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
+        const newSize = currentSize - 1;
+
+        content.style.fontSize = newSize + "px";
+
+        // save font size to localStorage
+        localStorage.setItem("fontSize", newSize);
     }
 
     // Dropdown for font buttons

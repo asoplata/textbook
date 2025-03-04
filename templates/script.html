@@ -62,6 +62,9 @@
 
         // Toggle the sidebar state
         isSidebarOpen = !isSidebarOpen;
+
+        // Store the sidebar state in localStorage
+        localStorage.setItem("sidebarState", isSidebarOpen ? "open" : "closed");
     }
 
     // Always listen for the transitionend on the sidebar
@@ -79,14 +82,28 @@
     // Open the sidebar on page load
     // -----------------------------
     window.onload = function() {
-        // Set initial styles for open state without animation
         const sidebar = document.getElementById("mySidebar");
         const main = document.getElementById("main");
 
+        // Retrieve stored state
+        const savedState = localStorage.getItem("sidebarState");
+
+        // Determine initial state
+        if (savedState === "closed") {
+            sidebar.style.width = "0";
+            main.style.marginLeft = "0";
+            isSidebarOpen = false;
+            isSidebarFullyOpen = false;
+        } else {
+            sidebar.style.width = maxWidth;
+            main.style.marginLeft = maxWidth;
+            isSidebarOpen = true;
+            isSidebarFullyOpen = true;
+        }
+
+        // Disable transition for the initial state
         sidebar.style.transition = "none";
         main.style.transition = "none";
-        sidebar.style.width = maxWidth;
-        main.style.marginLeft = maxWidth;
 
         // Re-enable transition for subsequent toggles
         setTimeout(() => {
@@ -271,18 +288,38 @@
     // ------------------------------
     // Font size buttons and dropdown
     // ------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+        const content = document.getElementById("content");
+
+        // Retrieve and apply the saved font size
+        const savedFontSize = localStorage.getItem("fontSize");
+        if (savedFontSize && content) {
+            content.style.fontSize = savedFontSize + "px";
+        }
+    });
+
     function increaseFontSize() {
         event.stopPropagation();  // Prevent dropdown from closing
         const content = document.getElementById("content");
-        const currentSize = window.getComputedStyle(content).fontSize;
-        content.style.fontSize = (parseFloat(currentSize) + 2) + "px";
+        const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
+        const newSize = currentSize + 1;
+
+        content.style.fontSize = newSize + "px";
+
+        // save font size to localStorage
+        localStorage.setItem("fontSize", newSize);
     }
 
     function decreaseFontSize() {
         event.stopPropagation();  // Prevent dropdown from closing
         const content = document.getElementById("content");
-        const currentSize = window.getComputedStyle(content).fontSize;
-        content.style.fontSize = (parseFloat(currentSize) - 2) + "px";
+        const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
+        const newSize = currentSize - 1;
+
+        content.style.fontSize = newSize + "px";
+
+        // save font size to localStorage
+        localStorage.setItem("fontSize", newSize);
     }
 
     // Dropdown for font buttons

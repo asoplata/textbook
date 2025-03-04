@@ -129,10 +129,10 @@
 				<a href="/website_redesign/content/09_feature_demos/modifying_local_connectivity.html">9.3 Modifying Local Connectivity</a>
 				<a href="/website_redesign/content/09_feature_demos/animating_hnn_simulations.html">9.4 Animating HNN Simulations</a>
 				<a href="/website_redesign/content/09_feature_demos/batch_simulation.html">9.5 Batch Simulation</a>
-				<a href="/website_redesign/content/09_feature_demos/simulate_beta_modulated_erp.html">9.6 Simulate beta-modulated ERP</a>
+				<a href="/website_redesign/content/09_feature_demos/simulate_beta_modulated_erp.html">9.6 Simulate Beta-modulated ERP</a>
 				<a href="/website_redesign/content/09_feature_demos/use_mpi_backend_for_parallelization.html">9.7 Use MPI Backend for Parallelization</a>
-				<a href="/website_redesign/content/09_feature_demos/optimize_evoked.html">9.8 Optimize simulated evoked response parameters</a>
-				<a href="/website_redesign/content/09_feature_demos/optimize_rhythmic.html">9.9 Optimize simulated rhythmic response parameters</a>
+				<a href="/website_redesign/content/09_feature_demos/optimize_simulated_evoked_response_parameters.html">9.8 Optimize simulated evoked response parameters</a>
+				<a href="/website_redesign/content/09_feature_demos/optimize_simulated_rhythmic_response_parameters.html">9.9 Optimize simulated rhythmic response parameters</a>
 			</div>
 		</div>
 	<div style='height: 30px;'></div>
@@ -198,10 +198,12 @@
         </div>
 
         <!-- Topbar image -->
-        <img 
-            id="topbar-logo"
-            src="https://hnn.brown.edu/wp-content/uploads/hnn-medium.png"
-        />
+        <div class="topbar-logo-container">
+            <img 
+                id="topbar-logo"
+                src="https://hnn.brown.edu/wp-content/uploads/hnn-medium.png"
+            />
+        </div>
 
         <!-- Right side of topbar -->
         <div class="socials-container">
@@ -440,6 +442,9 @@ href="https://doi.org/10.1152/jn.00535.2009">https://doi.org/10.1152/jn.00535.20
 
         // Toggle the sidebar state
         isSidebarOpen = !isSidebarOpen;
+
+        // Store the sidebar state in localStorage
+        localStorage.setItem("sidebarState", isSidebarOpen ? "open" : "closed");
     }
 
     // Always listen for the transitionend on the sidebar
@@ -457,14 +462,28 @@ href="https://doi.org/10.1152/jn.00535.2009">https://doi.org/10.1152/jn.00535.20
     // Open the sidebar on page load
     // -----------------------------
     window.onload = function() {
-        // Set initial styles for open state without animation
         const sidebar = document.getElementById("mySidebar");
         const main = document.getElementById("main");
 
+        // Retrieve stored state
+        const savedState = localStorage.getItem("sidebarState");
+
+        // Determine initial state
+        if (savedState === "closed") {
+            sidebar.style.width = "0";
+            main.style.marginLeft = "0";
+            isSidebarOpen = false;
+            isSidebarFullyOpen = false;
+        } else {
+            sidebar.style.width = maxWidth;
+            main.style.marginLeft = maxWidth;
+            isSidebarOpen = true;
+            isSidebarFullyOpen = true;
+        }
+
+        // Disable transition for the initial state
         sidebar.style.transition = "none";
         main.style.transition = "none";
-        sidebar.style.width = maxWidth;
-        main.style.marginLeft = maxWidth;
 
         // Re-enable transition for subsequent toggles
         setTimeout(() => {
@@ -649,18 +668,38 @@ href="https://doi.org/10.1152/jn.00535.2009">https://doi.org/10.1152/jn.00535.20
     // ------------------------------
     // Font size buttons and dropdown
     // ------------------------------
+    document.addEventListener("DOMContentLoaded", function() {
+        const content = document.getElementById("content");
+
+        // Retrieve and apply the saved font size
+        const savedFontSize = localStorage.getItem("fontSize");
+        if (savedFontSize && content) {
+            content.style.fontSize = savedFontSize + "px";
+        }
+    });
+
     function increaseFontSize() {
         event.stopPropagation();  // Prevent dropdown from closing
         const content = document.getElementById("content");
-        const currentSize = window.getComputedStyle(content).fontSize;
-        content.style.fontSize = (parseFloat(currentSize) + 2) + "px";
+        const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
+        const newSize = currentSize + 1;
+
+        content.style.fontSize = newSize + "px";
+
+        // save font size to localStorage
+        localStorage.setItem("fontSize", newSize);
     }
 
     function decreaseFontSize() {
         event.stopPropagation();  // Prevent dropdown from closing
         const content = document.getElementById("content");
-        const currentSize = window.getComputedStyle(content).fontSize;
-        content.style.fontSize = (parseFloat(currentSize) - 2) + "px";
+        const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
+        const newSize = currentSize - 1;
+
+        content.style.fontSize = newSize + "px";
+
+        // save font size to localStorage
+        localStorage.setItem("fontSize", newSize);
     }
 
     // Dropdown for font buttons

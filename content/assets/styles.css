@@ -1,11 +1,15 @@
 /* 
-# --------------------
-# Main HTML body 
-# -------------------- 
+# ------------------------------------------------------------
+# Basic style elements for body, main, content
+# ------------------------------------------------------------ 
+*/
+
+/* 
+# Default (light mode) styling for basic elements
+# ------------------------------------------------------------ 
 */
 
 body {
-    /* font-family: "Lato", sans-serif; */
     font-family: 'Merriweather', Georgia, serif;
     color: #333;
     line-height: 1.6;
@@ -14,10 +18,31 @@ body {
     padding: 0px;
 }
 
-h1, h2, h3, h4 {
-    /* color: var(--hnn-violet); */
+h1, h2, h3, h4, h5, h6 {
+    color: #88548c;
     font-family: "Fira Sans", Helvetica, Arial, sans-serif;
     font-weight: bold;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 1.6em;
+}
+
+h2, h3 {
+    font-size: 1.5em;
+}
+
+/*
+    Element: h1::after, h2::after
+    Description: block-level pseudo-elements for h1 and h2
+*/
+h1::after, h2::after {
+    content: "";
+    display: block; 
+    height: 2px;
+    background: #88548c;
+    margin-top: 10px;
 }
 
 a {
@@ -42,6 +67,7 @@ a:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-width: 450px;
 }
 
 #content-wrapper {
@@ -55,7 +81,7 @@ a:hover {
 #content {
     padding: 10px;
     width: 100%;
-    font-size: 20px;
+    font-size: 18px;
 
 }
 
@@ -78,7 +104,10 @@ a:hover {
     margin: 0 auto;
 }
 
-/* Inline code (single backtick) */
+/*
+    Element: .code
+    Description: Style for inline code (single backticks in .md)
+*/
 code {
     color: var(--hnn-violet);
     background: none;
@@ -92,14 +121,12 @@ code {
     font-weight: normal;
     border: 2px solid #e1e4e8;
 }
-
-body.dark-mode code {
-    color: #ba83be;
-    border: solid 2px #ba83be;
-}
   
-  /* Block code (triple backticks) */
-  pre code {
+/*
+    Element: .code
+    Description: Style for block code (triple backticks in .md)
+*/
+pre code {
     color: #24292e;
     background-color: none;
     display: block;
@@ -113,16 +140,52 @@ body.dark-mode code {
     overflow: hidden;
 }
 
+/*
+# Dark mode (alternative) styling for basic elemen
+# ------------------------------------------------------------ 
+*/
+
+body.dark-mode {
+    background-color: #14181e;
+    color: #d3d3d3;
+}
+
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4,
+body.dark-mode h5, body.dark-mode h6 {
+    color: #d3d3d3;
+}
+
+body.dark-mode h1::after, body.dark-mode h2::after {
+    background: #d3d3d3;
+}
+
+body.dark-mode #content-wrapper a {
+    color: var(--hnn-yellow);
+}
+
+body.dark-mode #content-wrapper a:hover {
+    color: var(--hnn-violet);
+}
+
+body.dark-mode code {
+    color: #ba83be;
+    border: solid 2px #ba83be;
+}
+
 body.dark-mode pre code {
     background-color: #313438;
     color: #fff;
     text-shadow: none;
 }
 
+body.dark-mode #content img {
+    background-color: #fff;;
+}
+
 /* 
-# --------------------
+# ------------------------------------------------------------
 # Sidebar 
-# -------------------- 
+# ------------------------------------------------------------ 
 */
 
 .sidebar {
@@ -134,8 +197,6 @@ body.dark-mode pre code {
     top: 0;
     left: 0;
     background-color: #88548c;
-    /* overflow-x: hidden; */
-    /* overflow-y: scroll; */
     scrollbar-width: none;
     -ms-overflow-style: none;
     overflow-x: hidden; 
@@ -143,12 +204,23 @@ body.dark-mode pre code {
     padding-top: 10px;
 }
 
-/* hide scrollbar for WebKit browsers (Chrome, Safari) */
+.sidebar.dark-mode {
+    background-color: #313438;
+    border-right: 2px solid #d3d3d3 !important;
+}
+
+/*
+    Element: .sidebar::-webkit-scrollbar
+    Description: Hides scrollbar for WebKit browsers
+*/
 .sidebar::-webkit-scrollbar {
     display: none;
 }
 
-/* Add bottom space to the last element when scrolling */
+/*
+    Element: .sidebar .sidebar-list:last-child
+    Description: Add bottom space to the last element when scrolling
+*/
 .sidebar .sidebar-list:last-child {
     margin-bottom: 40px;
 }
@@ -171,7 +243,10 @@ body.dark-mode pre code {
     color: var(--hnn-yellow);
 }
 
-/* Style active page in sidebar */
+/*
+    Element: .sidebar a.active
+    Description: Style active page in sidebar
+*/
 .sidebar a.active {
     color: #fff; 
     text-decoration: underline;
@@ -184,72 +259,48 @@ body.dark-mode pre code {
     color: var(--hnn-yellow);
 }
 
-/* Custom tooltip */
-.sidebar-tooltip {
-    font-family: "Lato", sans-serif;;
-    /* background: #ba83be; */
-    background: #fff;
-    border: 2px solid #555555;  /* Add a grey border */
-    color: #555555;
-    font-weight: bold;
-    padding: 3px 6px;
-    border-radius: 4px;
-    font-size: 13px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    z-index: 9999;
-    max-width: 200px;
-    word-wrap: break-word;
-}
-
-/* Tooltip arrow */
-.sidebar-tooltip::before {
-    content: '';
-    position: absolute;
-    top: -6px;  /* Adjust to position the arrow above the tooltip */
-    left: 10%;
-    transform: translateX(-50%);
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-bottom: 6px solid #fff;  /* The arrow color */
-}
-
-/* Larger triangle behind the original arrow to simulate the border */
-.sidebar-tooltip::after {
-    content: '';
-    position: absolute;
-    top: -9px;  /* Slightly higher to position behind the original triangle */
-    left: 10%;
-    transform: translateX(-50%);
-    border-left: 9px solid transparent;  /* Larger size for the border */
-    border-right: 9px solid transparent;  /* Larger size for the border */
-    border-bottom: 9px solid #555;  /* Larger, darker border */
-    z-index: -1;
-}
-
 .sidebar .toggle-icon {
     float: right;
     font-weight: bold;
     transition: transform 0.3s;
 }
 
+/*
+    Element: .submenu
+    Description: Hides submenus by default
+    Notes:
+        'padding-left: 20px;' used to set indentation for submenu items
+*/
 .submenu {
-    display: none; /* hide submenu by default */
-    padding-left: 20px; /* indentation for the submenu items */
+    display: none;
+    padding-left: 20px;
 }
 
+/*
+    Element: .sidebar-list .submenu
+    Description: Hides sidebar-list submenus by default
+    Notes:
+        'margin-left: 0px;' used to set indentation for sidebar-list 
+            submenu items
+*/
 .sidebar-list .submenu {
-    display: none;  /* hide submenus by default */
-    margin-left: 0px;  /* indentation for submenu items */
+    display: none;
+    margin-left: 0px;
 }
 
+/*
+    Element: .sidebar-list .submenu.open
+    Description: Shows the submenu when the 'open' class is added
+*/
 .sidebar-list .submenu.open {
-    display: block;  /* show the submenu when the 'open' class is added */
-    transition: max-height 0.3s ease-in-out; /* smooth transition */
+    display: block;
+    transition: max-height 0.3s ease-in-out;
 }
 
-/* collapse all button */
+/*
+    Element: .navbar-header
+    Description: Used for collapse all button
+*/
 .navbar-header {
     display: flex;
     padding: 10px 0px 20px 0px;
@@ -261,7 +312,10 @@ body.dark-mode pre code {
     margin: 0px;
 }
 
-/* Styling for the SVG icon */
+/* 
+    Element: .collapse-icon
+    Description: Styling for the SVG icon
+*/
 .collapse-icon {
     display: block;
     margin-left: auto;
@@ -276,53 +330,106 @@ body.dark-mode pre code {
     fill: var(--hnn-yellow);
 }
 
-/* 
-# --------------------
-# Topbar
-# -------------------- 
+/*
+# Custom sidebar tooltip
+# ------------------------------------------------------------ 
 */
 
+.sidebar-tooltip {
+    font-family: "Lato", sans-serif;;
+    background: #fff;
+    border: 2px solid #555555;
+    color: #555555;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 9999;
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+/*
+    Element: .sidebar-tooltip::before
+    Description: Tooltip arrow
+    Notes:
+        'top: -6px;' used to position the arrow above the tooltip
+        'left: 10%;' used to center the arrow
+*/
+.sidebar-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 10%;
+    transform: translateX(-50%);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #fff;
+}
+
+/*
+    Notes
+    -----
+    Element: .sidebar-tooltip::after
+    Description:
+        Larger triangle behind the original arrow to simulate the border
+    Notes:
+        'top: -9px;' used to position a new triangle slightly higher to be
+            behind the original triangle
+*/
+.sidebar-tooltip::after {
+    content: '';
+    position: absolute;
+    top: -9px;
+    left: 10%;
+    transform: translateX(-50%);
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 9px solid #555;
+    z-index: -1;
+}
+
+/* 
+# ------------------------------------------------------------
+# Topbar
+# ------------------------------------------------------------ 
+*/
+
+/* 
+    Element: .topbar
+    Description: 'position: relative;' used here for the img centering
+*/
 .topbar {
     height: 50px;
+    min-width: inherit;
     display: flex;
     align-items: center;
     padding: 0 0px;
     border-bottom: 2.5px solid lightgrey;
     width: 100%;
     position: relative; 
-        /* 'relative' needed for the img centering */
+}
 
+.topbar-logo-container {
+    height: 30px;
+    width: 100%;
+    display: flex;
+    align-items: center;
 }
 
 #topbar-logo {
     height: 30px;
-    width: auto;
-
-    /* Center img around topbar */
-    position: absolute;
-        /* requires 'position: relative' in .topbar */
-    left: 50%;
-    transform: translateX(-50%);
-        /*  'transform' offsets the image's width */
-
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
+    margin: auto;
+    padding: 0px 50px;
 }
 
-.topbar:hover #topbar-logo {
-    opacity: 1; 
-}
-
-/* Hide the logo on smaller screens */
-@media (max-width: 600px) {
-    #topbar-logo {
-        display: none;
-    }
-}
-
-/* Social media icons */
-/* ------------------ */
+/*
+# Social media icons
+# ------------------------------------------------------------ 
+*/
 
 .socials-container {
     display: flex;
@@ -341,7 +448,7 @@ body.dark-mode pre code {
     display: flex;
     align-items: center;
     text-decoration: none;
-    transition: transform 0.2s ease; /* zoom transition */
+    transition: transform 0.2s ease;
 }
 
 .social-icons a img {
@@ -357,8 +464,10 @@ body.dark-mode pre code {
     filter: grayscale(100%) brightness(50%);
 }
 
-/* Topbar menu icons */
-/* ------------------ */
+/*
+# Topbar menu icons
+# ------------------------------------------------------------ 
+*/
 
 .menu-container {
     display: flex;
@@ -388,8 +497,10 @@ body.dark-mode pre code {
 }
 
 
-/* Collapse navbar */
-/* --------------- */
+/*
+# Collapse navbar
+# ------------------------------------------------------------ 
+*/
 
 .openbtn {
     font-size: 25px;
@@ -407,8 +518,10 @@ body.dark-mode pre code {
     color: #444;
 }
 
-/* Home button */
-/* ----------- */
+/*
+# Home button
+# ------------------------------------------------------------ 
+*/
 
 .home-link {
     display: inline-flex;
@@ -426,7 +539,7 @@ body.dark-mode pre code {
 }
 
 .home-icon {
-    fill: #bababa; /* Default color */
+    fill: #bababa;
     height: 22px;
     width: auto;
     transition: transform 0.2s ease;
@@ -437,8 +550,10 @@ body.dark-mode pre code {
     fill: #444;
 }
 
-/* Light/dark button */
-/* ----------------- */
+/*
+# Light/dark button
+# ------------------------------------------------------------ 
+*/
 
 .theme-toggle {
     cursor: pointer;
@@ -450,7 +565,6 @@ body.dark-mode pre code {
     border: none; 
     background: none;
     padding: 0 0px; 
-    /* transition: transform 0.3s ease; */
 }
 
 .theme-toggle svg {
@@ -465,51 +579,11 @@ body.dark-mode pre code {
     fill: #444; 
 }
 
-/* Dark mode theme */
-/* --------------- */
 
-body.dark-mode {
-    background-color: #14181e;
-    color: #d3d3d3;
-}
-
-body.dark-mode #content-wrapper a {
-    color: var(--hnn-yellow);
-}
-
-body.dark-mode #content-wrapper a:hover {
-    color: var(--hnn-violet);
-}
-
-/* body.dark-mode code {
-    color: var(--hnn-violet);
-    background-color: #d3d3d3;
-} */
-
-.sidebar.dark-mode {
-    background-color: #313438;
-    border-right: 2px solid #d3d3d3 !important;
-}
-
-body.dark-mode .dropdown-content {
-    background-color: #313438;
-}
-
-body.dark-mode .dropdown-content::before {
-    content: "";
-    position: absolute;
-    top: -8px;
-    left: 15px;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-bottom: 8px solid #313438;
-}
-
-
-/* Change font size */
-/* ---------------- */
+/*
+# Change font size button
+# ------------------------------------------------------------ 
+*/
 
 .dropdown {
     height: inherit;
@@ -521,9 +595,13 @@ body.dark-mode .dropdown-content::before {
     border: none;
 }
 
+/*
+    Element: .dropdown-button
+    Notes:
+        'all: unset' used to remove default button styles
+*/
 .dropdown-button {
     all: unset;
-        /* Remove default button styles */
     width: 100%;
     height: 100%;
     display: flex;
@@ -551,7 +629,14 @@ body.dark-mode .dropdown-content::before {
     border: 3px solid #ba83be;
 }
 
-/* Triangle pointing to pressed button */
+body.dark-mode .dropdown-content {
+    background-color: #313438;
+}
+
+/* 
+    Element: .dropdown-content::before
+    Description: Triangle pointing to pressed button
+*/
 .dropdown-content::before {
     content: "";
     position: absolute;
@@ -564,20 +649,33 @@ body.dark-mode .dropdown-content::before {
     border-bottom: 8px solid #f9f9f9;
 }
 
-/* Second triangle to act as a border */
+body.dark-mode .dropdown-content::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 15px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 8px solid #313438;
+}
+
+/*
+    Element: .dropdown-content::after
+    Description: Add second triangle to act as a border
+    Notes:
+        'top: -12px;' used to align the triangle vertically
+        'left: 11px;' used to align the triangle horizontally
+*/
 .dropdown-content::after {
     content: "";
     position: absolute;
     top: -12px; 
-        /* align vertically */
     left: 11px;
-        /* align horizontally */
     border-left: 10px solid transparent; 
-        /* larger side */
     border-right: 10px solid transparent; 
-        /* larger side */
     border-bottom: 12px solid #ba83be; 
-        /* larger triangle */
     z-index: -1; 
 }
 
@@ -595,17 +693,17 @@ body.dark-mode .dropdown-content::before {
 }
 
 /* 
-# --------------------
+# ------------------------------------------------------------
 # Callout box
-# -------------------- 
+# ------------------------------------------------------------ 
 */
 
 .callout {
     background-color: #fedfdf;
-    padding: 2px; /* Padding around the callout */
-    border-radius: 5px; /* Rounded corners */
+    padding: 2px;
+    border-radius: 5px;
     padding: 10px;
-    margin: 1.2em 0; /* Margin for spacing */
+    margin: 1.2em 0;
 }
 
 .callout code {
@@ -613,18 +711,23 @@ body.dark-mode .dropdown-content::before {
 }
 
 body.dark-mode .callout {
-    /* background-color: rgb(251, 237, 237); */
     background-color: #313438;
-    padding: 2px; /* Padding around the callout */
-    border-radius: 5px; /* Rounded corners */
+    padding: 2px;
+    border-radius: 5px;
     border: 2px solid #ff7777;
     padding: 10px;
-    margin: 1.2em 0; /* Margin for spacing */
+    margin: 1.2em 0;
 }
-  
+
+/* 
+    Element: .callout-table
+    Description: Table layout for callout box
+    Notes: 
+        'border-collapse: collapse;' used to prevent double borders
+*/
 .callout-table {
     width: 100%; 
-    border-collapse: collapse; /* Prevent double borders */
+    border-collapse: collapse;
     margin: 0;
 }
 
@@ -642,9 +745,9 @@ body.dark-mode .callout {
 }  
 
 /* 
-# --------------------
+# ------------------------------------------------------------
 # Footer
-# -------------------- 
+# ------------------------------------------------------------ 
 */
 
 .footer-area {
@@ -653,7 +756,6 @@ body.dark-mode .callout {
     width: 100%;
     font-size: 0.85em;
     font-family: "Fira Sans", Helvetica, Arial;
-    /* color: #333; */
     margin: 40px 0px;
 }
 
@@ -684,15 +786,21 @@ body.dark-mode .callout {
     max-width: 250px !important;
 }
 
+/* 
+    Notes
+    -----
+    Element: .next-text
+    Description: 
+        The 'unused elements' below will fix an issue with the ellipses not
+        rendering with text-align: right, though this solution
+        would need to be implemented in a new div element that
+        wraps the next-text <a>
+    Unused elements:
+        display: flex;
+        justify-content: flex-end;
+*/
 .next-text {
     text-align: right;
-    /* the options below will fix an issue with the ellipses not */
-    /* rendering with text-align: right, though this solution */
-    /* would need to be implemented in a new div element that */
-    /* wraps the next-text <a>
-
-    /* display: flex; */
-    /* justify-content: flex-end; */
 }
 
 .previous-text p, .next-text p {
@@ -708,8 +816,6 @@ body.dark-mode .callout {
 .previous-text a, .next-text a {
     font-size: 0.9em;
     font-weight: bold;
-    /* display: block; */
-    /* white-space: nowrap; */
     white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -726,7 +832,10 @@ body.dark-mode .callout {
     padding-right: 10px;
 }
 
-/* rotate icon on the horizontal axis */
+/* 
+    Element: .next-icon
+    Description: Rotate the icon on the horizontal axis 
+*/
 .next-icon {
     display: flex;
     align-items: center;
@@ -734,7 +843,10 @@ body.dark-mode .callout {
     transform: scaleX(-1);
 }
 
-/* apply properties to svg path */
+/* 
+    Element: .arrow-path
+    Description: Apply properties to svg path
+*/
 .arrow-path {
     stroke: currentColor;
     stroke-width: 2;
@@ -743,25 +855,18 @@ body.dark-mode .callout {
 }
 
 .footer-area .previous-icon svg, .footer-area .next-icon svg {
-    /* color: #ba83be; */
     color: #5e5d5d
 }
 
-
-
 /* 
-# --------------------
+# ------------------------------------------------------------
 # Notebook html 
-# -------------------- 
+# ------------------------------------------------------------ 
 */
 
-/* markdown cells */
 .markdown-cell {
     margin: 10px 0px;
     padding: 0px;
-    /* background-color: #f2f2f2; */
-    /* color: #333; */
-    /* border: 1px solid #ddd; */
 }
 
 .code-cell {
@@ -772,13 +877,9 @@ body.dark-mode .callout {
     border-radius: 5px;
     border: solid 2px #ba83be;
     overflow: hidden;
-    /* overflow-y: hidden; */
-    /* overflow-x: scroll; */
 }
 
-/* code cells */
 .code-cell code.language-python {
-    /* box-sizing: border-box !important; */
     display: block;
     background-color: #fff;
     padding: 15px 30px;
@@ -795,7 +896,10 @@ body.dark-mode .code-cell code.language-python{
     text-shadow: none;
 }
 
-/* Styling for the output cell */
+/* 
+    Element: .output-cell
+    Description: Styling for the jupyter notebook output cell
+*/
 .output-cell {
     display: flex;
     align-items: flex-start;
@@ -805,8 +909,6 @@ body.dark-mode .code-cell code.language-python{
 
 .output-label {
     font-family: 'Courier New', monospace;
-    /* font-weight: bold; */
-    /* color: #ba83be; */
     color: #fe6565;
     font-size: 0.9em;
 }
@@ -815,16 +917,22 @@ body.dark-mode .output-label {
     font-weight: bold;
 }
 
+/*
+    Element: .output-code
+    Description: Styling for the jupyter notebook output code
+    Notes: 
+        'max-height: calc(1em * 10);' used to set a max height of 10 lines
+            before scrolling
+        'flex-grow: 1;' used to allow the code output to fill the 
+            available space
+*/
 .output-code {
     display: block;
     overflow-y: auto;
     overflow-x: hidden;
     max-height: calc(1em * 10);
-        /* 10 lines max before scroll, adjust as needed */
     flex-grow: 1; 
-        /* Allow code ouput to fill available space */
     white-space: pre-line;
-    /* background-color: #fbfae1; */
     color: #333 !important;
     margin: 0px 10px;
     margin-top: 0px;
@@ -837,7 +945,6 @@ body.dark-mode .output-code {
     font-weight: 500;
 }
 
-/* output images */
 .output-cell img {
     max-width: 100%;
     height: auto;
@@ -846,7 +953,11 @@ body.dark-mode .output-code {
 
 }
 
-/* Target specific syntax elements */
+/*
+# Adjust specific code syntax elements
+# ------------------------------------------------------------ 
+*/
+
 .code-cell code .token {
     background: none !important;
 }
@@ -872,9 +983,9 @@ body.dark-mode .code-cell code .token.punctuation {
 }
     
 /* 
-# --------------------
+# ------------------------------------------------------------
 # Responsiveness
-# -------------------- 
+# ------------------------------------------------------------ 
 */
 
 @media screen and (max-height: 450px) {
@@ -883,13 +994,16 @@ body.dark-mode .code-cell code .token.punctuation {
 }
 
 /* 
-# --------------------
+# ------------------------------------------------------------
 # Variables 
-# -------------------- 
+# ------------------------------------------------------------ 
 */
 
-/* Custom HNN colors */
-/* ----------------- */
+/*
+# Custom HNN colors
+# ------------------------------------------------------------ 
+*/
+
 .hnn-blue { color: #1156A3; }
 .hnn-purple { color: #474095; }
 .hnn-violet { color: #812A89; }

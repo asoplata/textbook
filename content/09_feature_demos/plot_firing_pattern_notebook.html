@@ -26,7 +26,9 @@ from hnn_core import read_spikes, jones_2009_model, simulate_dipole
 </div>
 <div class='markdown-cell'>
 	<p>Now let's build the network. We have used the same weights as in the
-<code>evoked example &amp;lt;sphx_glr_auto_examples_plot_simulate_evoked.py&amp;gt;</code>.</p>
+<a
+href="https://dylansdaniels.github.io/website_redesign/content/05_erps/hnn_core.html">ERP
+example</a>.</p>
 
 </div>
 <div class='code-cell'>
@@ -102,8 +104,9 @@ dpls = simulate_dipole(net, tstop=170., record_vsec='soma')
 <div class='markdown-cell'>
 	<p>Here, we explain more details about the data structures and how they
 can be used to better interpret the data. The cell IDs (gids) uniquely
-define neurons in the network and are stored in the
-:class:<code>~hnn_core.Network</code> object as a dictionary</p>
+define neurons in the network and are stored in the <a
+href="https://jonescompneurolab.github.io/hnn-core/stable/generated/hnn_core.Network.html#hnn_core.Network">Network</a>
+object as a dictionary</p>
 
 </div>
 <div class='code-cell'>
@@ -114,9 +117,10 @@ print(net.gid_ranges)
 </div>
 <div class='markdown-cell'>
 	<p>Simulated voltage in the soma and other cell sections are stored in
-:class:<code>~hnn_core.CellResponse</code> as a dictionary. The
-CellResponse object stores data produced by individual cells including
-spikes, voltages and currents.</p>
+<a
+href="https://jonescompneurolab.github.io/hnn-core/stable/generated/hnn_core.CellResponse.html#hnn_core.CellResponse">CellResponse</a>
+as a dictionary. The CellResponse object stores data produced by
+individual cells including spikes, voltages and currents.</p>
 
 </div>
 <div class='code-cell'>
@@ -145,17 +149,19 @@ plt.show()
 <div class='markdown-cell'>
 	<p>Also, we can plot the spikes in the network and write them to text
 files. Note that we can use formatting syntax to specify the filename
-pattern with which each trial will be written ('spk_1.txt', 'spk_2.txt,
-…). To read spikes back in, we can use wildcard expressions.</p>
+pattern with which each trial will be written
+<code>(&amp;#x27;spk_1.txt&amp;#x27;, &amp;#x27;spk_2.txt, ...)</code>.
+To read spikes back in, we can use wildcard expressions.</p>
 
 </div>
 <div class='code-cell'>
 	<code class='language-python'>
-		net.cell_response.plot_spikes_raster()
+		net.cell_response.plot_spikes_raster(show=False)
 with tempfile.TemporaryDirectory() as tmp_dir_name:
     net.cell_response.write(op.join(tmp_dir_name, 'spk_%d.txt'))
     cell_response = read_spikes(op.join(tmp_dir_name, 'spk_*.txt'))
-cell_response.plot_spikes_raster()
+cell_response.plot_spikes_raster(show=False)
+plt.show()
 	</code>
 </div>
 <div class='markdown-cell'>
@@ -192,10 +198,13 @@ for idx in range(10):  # only 10 cells per cell-type
     axes[0].plot(net.cell_response.times, vsec[gid]['soma'], color='g')
     gid = gid_ranges['L5_pyramidal'][idx]
     axes[0].plot(net.cell_response.times, vsec[gid]['soma'], color='r')
-net.cell_response.plot_spikes_raster(ax=axes[1])
+
+net.cell_response.plot_spikes_raster(ax=axes[1], show=False)
 net.cell_response.plot_spikes_hist(ax=axes[2],
                                    spike_types=['L5_pyramidal',
-                                                'L2_pyramidal'])
+                                                'L2_pyramidal'],
+                                   show=False)
+plt.show()
 	</code>
 </div>
 </body></html>
