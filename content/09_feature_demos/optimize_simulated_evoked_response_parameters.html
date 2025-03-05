@@ -873,6 +873,30 @@ plt.show()
         });
     });
 
+    // ----------------------------------------
+    // Add a clickable '#' for each heading 
+    // that directs to that heading
+    // ----------------------------------------
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach(header => {
+            if (!header.id) {
+                let text = header.textContent.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '');
+                header.id = text;
+            }
+
+            // Avoid adding duplicate links if the script runs multiple times
+            if (!header.querySelector(".headerlink")) {
+                let link = document.createElement("a");
+                link.className = "headerlink";
+                link.href = `#${header.id}`;
+                link.title = "Link to this heading";
+                link.textContent = " #"; // Space before # for spacing
+
+                header.appendChild(link);
+            }
+        });
+    });
+
 </script>
 
 <!------------------------ #
