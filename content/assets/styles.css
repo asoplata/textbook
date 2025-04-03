@@ -146,6 +146,8 @@ code {
     color: var(--text-light);
     display: block;
     padding: 20px 40px;
+    margin: 15px;
+    word-wrap: break-word;
 }
 
 body.dark-mode #block {
