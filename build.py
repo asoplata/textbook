@@ -332,7 +332,8 @@ def main():
     parser.add_argument(
         "--force-execute-all",
         action="store_true",
-        help="Force execute all notebooks regardless of their status"
+        help="Force execute all notebooks regardless of their status, "
+             "including normally 'skipped' notebooks."
     )
     args = parser.parse_args()
 
