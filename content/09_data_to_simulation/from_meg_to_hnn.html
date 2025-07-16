@@ -7,6 +7,7 @@
     <!-- <base href="/textbook/"> -->
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/styles.css">
+    <script src="../../templates/scripts.js" defer></script>
 </head>
 <body>
 
@@ -278,6 +279,14 @@ automatically.</p>
         %pip install -q mne nibabel ipyevents "pyvista[all]" pyvistaqt
     </code>
 </div>
+<div class='output-cell'><div class='output-label'>
+    Out:
+</div>
+    <div class='output-code'>
+        Note: you may need to restart the kernel to use updated packages.
+
+    </div>
+</div>
 <div class='code-cell'>
     <code class='language-python'>
         # Needed for certain plotting to work
@@ -286,6 +295,14 @@ from mne.viz import set_3d_backend
 set_3d_backend('notebook')
 pv.set_jupyter_backend('client')
     </code>
+</div>
+<div class='output-cell'><div class='output-label'>
+    Out:
+</div>
+    <div class='output-code'>
+        Using notebook 3d backend.
+
+    </div>
 </div>
 <div class='markdown-cell'>
     <p>We will import the packages needed for computing the inverse solution
@@ -348,6 +365,138 @@ cov = mne.compute_covariance(epochs)
 inv = make_inverse_operator(epochs.info, fwd, cov)
     </code>
 </div>
+<div class='output-cell'><div class='output-label'>
+    Out:
+</div>
+    <div class='output-code'>
+        Opening raw data file /Users/dylandaniels/mne_data/MNE-somato-data/sub-01/meg/sub-01_task-somato_meg.fif...
+
+            Range : 237600 ... 506999 =    791.189 ...  1688.266 secs
+
+        Ready.
+
+        Reading 0 ... 269399  =      0.000 ...   897.077 secs...
+
+        Filtering raw data in 1 contiguous segment
+
+        Setting up band-pass filter from 1 - 40 Hz
+
+        
+
+        FIR filter parameters
+
+        ---------------------
+
+        Designing a one-pass, zero-phase, non-causal bandpass filter:
+
+        - Windowed time-domain design (firwin) method
+
+        - Hamming window with 0.0194 passband ripple and 53 dB stopband attenuation
+
+        - Lower passband edge: 1.00
+
+        - Lower transition bandwidth: 1.00 Hz (-6 dB cutoff frequency: 0.50 Hz)
+
+        - Upper passband edge: 40.00 Hz
+
+        - Upper transition bandwidth: 10.00 Hz (-6 dB cutoff frequency: 45.00 Hz)
+
+        - Filter length: 993 samples (3.307 s)
+
+        
+
+        111 events found on stim channel STI 014
+
+        Event IDs: [1]
+
+        Not setting metadata
+
+        111 matching events found
+
+        No baseline correction applied
+
+        0 projection items activated
+
+        Using data from preloaded Raw for 111 events and 112 original time points ...
+
+        0 bad epochs dropped
+
+        Reading forward solution from /Users/dylandaniels/mne_data/MNE-somato-data/derivatives/sub-01/sub-01_task-somato-fwd.fif...
+
+            Reading a source space...
+
+            [done]
+
+            Reading a source space...
+
+            [done]
+
+            2 source spaces read
+
+            Desired named matrix (kind = 3523 (FIFF_MNE_FORWARD_SOLUTION_GRAD)) not available
+
+            Read MEG forward solution (8155 sources, 306 channels, free orientations)
+
+            Source spaces transformed to the forward solution coordinate frame
+
+        Reducing data rank from 306 -&gt; 306
+
+        Estimating covariance using EMPIRICAL
+
+        Done.
+
+        Number of samples used : 12432
+
+        [done]
+
+        Converting forward solution to surface orientation
+
+            No patch info available. The standard source space normals will be employed in the rotation to the local surface coordinates....
+
+            Converting to surface-based source orientations...
+
+            [done]
+
+        Computing inverse operator with 306 channels.
+
+            306 out of 306 channels remain after picking
+
+        Selected 306 channels
+
+        Creating the depth weighting matrix...
+
+            204 planar channels
+
+            limit = 7615/8155 = 10.004172
+
+            scale = 5.17919e-08 exp = 0.8
+
+        Applying loose dipole orientations to surface source spaces: 0.2
+
+        Whitening the forward solution.
+
+        Computing rank from covariance with rank=None
+
+            Using tolerance 2e-12 (2.2e-16 eps * 306 dim * 29  max singular value)
+
+            Estimated rank (mag + grad): 64
+
+            MEG: rank 64 computed from 306 data channels with 0 projectors
+
+            Setting small MEG eigenvalues to zero (without PCA)
+
+        Creating the source covariance matrix
+
+        Adjusting source covariance matrix.
+
+        Computing SVD of whitened and weighted lead field matrix.
+
+            largest singular value = 2.42284
+
+            scaling factor to adjust the trace = 3.86104e+18 (nchan = 306 nzero = 242)
+
+    </div>
+</div>
 <div class='markdown-cell'>
     <p>There are several methods to do source reconstruction. Some of the
 methods such as MNE are distributed source methods whereas dipole
@@ -369,6 +518,36 @@ stc = apply_inverse(evoked, inv, lambda2, method='MNE',
                     verbose=True)
     </code>
 </div>
+<div class='output-cell'><div class='output-label'>
+    Out:
+</div>
+    <div class='output-code'>
+        Preparing the inverse operator for use...
+
+            Scaled noise and source covariance from nave = 1 to nave = 111
+
+            Created the regularized inverter
+
+            The projection vectors do not apply to these channels.
+
+            Created the whitener using a noise covariance matrix with rank 64 (242 small eigenvalues omitted)
+
+        Applying inverse operator to &quot;1&quot;...
+
+            Picked 306 channels from the data
+
+            Computing inverse...
+
+            Eigenleads need to be weighted ...
+
+            Computing residual...
+
+            Explained  86.1% variance
+
+        [done]
+
+    </div>
+</div>
 <div class='markdown-cell'>
     <p>To extract the primary response in primary somatosensory cortex (S1),
 we create a label for the postcentral gyrus (S1) in source-space</p>
@@ -382,6 +561,16 @@ label_s1 = mne.read_labels_from_annot(subject, parc='aparc.a2009s', hemi=hemi,
                                       regexp=label_tag,
                                       subjects_dir=subjects_dir)[0]
     </code>
+</div>
+<div class='output-cell'><div class='output-label'>
+    Out:
+</div>
+    <div class='output-code'>
+        Reading labels from parcellation...
+
+           read 1 labels from /Users/dylandaniels/mne_data/MNE-somato-data/derivatives/freesurfer/subjects/01/label/rh.aparc.a2009s.annot
+
+    </div>
 </div>
 <div class='markdown-cell'>
     <p>Visualizing the distributed S1 activation in reference to the
@@ -409,6 +598,13 @@ brain = stc_label.plot(subjects_dir=subjects_dir, hemi=hemi, surface='white',
                        backend='pyvista')
 '''
     </code>
+</div>
+<div class='output-cell'><div class='output-label'>
+    Out:
+</div>
+    <div class='output-code'>
+        &quot;\nBrain = mne.viz.get_brain_class()\nbrain_label = Brain(subject, hemi, &#x27;white&#x27;, subjects_dir=subjects_dir)\nbrain_label.add_label(label_s1, color=&#x27;green&#x27;, alpha=0.9)\nstc_label = stc.in_label(label_s1)\nbrain = stc_label.plot(subjects_dir=subjects_dir, hemi=hemi, surface=&#x27;white&#x27;,\n                       view_layout=&#x27;horizontal&#x27;, initial_time=0.04,\n                       backend=&#x27;pyvista&#x27;)\n&quot;
+    </div>
 </div>
 <div class='markdown-cell'>
     <figure>
@@ -455,6 +651,18 @@ plt.xlim((0, 170))
 plt.axhline(0, c='k', ls=':')
 plt.show()
     </code>
+</div>
+<div class='output-cell'><div class='output-label'>
+    Out:
+</div>
+    <div class='output-code'>
+        Extracting time courses for 1 labels (mode: pca_flip)
+
+        &lt;Figure size 640x480 with 1 Axes&gt;
+    </div>
+</div>
+<div class='output-cell'>
+    <img src='output_nb_from_meg_to_hnn_notebook/fig_01.png'/>
 </div>
 <div class='markdown-cell'>
     <p>Now, let us try to simulate the same with <code>hnn-core</code>. We
@@ -557,6 +765,14 @@ with JoblibBackend(n_jobs=2):
     dpls = simulate_dipole(net, tstop=170., n_trials=n_trials)
     </code>
 </div>
+<div class='output-cell'><div class='output-label'>
+    Out:
+</div>
+    <div class='output-code'>
+        Joblib will run 2 trial(s) in parallel by distributing trials over 2 jobs.
+
+    </div>
+</div>
 <div class='markdown-cell'>
     <p>Since the model is a reduced representation of the larger network
 contributing to the response, the model response is noisier than it
@@ -596,6 +812,26 @@ axes[1].legend(['MNE label average', 'HNN simulation'])
 axes[1].set_ylabel('Current Dipole (nAm)')
 net.cell_response.plot_spikes_raster(ax=axes[2])
     </code>
+</div>
+<div class='output-cell'><div class='output-label'>
+    Out:
+</div>
+    <div class='output-code'>
+        &lt;Figure size 600x600 with 3 Axes&gt;
+    </div>
+</div>
+<div class='output-cell'>
+    <img src='output_nb_from_meg_to_hnn_notebook/fig_02.png'/>
+</div>
+<div class='output-cell'><div class='output-label'>
+    Out:
+</div>
+    <div class='output-code'>
+        &lt;Figure size 600x600 with 3 Axes&gt;
+    </div>
+</div>
+<div class='output-cell'>
+    <img src='output_nb_from_meg_to_hnn_notebook/fig_03.png'/>
 </div><div class='markdown-cell'>
     <h2>References</h2>
 <p>[1] Jones, S. R., Pritchett, D. L., Stufflebeam, S. M., Hämäläinen,
@@ -637,445 +873,7 @@ https://doi.org/10.7554/eLife.51214</p>
         </div> <!-- close footer -->
     </div> <!-- close content -->
     </div> <!-- close content wrapper -->
-</div> <!-- close main -->
-<script>
-    // ----------------------------------------
-    // Manage footer
-    // ----------------------------------------
-    // This function will update the footer links when a page is loaded
-    // locally so that naivagation remains functional without a server
-    // Note: this solution is specific to MacOS
-    document.addEventListener("DOMContentLoaded", function() {
-        if (window.location.protocol === "file:") {
-            // Get the current local directory path
-            const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-
-            // Process both previous and next links
-            document.querySelectorAll('.previous-area, .next-area').forEach(function(area) {
-                const link = area.getAttribute('data-link');
-                
-                if (link && link.startsWith("/")) {
-                    // Extract the local root directory
-                    const rootPath = currentDir.split("/textbook/")[0];
-                    // Prepend root path to link
-                    const resolvedLink = "file://" + rootPath + link;
-                    area.setAttribute("data-link", resolvedLink);
-                }
-            });
-        }
-    });
-    // Hide the area if data-link is 'None'
-    document.querySelectorAll('.previous-area, .next-area').forEach(function(area) {
-        if (area.getAttribute('data-link') === 'None') {
-            area.style.display = 'none'; 
-        }
-    });
-
-    // Redirect to the specified link
-    document.querySelectorAll('.previous-area, .next-area').forEach(function(area) {
-        area.addEventListener('click', function() {
-            window.location.href = area.getAttribute('data-link');
-        });
-    });
-
-    // ----------------------------------------
-    // Manage sidebar
-    // ----------------------------------------
-    let isSidebarOpen = true; // Sidebar is initially open
-    let isSidebarFullyOpen = true; // Sidebar is fully open
-    const maxWidth = '350px';
-
-    function toggleNav() {
-        const sidebar = document.getElementById("mySidebar");
-        const main = document.getElementById("main");
-        const topbar = document.querySelector(".topbar");
-
-        // Toggle sidebar state
-        if (isSidebarOpen) {
-            sidebar.style.width = "0";
-            main.style.marginLeft = "0";
-            topbar.style.marginLeft = "0";
-            topbar.style.width = "100%";
-            isSidebarFullyOpen = false;
-        } else {
-            sidebar.style.width = maxWidth;
-            main.style.marginLeft = maxWidth;
-                // match margin to new width
-            topbar.style.marginLeft = maxWidth;
-            topbar.style.width = `calc(100% - ${maxWidth})`;
-                // adjust topbar width
-        }
-
-        // Toggle the sidebar state
-        isSidebarOpen = !isSidebarOpen;
-
-        // Store the sidebar state in localStorage
-        localStorage.setItem("sidebarState", isSidebarOpen ? "open" : "closed");
-    }
-
-    // Always listen for the transitionend on the sidebar
-    const sidebar = document.getElementById("mySidebar");
-    sidebar.addEventListener('transitionend', function() {
-        if (sidebar.style.width === maxWidth) {
-            // Sidebar has fully opened
-            isSidebarFullyOpen = true;
-        } else {
-            // Sidebar is not fully open
-            isSidebarFullyOpen = false;
-        }
-    });
-
-    // Open the sidebar on page load
-    // -----------------------------
-
-    // Apply sidebar state before the page renders
-    // Added to help with initial page "flicker" as the position is
-    // calculated and applied
-    const savedState = localStorage.getItem("sidebarState");
-    if (savedState === "closed") {
-        document.body.classList.add("sidebar-closed");
-    } else {
-        document.body.classList.add("sidebar-open");
-    }
-
-    window.onload = function() {
-        const sidebar = document.getElementById("mySidebar");
-        const main = document.getElementById("main");
-        const topbar = document.querySelector(".topbar");
-
-        // Retrieve stored state
-        const savedState = localStorage.getItem("sidebarState");
-
-        // Determine initial state
-        if (savedState === "closed") {
-            sidebar.style.width = "0";
-            main.style.marginLeft = "0";
-            topbar.style.marginLeft = "0";
-            topbar.style.width = "100%";
-            isSidebarOpen = false;
-            isSidebarFullyOpen = false;
-        } else {
-            sidebar.style.width = maxWidth;
-            main.style.marginLeft = maxWidth;
-            topbar.style.marginLeft = maxWidth;
-            topbar.style.width = `calc(100% - ${maxWidth})`;
-            isSidebarOpen = true;
-            isSidebarFullyOpen = true;
-        }
-
-        // Disable transition for the initial state
-        sidebar.style.transition = "none";
-        main.style.transition = "none";
-        topbar.style.transition = "none";
-
-        // Re-enable transition for subsequent toggles
-        setTimeout(() => {
-            sidebar.style.transition = "width 0.5s";
-            main.style.transition = "margin-left 0.5s";
-            topbar.style.transition = "margin-left 0.5s, width 0.5s";
-        }, 10);
-    }
-
-    function toggleSubmenu(event) {
-        const header = event.target.closest('#sidebar-header');
-            // Get the clicked header
-        const submenu = header.nextElementSibling;
-            // Get the submenu
-        const toggleIcon = header.querySelector('.toggle-icon');
-            // Get the icon
-
-        if (submenu && submenu.classList.contains('submenu')) {
-            submenu.classList.toggle('open'); 
-                // Toggle the 'open' class to control visibility
-            toggleIcon.textContent = submenu.classList.contains('open') ? '-' : '+'; 
-                // Update icon
-        }
-    }
-
-    // Resolve sidebar links for local development
-    // -------------------------------------------
-    // This function will update the sidebar links when a page is loaded
-    // locally so that sidebar naivagation remains functional without a server
-    // Note: this solution is specific to MacOS
-    document.addEventListener("DOMContentLoaded", function() {
-        if (window.location.protocol === "file:") {
-            // get the current local directory path
-            const currentDir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-
-            // get 'absolute' links with root of 'textbook'
-            const links = document.querySelectorAll("#mySidebar a");
-            links.forEach(link => {
-                const href = link.getAttribute("href");
-
-                if (href && href.startsWith("/")) {
-                    // extract the local root directory
-                    const rootPath = currentDir.split("/textbook/")[0];
-                    // prepend root path to link
-                    const resolvedHref = "file://" + rootPath + href;
-                    link.setAttribute("href", resolvedHref);
-                }
-            });
-
-            // Update image sources for icons
-            const images = document.querySelectorAll(".social-icons img, .menu-icons img");
-            images.forEach(img => {
-                const src = img.getAttribute("src");
-
-                if (src && src.startsWith("/")) {
-                    // extract the local root directory
-                    const rootPath = currentDir.split("/textbook/")[0];
-                    // prepend root path to image source
-                    const resolvedSrc = "file://" + rootPath + src;
-                    img.setAttribute("src", resolvedSrc);
-                }
-            });
-        }
-    });
-
-    // Custom tooltips for the sidebar
-    // -------------------------------
-    // Flag to track tooltip visibility
-    let isTooltipVisible = false;
-
-    // Add text to the 'sidebar-tooltip' attribute for sidebar anchor tags
-    document.querySelectorAll('.sidebar a').forEach(anchor => {
-        const cleanedText = anchor.textContent.replace(/[+\-]/g, '').trim();
-        anchor.setAttribute('sidebar-tooltip', cleanedText);
-    });
-
-    // Handle sidebar tooltips
-    document.querySelectorAll('.sidebar a').forEach(function(link) {
-        link.addEventListener('mouseenter', function(event) {
-            const tooltipText = event.target.getAttribute('sidebar-tooltip');
-            
-            if (!tooltipText || isTooltipVisible || !isSidebarFullyOpen) return; // Only show tooltip if none is visible
-
-            // Check if the text is overflowing
-            if (event.target.scrollWidth > event.target.offsetWidth) {
-                const delay = 500; // Set the delay time (in ms), adjust as needed
-
-                // Create the tooltip after the delay
-                setTimeout(function() {
-                    // Remove any existing tooltips
-                    const existingTooltip = document.querySelector('.sidebar-tooltip');
-                    if (existingTooltip) {
-                        existingTooltip.remove();
-                    }
-
-                    // Create the tooltip element dynamically
-                    const tooltip = document.createElement('div');
-                    tooltip.classList.add('sidebar-tooltip');  // Use the existing class
-                    tooltip.innerText = tooltipText;
-
-                    // Append the tooltip to the sidebar container
-                    const sidebarContainer = document.querySelector('.sidebar');
-                    sidebarContainer.appendChild(tooltip);
-
-                    // Get the position of the link and the sidebar container
-                    const rect = event.target.getBoundingClientRect();
-                    const sidebarRect = sidebarContainer.getBoundingClientRect();
-
-                    // Position the tooltip relative to the sidebar container
-                    tooltip.style.position = 'absolute';
-                    tooltip.style.left = `${rect.left - sidebarRect.left + sidebarContainer.scrollLeft + 20}px`;
-                    tooltip.style.top = `${rect.bottom - sidebarRect.top + sidebarContainer.scrollTop + 5}px`;
-
-                    // Make sure the tooltip is visible
-                    tooltip.style.opacity = '1';
-
-                    // Set the flag to true indicating that the tooltip is visible
-                    isTooltipVisible = true;
-                }, delay); // Delay the tooltip creation
-            }
-        });
-
-        link.addEventListener('mouseleave', function(event) {
-            // Remove the tooltip when the mouse leaves
-            const tooltip = document.querySelector('.sidebar-tooltip');
-            if (tooltip) {
-                tooltip.remove();
-            }
-
-            // Reset the flag to false when the tooltip is removed
-            isTooltipVisible = false;
-        });
-    });
-
-    // Close all open submenus in the sidebar
-    // --------------------------------------
-    document.addEventListener("DOMContentLoaded", function() {
-        // Function to close all open submenus in the navbar
-        function closeAllSubmenus() {
-            const allSubmenus = document.querySelectorAll('.submenu.open'); // Select all open submenus
-            allSubmenus.forEach(submenu => {
-                submenu.classList.remove('open'); // Remove 'open' class to collapse
-                const toggleIcon = submenu.previousElementSibling.querySelector('.toggle-icon');
-                if (toggleIcon) {
-                    toggleIcon.textContent = '+'; // Reset icon to '+'
-                }
-            });
-        }
-
-        // Add functionality to collapse button (SVG icon)
-        const collapseIcon = document.querySelector('.collapse-icon');
-        if (collapseIcon) {
-            collapseIcon.addEventListener('click', function(event) {
-                event.stopPropagation(); // Prevent event propagation to avoid unwanted behavior
-                closeAllSubmenus(); // Close all open submenus when the icon is clicked
-            });
-        }
-    });
-
-    // Keep the current page open in the sidebar
-    // -----------------------------------------
-    document.addEventListener("DOMContentLoaded", function () {
-        // Get the full path relative to the 'content' folder
-        const currentPage = window.location.pathname.split("/content/")[1].split("?")[0];
-
-        // Find the active link using the full path
-        const activeLink = document.querySelector(`#mySidebar a[href$='${currentPage}']`);
-
-        if (activeLink) {
-            // Apply the active class
-            activeLink.classList.add("active");
-             // Find the closest submenu
-            const submenu = activeLink.closest('.submenu');
-
-            if (submenu) {
-                // Keep the submenu open
-                submenu.classList.add('open');
-                const toggleIcon = submenu.previousElementSibling.querySelector('.toggle-icon');
-
-                if (toggleIcon) {
-                    // Ensure the toggle icon reflects the open state
-                    toggleIcon.textContent = '-';
-                }
-            }
-        }
-    });
-
-    // ------------------------------
-    // Font size buttons and dropdown
-    // ------------------------------
-    document.addEventListener("DOMContentLoaded", function() {
-        const content = document.getElementById("content");
-
-        // Retrieve and apply the saved font size
-        const savedFontSize = localStorage.getItem("fontSize");
-        if (savedFontSize && content) {
-            content.style.fontSize = savedFontSize + "px";
-        }
-    });
-
-    function increaseFontSize() {
-        event.stopPropagation();  // Prevent dropdown from closing
-        const content = document.getElementById("content");
-        const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
-        const newSize = currentSize + 1;
-
-        content.style.fontSize = newSize + "px";
-
-        // save font size to localStorage
-        localStorage.setItem("fontSize", newSize);
-    }
-
-    function decreaseFontSize() {
-        event.stopPropagation();  // Prevent dropdown from closing
-        const content = document.getElementById("content");
-        const currentSize = parseFloat(window.getComputedStyle(content).fontSize);
-        const newSize = currentSize - 1;
-
-        content.style.fontSize = newSize + "px";
-
-        // save font size to localStorage
-        localStorage.setItem("fontSize", newSize);
-    }
-
-    // Dropdown for font buttons
-    function toggleDropdown() {
-        const dropdownContent = document.querySelector('.dropdown-content');
-        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-    }
-
-    // Open/close dropdown on click of the button
-    document.getElementById('dropdownButton').onclick = function(event) {
-        event.stopPropagation();  // Prevent the click from triggering the window.onclick event
-        toggleDropdown();
-    };
-
-    // Close dropdown if clicking outside
-    window.onclick = function(event) {
-        const dropdownContent = document.querySelector('.dropdown-content');
-        if (!event.target.closest('.dropdown')) {  // Close if click outside the dropdown
-            dropdownContent.style.display = 'none';
-        }
-    };
-
-    // ----------------------------------------
-    // Toggle between light and dark themes
-    // ----------------------------------------
-    // Wait for the DOM to be fully loaded
-    document.addEventListener('DOMContentLoaded', () => {
-        const themeToggle = document.querySelector('.theme-toggle');
-        const sidebar = document.querySelector('.sidebar');
-        const sunSVG = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"></path>
-            </svg>
-        `;
-        const moonSVG = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"></path>
-            </svg>
-        `;
-
-        // Check the saved theme preference
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.body.classList.toggle('dark-mode', savedTheme === 'dark');
-            themeToggle.innerHTML = savedTheme === 'dark' ? moonSVG : sunSVG;
-            sidebar.classList.toggle('dark-mode', savedTheme === 'dark');
-        } else {
-            // Default to light theme if no saved preference
-            themeToggle.innerHTML = sunSVG;
-        }
-
-        // Add click event to toggle theme
-        themeToggle.addEventListener('click', () => {
-            const isDarkMode = document.body.classList.toggle('dark-mode');
-            themeToggle.innerHTML = isDarkMode ? moonSVG : sunSVG;
-            sidebar.classList.toggle('dark-mode', isDarkMode);
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-        });
-    });
-
-    // ----------------------------------------
-    // Add a clickable '#' for each heading 
-    // that directs to that heading
-    // ----------------------------------------
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach(header => {
-            if (!header.id) {
-                let text = header.textContent.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '');
-                header.id = text;
-            }
-
-            // Avoid adding duplicate links if the script runs multiple times
-            if (!header.querySelector(".headerlink")) {
-                let link = document.createElement("a");
-                link.className = "headerlink";
-                link.href = `#${header.id}`;
-                link.title = "Link to this heading";
-                link.textContent = " #"; // Space before # for spacing
-
-                header.appendChild(link);
-            }
-        });
-    });
-
-</script>
-
-<!------------------------ #
+</div> <!-- close main --><!------------------------ #
 # Code syntax highlighting #
 # ------------------------->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -1084,75 +882,6 @@ https://doi.org/10.7554/eLife.51214</p>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
 
-<script>
-    // Remove the leading whitespace/newlines around code blocks 
-    // caused by the html structure used for readability
-    document.addEventListener("DOMContentLoaded", function() {
-        // Select all code blocks
-        const codeBlocks = document.querySelectorAll('.code-cell code.language-python');
-
-        codeBlocks.forEach(function(block) {
-            // Apply syntax highlighting to the code block
-            // Note: The below line is not needed with this setup
-            //  but may be useful in the case that the method
-            //  is later changed
-            // Prism.highlightElement(block);
-
-            // Get the code with highlighted classes
-            const highlightedHTML = block.innerHTML;
-
-            // Remove leading/trailing whitespace/newlines
-            block.innerHTML = highlightedHTML.trim();
-        });
-
-        // Select all output-code blocks
-        const outputBlocks = document.querySelectorAll('.output-cell .output-code');
-
-        outputBlocks.forEach(function(block) {
-            // Remove unwanted leading/trailing whitespace or newlines
-            block.textContent = block.textContent.trim();
-        });
-    });
-</script>
-
-<!------------------------- #
-# Copy button on code cells #
-# -------------------------->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('.code-cell').forEach(cell => {
-        // Avoid inserting the button multiple times
-        if (cell.querySelector('.copy-button')) return;
-
-        const button = document.createElement('button');
-        button.className = 'copy-button';
-
-        // Define copy icon and text
-        button.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 0.25em;">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            <span>Copy</span>
-        `;
-
-        // copy text and add click effects
-        button.addEventListener('click', () => {
-            // const code = cell.innerText;
-            const code = cell.querySelector('code').innerText;
-            navigator.clipboard.writeText(code).then(() => {
-                button.querySelector('span').textContent = 'Copied!';
-                setTimeout(() => {
-                    button.querySelector('span').textContent = 'Copy';
-                }, 1000);
-            });
-        });
-
-        cell.appendChild(button);
-    });
-});
-
-</script>
 
 </body>
 </html>

@@ -441,19 +441,19 @@ def convert_notebooks_to_html(
     # create a copy of the hashes to update and save
     updated_hashes = notebook_hashes.copy()
 
+    # get list of notebooks to skip
+    with open(
+        os.path.join(os.getcwd(), 'scripts', 'notebooks_to_skip.json'), 'r',
+    ) as f:
+        notebooks_to_skip = json.load(f)
+    notebooks_to_skip = notebooks_to_skip['skip_execution']
+
     if force_execute_all:
         print(
             "The force_execute_all argument has been set to True. All "
-            "notebooks will be re-executed, even if present in "
-            "'notebooks_to_skip.json'."
+            "notebooks will be re-executed unless flagged to be skipped "
+            "in the notebooks_to_skip.json file."
         )
-    else:
-        # get list of notebooks to skip
-        with open(
-            os.path.join(os.getcwd(), 'scripts', 'notebooks_to_skip.json'), 'r',
-        ) as f:
-            notebooks_to_skip = json.load(f)
-        notebooks_to_skip = notebooks_to_skip['skip_execution']
 
     # iterate through input directory and process notebooks
     for root, list_folders, list_files in os.walk(input_folder):
@@ -483,24 +483,43 @@ def convert_notebooks_to_html(
                 # on notebooks_to_skip.json per the main loop below
                 skip_notebook=False
 
+                # flag for whether the notebook was run
+                notebook_was_run=False
+
                 # when force_execute_all is True, all notebooks
                 # should be executed unless flagged to be skipped
                 # --------------------------------------------------
                 if force_execute_all:
-                    print(
-                        f"Executing {filename}"
-                    )
+                    # update the skip_notebook flag
+                    if filename in notebooks_to_skip:
+                        skip_notebook = True
 
-                    loaded_notebook = get_notebook(
-                        nb_path,
-                        execute=True,
-                    )
-                    print(
-                        "Notebook has been executed"
-                    )
-                    notebook_executed = is_notebook_fully_executed(
-                        loaded_notebook
-                    )
+                    # check if notebook should be skipped
+                    # --------------------------------------------------
+                    if skip_notebook:
+                        print(
+                            f"Notebook '{filename}' has been flagged to be"
+                            " skipped. Execution will not be attempted for"
+                            " this notebook."
+                        )
+                    # run all notebooks not flagged to be skipped
+                    # --------------------------------------------------
+                    else:
+                        print(
+                            f"Executing {filename}"
+                        )
+
+                        loaded_notebook = get_notebook(
+                            nb_path,
+                            execute=True,
+                        )
+                        notebook_was_run=True
+                        print(
+                            "Notebook has been executed"
+                        )
+                        notebook_executed = is_notebook_fully_executed(
+                            loaded_notebook
+                        )
 
                 # when force_execute_all is False, notebooks are
                 # conditionally executed based on the hash and
@@ -536,6 +555,7 @@ def convert_notebooks_to_html(
                                     nb_path,
                                     execute=True,
                                 )
+                                notebook_was_run=True
                                 print('Notebook has been executed')
                                 notebook_executed = is_notebook_fully_executed(
                                     loaded_notebook
@@ -566,6 +586,7 @@ def convert_notebooks_to_html(
                                 nb_path,
                                 execute=True,
                             )
+                            notebook_was_run=True
                             print(
                                 "Notebook has been executed"
                             )
@@ -616,17 +637,33 @@ def convert_notebooks_to_html(
                     filename,
                 )
 
-                # Add execution status directly to json output
-                # Track version used in notebook execution
-                nb_html_json = {
-                    "full_executed": notebook_executed,
-                    "hnn_version": hnn_version,
-                    **nb_html_json,
-                }
-
                 output_json = os.path.join(
                     root, f"{os.path.splitext(filename)[0]}.json"
                 )
+
+                if notebook_was_run:
+                    # Add execution status directly to json output
+                    # Track version used in notebook execution
+                    nb_html_json = {
+                        "full_executed": notebook_executed,
+                        "hnn_version": hnn_version,
+                        **nb_html_json,
+                    }
+                else:
+                    # get previously-used hnn version from json file
+                    previous_version="NA"
+                    if os.path.exists(output_json):
+                        with open(output_json, "r") as f:
+                            nb_html_json = json.load(f)
+                        # check for hnn_version key
+                        if "hnn_version" in nb_html_json:
+                            previous_version = nb_html_json["hnn_version"]
+                    nb_html_json = {
+                        "full_executed": notebook_executed,
+                        "hnn_version": previous_version,
+                        **nb_html_json,
+                    }
+
                 with open(output_json, "w") as f:
                     json.dump(nb_html_json, f, indent=4)
                 # ----------------------------------------
