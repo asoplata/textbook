@@ -501,8 +501,9 @@ virtual environment), and running the following command:</li>
 Windows, but is supported on Windows using WSL (see below).</li>
 </ul>
 <h3><code>pip</code> on Windows (WSL)</h3>
-<p>The following include instructions on how to install both WSL and the
-<a href="https://www.anaconda.com/download/success">Anaconda Python
+<p>The following include instructions on how to install both “Windows
+Subsystem for Linux” (WSL) and the <a
+href="https://www.anaconda.com/download/success">Anaconda Python
 Distribution</a> inside WSL.</p>
 <ol type="1">
 <li>Install WSL: Open the “PowerShell” or “Windows Command Prompt”
@@ -637,13 +638,13 @@ method, follow the below instructions for your operating system.</p>
 <h4><code>pip</code> MPI: Windows (native)</h4>
 <p>Unfortunately, we do not officially support MPI usage on native
 Windows due to the complexity required. However, we do support MPI
-through Windows Subsystem for Linux (WSL); see below.</p>
+through “Windows Subsystem for Linux” (WSL); see below.</p>
 <h4><code>pip</code> MPI: MacOS, Linux, or Windows (WSL)</h4>
 <ol type="1">
 <li><p>Install the <a
 href="https://www.anaconda.com/download/success">Anaconda Python
-Distribution</a>. (If you have followed Step 2 for Windows WSL, you can
-skip this.)</p></li>
+Distribution</a>. (If you have followed instructions in Step 2 for
+Windows WSL above, you can skip this.)</p></li>
 <li><p>Create and activate a new <code>conda</code> environment using
 commands like the following:</p></li>
 </ol>
@@ -716,7 +717,7 @@ Trial 1: 0.03 ms...
 Trial 1: 10.0 ms...</code></pre>
 <ol start="8" type="1">
 <li>For guidance on using MPI, see our “Using the HNN API” notebook in
-the sidebar<a
+the sidebar <a
 href="../08_using_hnn_api/parallelism_mpi.html">here</a></li>
 </ol>
 </div>
@@ -733,7 +734,8 @@ href="../08_using_hnn_api/parallelism_mpi.html">here</a></li>
 platform and features <strong>except</strong> for the final
 <code>pip install "hnn_core[&lt;features&gt;]"</code> command. If you
 want to contribute to HNN development, then it is strongly recommended
-you follow the MPI installation instructions in the above section.</p>
+you follow the MPI installation instructions in the previous
+<strong><code>pip</code> Package Installation</strong> section.</p>
 <h3>Installing custom versions with no changes:</h3>
 <p>If you only want to install a custom version of <code>hnn_core</code>
 from Github, but <strong>you do NOT need to edit the code
@@ -755,8 +757,8 @@ href="https://docs.github.com/en/get-started/git-basics/set-up-git">Setup
 <code>git</code> using the instructions here</a>. Note that you need to
 both make sure <code>git</code> is installed <a
 href="https://docs.github.com/en/get-started/git-basics/set-up-git#setting-up-git">using
-these steps</a> and that your <code>git</code> program has authenticated
-to Github <a
+these steps</a> <strong>and</strong> that your <code>git</code> program
+has authenticated to Github <a
 href="https://docs.github.com/en/get-started/git-basics/set-up-git#authenticating-with-github-from-git">using
 these steps</a>.</p></li>
 <li><p>You should do a <code>git clone &lt;fork URL&gt;</code> of the
@@ -770,9 +772,9 @@ HTTPS or SSH.</p></li>
 <li><p>Enter the directory that you just downloaded, using the command
 <code>cd hnn-core</code>.</p></li>
 <li><p>Install an “editable” version of the local source code with the
-features you want to use. If you do not want to contribute to
-development, but you want to install the GUI and Optimization features,
-you can use the following command:</p></li>
+features you want to use. If, for example, you do not want to contribute
+to development, but you want to install the GUI and Optimization
+features, you can use the following command:</p></li>
 </ol>
 <pre><code>pip install --editable &quot;.[gui,opt]&quot;</code></pre>
 <p>If you <strong>want to contribute to development</strong>, then you
