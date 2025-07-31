@@ -42,11 +42,15 @@ We **strongly** recommend that you install HNN from our **`conda` package** inst
 However, there are some cases where you should **not** use the `conda` installation:
 
 - **If you want to co-install HNN alongside MNE:** In this case, we strongly recommend that you install MNE *first* [(MNE install guides here)](https://mne.tools/stable/install/index.html). If you installed MNE using its `pip` or `conda` methods, then afterwards, you should install HNN using our **`pip` Package Installation** method below, but *in the same Python environment* that you installed MNE into.
-- **If you are using a High-Performance Computing (HPC) environment (also called a computing cluster or supercomputer):** The `conda` installation may work on your HPC, but if you want to use your HPC's custom MPI libraries, you should try using our **`pip` Package Installation** below. Your HPC usually has documentation on how they want you to load OpenMPI (which is not a Python package) and possibly `mpi4py` (which is a Python package). You can always ask us for help at [our Github Discussions page][].
+- **If you are using your institution's High-Performance Computing (HPC) environment** (also called a "computing cluster" or supercomputer): The `conda` installation may work on your HPC, but if you want to use your HPC's custom MPI libraries, you should try using our **`pip` Package Installation** below. Your HPC usually has documentation on how they want you to load OpenMPI (which is not a Python package) and possibly `mpi4py` (which is a Python package). You can always ask us for help at [our Github Discussions page][].
 - **If you are at Brown University and want to use HNN on the OSCAR system:** We have made custom instructions for you, which [can be found here at this other page](https://github.com/jonescompneurolab/oscar-install).
 - **If you want to use a "custom" version of HNN's source code:** This includes if you need to use your own "Github fork", someone else's fork, or **if you want to contribute to HNN's development**. In this case you should follow our **`pip` Source Installation** guide below.
 
-If you have any questions or problems while installing HNN, feel free to ask for help on [our GitHub Discussions page][]! Finally, note that HNN and `hnn-core` are equivalent; `hnn-core` is simply the name of the codebase. After you have installed HNN, we recommend you follow the **Testing Your Installation** section below to make sure it is installed correctly.
+The terms HNN, `hnn-core`, and `hnn_core` are effectively equivalent, as they are all different names for the same codebase. `hnn-core` or `hnn_core` are often used during the installation process or when you are using the API.
+
+After you have installed HNN, we recommend you follow the **Testing Your Installation** section below to make sure it is installed correctly.
+
+**If you have any questions or problems** while installing HNN, feel free to ask for help on [our GitHub Discussions page][]!
 
 <div class="collapsible-section">
 <h5 class="collapsible-header"> `conda` Package Installation </h5>
@@ -388,11 +392,11 @@ Trial 1: 10.0 ms...
 
 <a id="pip-source-installation"></a>
 
-To begin installing HNN via source code, you first need to follow **all** of the instructions above in **`pip` Package Installation** for your desired platform and features **except** for the final `pip install "hnn_core[<features>]"` command. If you want to contribute to HNN development, then it is strongly recommended you follow the MPI installation instructions in the previous **`pip` Package Installation** section.
+To begin installing HNN via source code, you first need to follow **all** of the instructions above in **`pip` Package Installation** for your desired platform and features **except** for the final `pip install "hnn_core[<features>]"` command. If you want to contribute to HNN development, then it is strongly recommended you also follow the MPI installation instructions in the previous **`pip` Package Installation** section.
 
 ### Installing custom versions with no changes:
 
-If you only want to install a custom version of `hnn_core` from Github, but **you do NOT need to edit the code yourself**, you can install the features you need with the URL you have been provided using the following:
+If you only want to install a custom version of HNN from Github, but **you do NOT need to edit the code yourself**, then someone else has probably given you a specific URL to use. You can install the features you need with the URL you have been given using the following:
 
 ```
 pip install "hnn_core[gui] @ git+https://github.com/asoplata/hnn-core"
@@ -402,11 +406,23 @@ where you would replace `[gui]` with the features you want, and `https://github.
 
 ### Installing custom versions, but supporting changes:
 
-If instead you want to install a custom version of `hnn_core` from Github, but you **DO want to edit the code yourself**, you should do the following. **This is what you should do if you want to contribute to development**.
+If instead you want to install a custom version of HNN from Github, but you **DO want to edit the code yourself**, you should do the following. **This is what you should do if you want to contribute to development**.
 
-1. [Setup `git` using the instructions here](https://docs.github.com/en/get-started/git-basics/set-up-git). Note that you need to both make sure `git` is installed [using these steps](https://docs.github.com/en/get-started/git-basics/set-up-git#setting-up-git) **and** that your `git` program has authenticated to Github [using these steps](https://docs.github.com/en/get-started/git-basics/set-up-git#authenticating-with-github-from-git).
+1. [Setup `git` using the instructions here](https://docs.github.com/en/get-started/git-basics/set-up-git). Note that you need to make sure that both 1. `git` is installed [using these steps](https://docs.github.com/en/get-started/git-basics/set-up-git#setting-up-git) **and** 2. that your `git` program has authenticated to Github [using these steps](https://docs.github.com/en/get-started/git-basics/set-up-git#authenticating-with-github-from-git).
 
-2. You should do a `git clone <fork URL>` of the fork you are interested in, which will download the source code to a new directory. If you want to contribute to development, you should use your own personal fork. As an example, you could do either `git clone https://github.com/asoplata/hnn-core.git` or `git clone git@github.com:asoplata/hnn-core` to download `asoplata`'s fork, depending on if you authenticated using HTTPS or SSH.
+2. You should do a `git clone <fork URL>` of the fork you are interested in, which will download the source code to a new directory. If you want to contribute to development, you should use your own personal fork. (You can create your own fork by going to our [code repository here](https://github.com/jonescompneurolab/hnn-core) and clicking the "Fork" button in the top right.) As an example, if you wanted to download `asoplata`'s fork, you could do either:
+
+```
+git clone https://github.com/asoplata/hnn-core.git
+```
+
+or
+
+```
+git clone git@github.com:asoplata/hnn-core
+```
+
+depending on whether you authenticated using HTTPS or SSH.
 
 3. Enter the directory that you just downloaded, using the command `cd hnn-core`.
 
@@ -416,11 +432,13 @@ If instead you want to install a custom version of `hnn_core` from Github, but y
 pip install --editable ".[gui,opt]"
 ```
 
-If you **want to contribute to development**, then you should use the following command, which installs all features including **special** features used in development:
+If you **want to contribute to development**, then you should instead use the following command, which installs all features including **special** features used in development:
 
 ```
 pip install --editable ".[dev]"
 ```
+
+If you want to contribute to development, then once you have installed HNN this way, please see our [Contributing Guide here](https://jonescompneurolab.github.io/hnn-core/stable/contributing.html).
 
 </div>
 </div>
@@ -433,13 +451,13 @@ pip install --editable ".[dev]"
 
 <a id="testing-your-installation"></a>
 
-To check if everything worked fine, you can run the following command:
+To check whether HNN was installed correctly, you can run the following command:
 
 ```
 python -c "from hnn_core import jones_2009_model, simulate_dipole ; simulate_dipole(jones_2009_model(), tstop=20)"
 ```
 
-This will run a very short test simulation, and should not give any Error messages (Warning messages are fine and expected).
+This will run a very short test simulation, and should not give any Error messages (Warning messages are okay).
 
 If you installed MPI, it is **strongly recommended** to test your install. You can test that HNN, NEURON, and MPI were all installed correctly and can talk to each other by running the following command:
 
@@ -450,6 +468,8 @@ with MPIBackend():
     simulate_dipole(jones_2009_model(), tstop=20)
 "
 ```
+
+If either of the above commands run into Errors (Warnings are okay), then feel free to ask for help on [our GitHub Discussions page][].
 
 </div>
 </div>
