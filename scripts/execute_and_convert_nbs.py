@@ -21,21 +21,6 @@ from packaging.version import Version
 textbook_root_path = Path(__file__).parents[1]
 
 
-def _save_plot_as_image(
-    img_data,
-    img_filename,
-    output_dir,
-):
-    """Saves the plot image to the specified directory."""
-    img_path = os.path.join(
-        output_dir,
-        img_filename,
-    )
-    with open(img_path, "wb") as img_file:
-        img_file.write(base64.b64decode(img_data))
-    return
-
-
 def _html_to_json(
     html: str,
     filename: str,
@@ -176,18 +161,58 @@ def _structure_json(contents):
 
 def _extract_html_from_nb(
     nb,
-    input_dir,
-    filename,
+    nb_path,
+    nb_json_output_dir,
     dev_build=False,
     use_base64=False,
 ):
-    """Extracts HTML for cell contents and outputs,
-    including code and markdown."""
+    """
+    Extract and convert notebook cells to HTML, including code, outputs, and markdown.
+
+    This function processes all cells in a Jupyter notebook and converts them to
+    formatted HTML. Code cells are rendered with their source and outputs (text,
+    images, errors). Markdown cells are converted to HTML using PyPandoc. Images from
+    notebook outputs are either embedded as Base64 strings or saved as PNG files.
+
+    The function handles:
+    - Code cell source formatting
+    - Multiple output types (text/plain, stdout, images, errors)
+    - Image output processing (Base64 embedding or file saving)
+    - Markdown cell conversion with MathML support
+    - Proper HTML structure with CSS classes for styling
+
+    Parameters
+    ----------
+    nb : nbformat.notebooknode.NotebookNode
+        The notebook object containing cells to convert
+    nb_path : pathlib.Path
+        Path to the Jupyter notebook file (.ipynb). Used to determine output file naming
+        and location
+    nb_json_output_dir : pathlib.Path
+        Directory where the notebook's JSON output file is located. This will become the
+        parent of the new directory where any images will be stored.
+    dev_build : str or bool
+        False if not running a dev build. Otherwise, a string containing the repo and
+        commit hash to be used for the build.
+    use_base64 : bool, optional
+        If True, embed images as Base64-encoded strings in the HTML.
+        If False, save images as separate PNG files and link to them.
+        Default is False
+
+    Returns
+    -------
+    str
+        Complete HTML string containing all converted notebook cells with
+        appropriate formatting and styling divs
+    """
 
     html_output = []
     fig_id = 0
-    delim = os.path.sep
     aggregated_output = ""
+
+    # AES TODO eventually this should be the same dir as the JSON output one
+    img_output_dir = nb_json_output_dir / f"output_nb_{nb_path.stem}"
+    img_output_dir.mkdir(parents=True, exist_ok=True)
 
     # helper for aggregating outputs
     # -----------------------------
@@ -246,7 +271,7 @@ def _extract_html_from_nb(
                     # aggregate outputs
                     aggregated_output += f"\n\t\t{escaped_text_output}"
 
-                # handle stdout
+                # handle stdout (exclude stderr)
                 # ------------------------------
                 # e.g., this includes outputs from print statements
                 if (
@@ -287,31 +312,15 @@ def _extract_html_from_nb(
                     # ------------------------------
                     else:
                         fig_id += 1
-                        img_filename = f"fig_{fig_id:02d}.png"
+                        img_path = img_output_dir / f"fig_{fig_id:02d}.png"
+                        with open(img_path, "wb") as img_file:
+                            img_file.write(base64.b64decode(img_data))
 
-                        output_folder = "output_nb_" + f"{filename.split('.ipynb')[0]}"
-                        output_dir = f"{input_dir}{delim}{output_folder}"
-
-                        # if doing a dev build, switch the output directory
-                        if dev_build:
-                            output_dir = output_dir.replace(
-                                "content",
-                                "dev",
-                            )
-
-                        if not os.path.exists(output_dir):
-                            os.makedirs(output_dir)
-
-                        _save_plot_as_image(
-                            img_data,
-                            img_filename,
-                            output_dir,
-                        )
-
+                        relative_img_path = img_path.relative_to(img_path.parents[1])
                         output_img_html = textwrap.dedent(f"""
                             <!-- code cell image -->
                             <div class='output-cell'>
-                                <img src='{output_folder}{delim}{img_filename}'/>
+                                <img src='{relative_img_path}'/>
                             </div>
                         """)
                         html_output.append(output_img_html)
@@ -500,7 +509,7 @@ def _is_nb_fully_executed(nb):
 
 def _read_nb_json_output_metadata(
     nb_path,
-    output_dir,
+    nb_json_output_dir,
 ):
     """
     Retrieve prior execution metadata from a notebook's JSON output file.
@@ -513,7 +522,7 @@ def _read_nb_json_output_metadata(
     ----------
     nb_path : pathlib.Path
         Path to the Jupyter notebook file (.ipynb)
-    output_dir : pathlib.Path
+    nb_json_output_dir : pathlib.Path
         Directory where the notebook's JSON output file is located
 
     Returns
@@ -531,7 +540,7 @@ def _read_nb_json_output_metadata(
         False if the JSON file doesn't exist or doesn't contain version information
     """
 
-    json_path = output_dir / f"{nb_path.stem}.json"
+    json_path = nb_json_output_dir / f"{nb_path.stem}.json"
 
     execution_check = False
     version_check = False
@@ -643,9 +652,9 @@ def _process_nb(
     nb_path,
     nb_hashes,
     nbs_to_skip,
+    nb_json_output_dir,
     dev_build,
     execution_filter,
-    output_dir,
 ):
     """
     Process a notebook by determining if execution is needed and executing if appropriate.
@@ -667,6 +676,8 @@ def _process_nb(
         loaded from notebook_hashes.json
     nbs_to_skip : list
         List of notebook filenames that should be skipped during execution
+    nb_json_output_dir : pathlib.Path
+        Directory where the notebook's JSON output file is located
     dev_build : str or bool
         False if not running a dev build. Otherwise, a string containing
         the repo and commit hash to be used for the build
@@ -678,8 +689,6 @@ def _process_nb(
         - 'execute-only-updated-or-new-notebooks'
         - 'execute-all-unskipped-notebooks'
         - 'execute-absolutely-all-notebooks'
-    output_dir : pathlib.Path
-        Directory where the notebook's JSON output file is located
 
     Returns
     -------
@@ -712,7 +721,7 @@ def _process_nb(
     prior_commit_if_any, prior_execution_if_any, prior_version_if_any = (
         _read_nb_json_output_metadata(
             nb_path=nb_path,
-            output_dir=output_dir,
+            nb_json_output_dir=nb_json_output_dir,
         )
     )
 
@@ -1031,18 +1040,53 @@ def _write_standalone_nb_to_html(
 
 def _write_nb_json(
     html_content,
-    filename,
-    current_directory,
+    nb_path,
+    nb_json_output_dir,
     execution_initiated,
     execution_successful,
     dev_build=False,
 ):
     """
-    Generate structured json output for the notebook.
+    Generate and save structured JSON output file containing notebook HTML and metadata.
+
+    This function converts the notebook HTML content into a hierarchical JSON structure
+    organized by section headers and saves it to a JSON file. The output includes
+    execution metadata (execution status, hnn-core version, and optional commit hash
+    for dev builds) along with the structured HTML content.
+
+    (In the future, the JSON structure will enable selective insertion of notebook
+    sections into markdown pages by specifying header ranges (a planned enhancement
+    feature).)
+
+    Parameters
+    ----------
+    html_content : str
+        The complete HTML string containing all converted notebook cells, as returned
+        by _extract_html_from_nb
+    nb_path : pathlib.Path
+        Path to the Jupyter notebook file (.ipynb). Used to determine the output
+        JSON filename (stem of the notebook filename)
+    nb_json_output_dir : pathlib.Path
+        Directory where the JSON output file will be saved. The file will be named
+        {nb_path.stem}.json
+    execution_initiated : bool
+        True if notebook execution was attempted in this run, False otherwise.
+        Determines whether to use current or previously-saved hnn-core version
+    execution_successful : bool
+        True if the notebook was fully executed successfully (all non-empty code
+        cells completed execution), False otherwise
+    dev_build : str or bool, optional
+        False if not running a dev build. Otherwise, a string containing the repo
+        and commit hash to be used for the build. Default is False
+
+    Returns
+    -------
+    pathlib.Path
+        Path to the generated JSON output file
     """
 
     # ----------------------------------------
-    # generated structured json output
+    # generate structured json output
     # ----------------------------------------
     # Note: this section pertains to a planned enhancement
     # to enable inserting sections of a nb into an
@@ -1053,30 +1097,15 @@ def _write_nb_json(
 
     nb_html_json = _html_to_json(
         html_content,
-        filename,
+        str(nb_path.name),
     )
 
-    if dev_build:
-        output_json = os.path.join(
-            current_directory.replace("content", "dev"),
-            f"{os.path.splitext(filename)[0]}.json",
-        )
-        os.makedirs(
-            current_directory.replace("content", "dev"),
-            exist_ok=True,
-        )
-    else:
-        output_json = os.path.join(
-            current_directory,
-            f"{os.path.splitext(filename)[0]}.json",
-        )
+    output_json_path = nb_json_output_dir / f"{nb_path.stem}.json"
 
-    # AES why not just use nb_exec?
+    # Set or load the last version that the nb was executed with
     if execution_initiated:
         # Add execution status directly to json output
         # Track version used in nb execution
-        # AES if nb was started, but failed, then full_executed would be false here
-        # AES maybe the point is "this is the last version they were successfully executed with"
         nb_html_json = {
             "full_executed": execution_successful,
             "hnn_version": hnn_version,
@@ -1088,8 +1117,8 @@ def _write_nb_json(
     else:
         # get previously-used hnn version from json file
         previous_version = "NA"
-        if os.path.exists(output_json):
-            with open(output_json, "r") as f:
+        if output_json_path.exists():
+            with open(output_json_path, "r") as f:
                 nb_html_json = json.load(f)
             # check for hnn_version key
             if "hnn_version" in nb_html_json:
@@ -1102,10 +1131,10 @@ def _write_nb_json(
         if dev_build:
             nb_html_json["commit"] = dev_build
 
-    with open(output_json, "w") as f:
+    with open(output_json_path, "w") as f:
         json.dump(nb_html_json, f, indent=4)
 
-    return output_json
+    return output_json_path
 
 
 # AES I think most of these arguments should be required, not optional
@@ -1150,32 +1179,34 @@ def execute_and_convert_nbs_to_json(
             nb_path = os.path.join(current_directory, filename)
 
             # AES TODO as refactor with pathlib, expand Path usage
+            # AES TODO eventually, "JSON output" (and standalone HTML output) SHOULD be
+            # put in the per-notebook output folder where images currently are...
             nb_path = Path(nb_path)
             if dev_build:
                 # Replace "content" parent directory with "dev" one
-                output_dir = Path(str(nb_path).replace("content", "dev"))
-                output_dir = output_dir.parents[0]
-                output_dir.mkdir(parents=True, exist_ok=True)
+                nb_json_output_dir = Path(str(nb_path).replace("content", "dev"))
+                nb_json_output_dir = nb_json_output_dir.parents[0]
+                nb_json_output_dir.mkdir(parents=True, exist_ok=True)
             else:
-                output_dir = nb_path.parents[0]
+                nb_json_output_dir = nb_path.parents[0]
 
             # process nb and update hash
             processed_hash, loaded_nb, execution_initiated, execution_successful = (
                 _process_nb(
-                    nb_path=nb_path,
-                    nb_hashes=nb_hashes,
-                    nbs_to_skip=nbs_to_skip,
-                    dev_build=dev_build,
-                    execution_filter=execution_filter,
-                    output_dir=output_dir,
+                    nb_path,
+                    nb_hashes,
+                    nbs_to_skip,
+                    nb_json_output_dir,
+                    dev_build,
+                    execution_filter,
                 )
             )
 
-            # extract and process the html from the nb
+            # extract the html from the nb, including saving any images if needed
             html_content = _extract_html_from_nb(
                 loaded_nb,
-                current_directory,
-                filename,
+                nb_path,
+                nb_json_output_dir,
                 dev_build=dev_build,
                 use_base64=use_base64,
             )
@@ -1183,8 +1214,8 @@ def execute_and_convert_nbs_to_json(
             # generate complete json output file
             _write_nb_json(
                 html_content,
-                filename,
-                current_directory,
+                nb_path,
+                nb_json_output_dir,
                 execution_initiated,
                 execution_successful,
                 dev_build=dev_build,
