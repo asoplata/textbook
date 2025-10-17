@@ -7,6 +7,7 @@ import pypandoc
 import textwrap
 
 from .create_navbar import generate_sidebar_html
+from .update_page_index import update_page_index
 
 
 def _get_markdown_paths(content_path: Path):
@@ -17,8 +18,8 @@ def _get_markdown_paths(content_path: Path):
     content_path : pathlib.Path
         Path to the directory containing all directories which contain markdown files,
         notebook files, and possibly their outputs. This is ALWAYS
-        "<textbook_root>/content" and never "<textbook_root>/dev", since we currently do
-        not support "dev"-only versions of markdown files.
+        "<textbook_root>/content" and never "<textbook_root>/dev", since we do not
+        support "dev"-only versions of markdown files.
 
     Returns
     -------
@@ -50,23 +51,10 @@ def _get_markdown_paths(content_path: Path):
     return md_paths
 
 
-def _compile_page_components(dev_build=False):
+def _load_simple_templates(templates_path):
     """
-    Compile shared html components for building webpage from the template files in the
-    templates directory
-
-    Inputs
-    ------
-    dev_build : str or bool
-        False if not running a dev build. Otherwise, this variable will be
-        string containing the repo and commit hash to be used for the build
-
+    TODO
     """
-
-    templates_folder = os.path.join(
-        os.getcwd(),
-        "templates",
-    )
     templates = [
         "header",
         "topbar",
@@ -76,18 +64,10 @@ def _compile_page_components(dev_build=False):
     html_parts = {}
 
     for template in templates:
-        templates_path = os.path.join(
-            templates_folder,
-            f"{template}.html",
-        )
-        with open(templates_path, "r") as f:
+        with open((templates_path / f"{template}.html"), "r") as f:
             html_parts[template] = f.read()
 
-    navbar_html, ordered_links = generate_sidebar_html()
-
-    html_parts["navbar"] = navbar_html
-
-    return html_parts, ordered_links
+    return html_parts
 
 
 def _get_html_from_json(
@@ -215,6 +195,8 @@ def add_nb_to_html(
 
 def generate_page_html(
     content_path,
+    index_path,
+    templates_path,
     dev_build=False,
 ):
     """
@@ -228,21 +210,28 @@ def generate_page_html(
     content_path : pathlib.Path
         Path to the directory containing all directories which contain markdown files,
         notebook files, and possibly their outputs. This is ALWAYS
-        "<textbook_root>/content" and never "<textbook_root>/dev", since we currently do
-        not support "dev"-only versions of markdown files.
-
+        "<textbook_root>/content" and never "<textbook_root>/dev", since "dev" versions
+        of required directories will be created as needed. Also, we do not
+        support "dev"-only versions of markdown files.
+    templates_path : pathlib.Path
+        Path to the directory containing various template files. Typically the
+        "templates" subdirectory of the textbook root directory
     dev_build : str or bool
         False if not running a dev build. Otherwise, this variable will be
         a string containing the repo and commit hash to be used for the build
-
-    Returns
-    -------
-    None
     """
-    md_paths = _get_markdown_paths(content_path)
 
-    # get the .html templates for building pages
-    html_parts, ordered_links = _compile_page_components(dev_build=dev_build)
+    # This loads the generic templates for the header, topbar, footer, and script, but
+    # not others.
+    html_parts = _load_simple_templates(templates_path)
+
+    update_page_index(
+        content_path,
+        index_path,
+    )
+
+    # Create the template for the sidebar/navbar, and the ordering of the pages
+    html_parts["navbar"], ordered_links = generate_sidebar_html(index_path)
 
     # specify the order of components for assembling pages
     order = [
@@ -254,14 +243,32 @@ def generate_page_html(
         "script",
     ]
 
+    # Don't need to reload all these things every time on the main loop
+    with open((templates_path / "ordered_page_links.json"), "r") as f:
+        ordered_page_links = json.load(f)
+
+        ordered_links = ordered_page_links["links"]
+        ordered_titles = ordered_page_links["titles"]
+
+        if dev_build:
+            ordered_links = [
+                link.replace("content", "dev") for link in ordered_page_links["links"]
+            ]
+
+    with open((templates_path / "md_yaml_metadata.txt"), "r") as f:
+        md_yaml_metadata = f.read()
+
     # iterate over all markdown pages found in the "content" directory (excluding ...
     # README.md files)
+    md_paths = _get_markdown_paths(content_path)
     for md_page, path_old in md_paths.items():
-
-
         # Le new pathlib stuff
         md_path = Path(path_old)
         if dev_build:
+            # This needs to be done separately in both the notebook-execution code and
+            # here in the page-generation code, since there is not necessarily a 1-to-1
+            # correspondence between every markdown file and every notebook.
+            #
             # Replace "content" parent directory with "dev" one, and safely make it
             new_output_dir_path = Path(str(md_path).replace("content", "dev"))
             new_output_dir_path = new_output_dir_path.parents[0]
@@ -328,22 +335,24 @@ def generate_page_html(
 
         # update 'footer' page_component with the correct links
         # ------------------------------------------------------------
-        footer_path = os.path.join(
-            os.getcwd(),
-            "templates",
-            "ordered_page_links.json",
-        )
+        # footer_path = os.path.join(
+        #     os.getcwd(),
+        #     "templates",
+        #     "ordered_page_links.json",
+        # )
 
-        with open(footer_path, "r") as f:
-            ordered_page_links = json.load(f)
+        # with open(footer_path, "r") as f:
+        #     ordered_page_links = json.load(f)
 
-        ordered_links = ordered_page_links["links"]
-        ordered_titles = ordered_page_links["titles"]
+        # ordered_links = ordered_page_links["links"]
+        # ordered_titles = ordered_page_links["titles"]
 
+        # if dev_build:
+        #     ordered_links = [
+        #         link.replace("content", "dev") for link in ordered_page_links["links"]
+        #     ]
+        #     out_path = out_path.replace("content", "dev")
         if dev_build:
-            ordered_links = [
-                link.replace("content", "dev") for link in ordered_page_links["links"]
-            ]
             out_path = out_path.replace("content", "dev")
 
         location = None
@@ -398,13 +407,13 @@ def generate_page_html(
         with open(path_old, "r", encoding="utf-8") as f:
             markdown_text = f.read()
 
-        path_md_yaml_metadata = os.path.join(
-            os.getcwd(),
-            "templates",
-            "md_yaml_metadata.txt",
-        )
-        with open(path_md_yaml_metadata) as f:
-            md_yaml_metadata = f.read()
+        # path_md_yaml_metadata = os.path.join(
+        #     os.getcwd(),
+        #     "templates",
+        #     "md_yaml_metadata.txt",
+        # )
+        # with open(path_md_yaml_metadata) as f:
+        #     md_yaml_metadata = f.read()
 
         # add check for title section in markdown file
 
