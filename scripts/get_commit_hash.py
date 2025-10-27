@@ -17,8 +17,10 @@ def get_commit_hash(build_on_dev_arg):
                 else:
                     installed_hnn_commit = line.split("hnn-core==")[-1]
         print(
-            "\nThe installed version of hnn-core being used for this "
-            f"build is:\n   {installed_hnn_commit}"
+            "\nConfiguration: The installed version of hnn-core is:\n"
+            f"    {installed_hnn_version}"
+            "\n\nConfiguration: The installed commit of hnn-core is:\n"
+            f"    {installed_hnn_commit}\n"
         )
 
     except Exception as e:
@@ -93,8 +95,8 @@ def get_commit_hash(build_on_dev_arg):
 
         if installed_hnn_version > latest_stable:
             print(
-                "Warning: your installed version of hnn-core is ahead of the "
-                f"current stable version, but you did not use the {argument_name}"
+                "\nWARNING: your installed version of hnn-core is ahead of the "
+                f"current stable version, but you did not use the {argument_name} "
                 "argument:"
                 f"\n   Stable version: {latest_stable}"
                 f"\n   Installed version: {installed_hnn_version}"
@@ -105,7 +107,7 @@ def get_commit_hash(build_on_dev_arg):
         elif installed_hnn_version != latest_stable:
             # AES need to rewrite this warning
             print(
-                "\nWarning: you are attempting to build the textbook on a "
+                "\nWARNING: you are attempting to build the textbook on a "
                 "version of hnn-core that does not match the latest stable version."
                 f"\n   Stable version: {latest_stable}"
                 f"\n   Installed version: {installed_hnn_version}"
