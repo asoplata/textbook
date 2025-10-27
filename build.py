@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+import textwrap
 
 from scripts.execute_and_convert_nbs import execute_and_convert_nbs_to_json
 from scripts.generate_page_html import generate_page_html
@@ -30,17 +31,18 @@ def main():
             "execute-all-unskipped-notebooks",
             "execute-absolutely-all-notebooks",
         ],
-        help="""Specify different criteria for which notebooks you want to execute before converting
+        help=textwrap.dedent(
+"""Specify different criteria for which notebooks you want to execute before converting
 them to HTML. The default is 'no-execution'. The four options are below, in order of
-more execution:\n
+more execution:
 - 'no-execution': This will not execute any notebooks. You may receive warnings if
-  specific notebooks should be executed.\n
+    specific notebooks should be executed.
 - 'execute-updated-unskipped-notebooks': Execute only notebooks which have been
-  updated/changed or are new, excluding notebooks flagged for skipping.\n
+    updated/changed or are new, excluding notebooks flagged for skipping.
 - 'execute-all-unskipped-notebooks': Execute all notebooks except those flagged for
-  skipping.\n
+    skipping.
 - 'execute-absolutely-all-notebooks': Execute all notebooks.
-""",
+"""),
     )
     parser.add_argument(
         "--build-on-dev",
@@ -54,6 +56,41 @@ more execution:\n
         "--custom-root-path",
         type=str,
         help="Optionally provide a different 'root' location for your textbook files",
+    )
+    parser.add_argument(
+        "--build-type",
+        action="store",
+        default="stable",
+        choices=[
+            "stable",
+            "master",
+            "custom",
+        ],
+        help=textwrap.dedent(
+"""Specify which version of HNN-core you want to use for building the textbook. The
+default is 'stable'. This ASSUMES you have the correct version installed in your local
+environment. The three options are below:
+- 'stable': This builds the textbook using the latest stable version of HNN-Core, as
+    detected from a request to PyPI.
+- 'master': This builds the textbook using the latest development version of HNN-Core
+    from the 'master' branch, as detected from a request to Github.
+- 'custom': This builds the textbook using a custom commit and, optionally, a custom
+    repository-owner's version of HNN-Core. If using this option, you must provide the
+    repository-owner and/or commit you want using the '--custom-repo-commit' argument.
+"""
+        ),
+    )
+    parser.add_argument(
+        "--custom-repo-commit",
+        type=str,
+        help=textwrap.dedent(
+""" Optionally provide a specific commit of HNN-core to use in the form of
+<owner>:<commit>. For example, if you wanted to build using the commit at
+https://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96 ,
+you would use '--custom-repo-commit asoplata:92b000c'. This assumes that the
+fork/repository name is always 'hnn-core'. This is required if you are using
+'--build-type custom'.
+        """),
     )
 
     # add all above arguments to the parser
@@ -70,9 +107,12 @@ more execution:\n
     nb_skip_path = Path(root_path / "scripts" / "nbs_to_skip.json")
     templates_path = Path(root_path / "templates")
 
-    print(
-        f"Configuration: Choosing notebooks based on '--execution-filter={args.execution_filter}'"
-    )
+    print(textwrap.dedent(
+        f"""
+Configuration: Choosing notebooks based on '--execution-filter={args.execution_filter}'
+Configuration: Building notebooks based on '--build-type={args.build_type}'
+        """
+    ))
 
     commit_hash = get_commit_hash(build_on_dev_arg=args.build_on_dev)
 
