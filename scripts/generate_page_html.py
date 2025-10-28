@@ -6,8 +6,8 @@ from pathlib import Path
 import pypandoc
 import textwrap
 
-from .create_navbar import generate_sidebar_html
-from .update_page_index import update_page_index
+from .create_sidebar_html import create_sidebar_html
+from .create_indices import create_hier_index, create_flat_index
 
 
 def _get_markdown_paths(content_path: Path):
@@ -195,7 +195,8 @@ def add_nb_to_html(
 
 def generate_page_html(
     content_path,
-    index_path,
+    hier_index_path,
+    flat_index_path,
     templates_path,
     dev_build=False,
 ):
@@ -230,13 +231,37 @@ def generate_page_html(
     # update/load the dynamically-generated
     # page index from the index.json file
     # ----------------------------------
-    update_page_index(
+    # The "hierarchical index" is only used for the sidebar. It contains only simple
+    # page names, their nested sections if any, and the titles of each section and/or
+    # page. It does NOT contain output filenames or anything like it. It is unchanged
+    # from before the great refactorings.
+    hier_index = create_hier_index(
         content_path,
-        index_path,
+        hier_index_path,
+    )
+    # The "flat index" is used for the sidebar and everything else in the website. Its
+    # order is the true order of all pages (but NO sections!). Each element contains
+    #
+    # TODO
+    #
+    # Importantly, this is what creates the appropriate output paths and filenames for
+    # every markdown page file. This is also what ensures that directories for all
+    # output paths are created as well!
+    flat_index = create_flat_index(
+        content_path,
+        flat_index_path,
+        dev_build,
     )
 
+    # AES TODO Ideally, we generate ALL the output HTML file paths before creating
+    # either the sidebar OR the files themselves. That way we're not searching for all
+    # the paths twice.
+    md_paths = _get_markdown_paths(content_path)
+
+
     # Create the template for the sidebar/navbar, and the ordering of the pages
-    html_parts["navbar"], ordered_links = generate_sidebar_html(index_path)
+    # html_parts["navbar"], ordered_links = generate_sidebar_html(index_path, dev_build)
+    html_parts["navbar"] = create_sidebar_html(hier_index, flat_index, dev_build)
 
     # specify the order of components for assembling pages
     order = [
@@ -248,24 +273,25 @@ def generate_page_html(
         "script",
     ]
 
-    # Don't need to reload all these things every time on the main loop
-    with open((templates_path / "ordered_page_links.json"), "r") as f:
-        ordered_page_links = json.load(f)
+    # # Don't need to reload all these things every time on the main loop
+    # with open((templates_path / "ordered_page_links.json"), "r") as f:
+    #     ordered_page_links = json.load(f)
 
-        ordered_links = ordered_page_links["links"]
-        ordered_titles = ordered_page_links["titles"]
+    #     ordered_links = ordered_page_links["links"]
+    #     ordered_titles = ordered_page_links["titles"]
 
-        if dev_build:
-            ordered_links = [
-                link.replace("content", "dev") for link in ordered_page_links["links"]
-            ]
+    #     if dev_build:
+    #         ordered_links = [
+    #             link.replace("content", "dev") for link in ordered_page_links["links"]
+    #         ]
 
     with open((templates_path / "md_yaml_metadata.txt"), "r") as f:
         md_yaml_metadata = f.read()
 
     # iterate over all markdown pages found in the "content" directory (excluding ...
     # README.md files)
-    md_paths = _get_markdown_paths(content_path)
+    # AES
+    # md_paths = _get_markdown_paths(content_path)
     for md_page, path_old in md_paths.items():
         # Le new pathlib stuff
         md_path = Path(path_old)
@@ -282,7 +308,7 @@ def generate_page_html(
         else:
             new_output_dir_path = md_path.parents[0]
 
-        new_output_html_path = new_output_dir_path / (md_path.stem.split("_")[1] + ".html")
+        new_output_html_path = new_output_dir_path / (md_path.stem.split("_", 1)[1] + ".html")
 
         page_components = html_parts.copy()
 
@@ -328,51 +354,51 @@ def generate_page_html(
         if dev_build:
             out_path = out_path.replace("content", "dev")
 
-        location = None
-        last_page = len(ordered_links) - 1
-        for i, link in enumerate(ordered_links):
-            # print(f'{link} | {out_path}')
-            if link in out_path:
-                location = i
+        # location = None
+        # last_page = len(ordered_links) - 1
+        # for i, link in enumerate(ordered_links):
+        #     # print(f'{link} | {out_path}')
+        #     if link in out_path:
+        #         location = i
 
-        if location is None:
-            prev_page = ""
-            prev_title = ""
-            next_page = ""
-            next_title = ""
-        elif location == 0:
-            prev_page = "None"
-            prev_title = ""
-            next_page = ordered_links[location + 1]
-            next_title = ordered_titles[location + 1]
-        elif location == last_page:
-            prev_page = ordered_links[location - 1]
-            prev_title = ordered_titles[location - 1]
-            next_page = "None"
-            next_title = "None"
-        else:
-            prev_page = ordered_links[location - 1]
-            prev_title = ordered_titles[location - 1]
-            next_page = ordered_links[location + 1]
-            next_title = ordered_titles[location + 1]
+        # if location is None:
+        #     prev_page = ""
+        #     prev_title = ""
+        #     next_page = ""
+        #     next_title = ""
+        # elif location == 0:
+        #     prev_page = "None"
+        #     prev_title = ""
+        #     next_page = ordered_links[location + 1]
+        #     next_title = ordered_titles[location + 1]
+        # elif location == last_page:
+        #     prev_page = ordered_links[location - 1]
+        #     prev_title = ordered_titles[location - 1]
+        #     next_page = "None"
+        #     next_title = "None"
+        # else:
+        #     prev_page = ordered_links[location - 1]
+        #     prev_title = ordered_titles[location - 1]
+        #     next_page = ordered_links[location + 1]
+        #     next_title = ordered_titles[location + 1]
 
-        page_components["footer"] = page_components["footer"].replace(
-            '<div class="previous-area" data-link="None">',
-            f'<div class="previous-area" data-link="{prev_page}">',
-        )
-        page_components["footer"] = page_components["footer"].replace(
-            '<div class="next-area" data-link="None">',
-            f'<div class="next-area" data-link="{next_page}">',
-        )
+        # page_components["footer"] = page_components["footer"].replace(
+        #     '<div class="previous-area" data-link="None">',
+        #     f'<div class="previous-area" data-link="{prev_page}">',
+        # )
+        # page_components["footer"] = page_components["footer"].replace(
+        #     '<div class="next-area" data-link="None">',
+        #     f'<div class="next-area" data-link="{next_page}">',
+        # )
 
-        page_components["footer"] = page_components["footer"].replace(
-            "<a>PreviousTitle</a>",
-            f"<a>{prev_title}</a>",
-        )
-        page_components["footer"] = page_components["footer"].replace(
-            "<a>NextTitle</a>",
-            f"<a>{next_title}</a>",
-        )
+        # page_components["footer"] = page_components["footer"].replace(
+        #     "<a>PreviousTitle</a>",
+        #     f"<a>{prev_title}</a>",
+        # )
+        # page_components["footer"] = page_components["footer"].replace(
+        #     "<a>NextTitle</a>",
+        #     f"<a>{next_title}</a>",
+        # )
 
         # load markdown and add yaml metadata
         # ------------------------------------------------------------

@@ -102,7 +102,8 @@ fork/repository name is always 'hnn-core'. This is required if you are using
         root_path = textbook_root_path
 
     content_path = Path(root_path / "content")
-    index_path = Path(root_path / "index.json")
+    hier_index_path = Path(root_path / "scripts" / "hier_index.json")
+    flat_index_path = Path(root_path / "scripts" / "flat_index.json")
     nb_hash_path = Path(root_path / "scripts" / "nb_hashes.json")
     nb_skip_path = Path(root_path / "scripts" / "nbs_to_skip.json")
     templates_path = Path(root_path / "templates")
@@ -131,7 +132,8 @@ Configuration: Building notebooks based on '--build-type={args.build_type}'
 
     generate_page_html(
         content_path,
-        index_path,
+        hier_index_path,
+        flat_index_path,
         templates_path,
         dev_build=args.build_on_dev,
     )
