@@ -4,7 +4,7 @@ import requests
 from hnn_core import __version__ as installed_hnn_version
 
 
-def get_commit_hash(build_on_dev_arg):
+def get_commit_hash(build_on_dev_arg, build_type, custom_owner_commit):
     argument_name = "--build-on-dev"
     # get the hash of hnn version installed in the environment
     # this is needed for the checks below

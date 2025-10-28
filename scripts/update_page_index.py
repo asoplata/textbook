@@ -10,6 +10,7 @@ from pathlib import Path
 # filenames each contain child data like "title", "relative root path" (to textbook
 # root), "output path" (where their output html goes, if necessary), etc.
 
+
 def _get_title(file_path):
     file = open(file_path, "r")
     title = "NA"

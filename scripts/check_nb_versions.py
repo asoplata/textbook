@@ -17,6 +17,7 @@ textbook_root_path = Path(__file__).parents[1]
 # expected output, but that should be fixed only after logging in general is better
 # integrated with the code.
 
+
 def check_version(enable_debug=True, root_path=None):
     """
     Return True if all notebooks are run on the same version of hnn_core,
@@ -66,11 +67,17 @@ def check_version(enable_debug=True, root_path=None):
         "Debugging check_nb_versions.check_version",
     )
     nb_hashes_path = root_path / "scripts" / "nb_hashes.json"
-    with open(nb_hashes_path , "r",) as f:
+    with open(
+        nb_hashes_path,
+        "r",
+    ) as f:
         nb_hashes = json.load(f)
 
     nb_skip_path = root_path / "scripts" / "nbs_to_skip.json"
-    with open(nb_skip_path, "r",) as f:
+    with open(
+        nb_skip_path,
+        "r",
+    ) as f:
         nbs_to_skip = json.load(f)
 
     # get names of nbs to skip
