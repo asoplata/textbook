@@ -81,13 +81,13 @@ environment. The three options are below:
         ),
     )
     parser.add_argument(
-        "--custom-repo-commit",
+        "--custom-owner-commit",
         type=str,
         help=textwrap.dedent(
 """ Optionally provide a specific commit of HNN-core to use in the form of
 <owner>:<commit>. For example, if you wanted to build using the commit at
 https://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96 ,
-you would use '--custom-repo-commit asoplata:92b000c'. This assumes that the
+you would use '--custom-owner-commit asoplata:92b000c'. This assumes that the
 fork/repository name is always 'hnn-core'. This is required if you are using
 '--build-type custom'.
         """),
@@ -114,16 +114,20 @@ Configuration: Building notebooks based on '--build-type={args.build_type}'
         """
     ))
 
-    commit_hash = get_commit_hash(build_on_dev_arg=args.build_on_dev)
+    # commit_hash = get_commit_hash(
+    #     args.build_on_dev,
+    #     args.build_type,
+    #     args.custom_owner_commit,
+    # )
 
-    execute_and_convert_nbs_to_json(
-        content_path,
-        nb_hash_path,
-        nb_skip_path,
-        args.execution_filter,
-        dev_build=commit_hash,
-        write_standalone_html=True,
-    )
+    # execute_and_convert_nbs_to_json(
+    #     content_path,
+    #     nb_hash_path,
+    #     nb_skip_path,
+    #     args.execution_filter,
+    #     dev_build=commit_hash,
+    #     write_standalone_html=True,
+    # )
 
     generate_page_html(
         content_path,

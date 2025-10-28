@@ -224,6 +224,8 @@ def generate_page_html(
     # This loads the generic templates for the header, topbar, footer, and script, but
     # not others.
     html_parts = _load_simple_templates(templates_path)
+    css_path = content_path / "assets" / "styles.css"
+    js_path = templates_path / "scripts.js"
 
     # update/load the dynamically-generated
     # page index from the index.json file
@@ -272,15 +274,20 @@ def generate_page_html(
             # here in the page-generation code, since there is not necessarily a 1-to-1
             # correspondence between every markdown file and every notebook.
             #
-            # Replace "content" parent directory with "dev" one, and safely make it
+            # Replace "content" parent directory with "dev" in the markdown-file-path
             new_output_dir_path = Path(str(md_path).replace("content", "dev"))
+            # Switch to the parent directory, and create it if necessary
             new_output_dir_path = new_output_dir_path.parents[0]
             new_output_dir_path.mkdir(parents=True, exist_ok=True)
         else:
             new_output_dir_path = md_path.parents[0]
 
+        new_output_html_path = new_output_dir_path / (md_path.stem.split("_")[1] + ".html")
+
         page_components = html_parts.copy()
 
+        ###########################################
+        # SET FOR DEMOLITION
         # get the filename from the realtive path
         md_page = os.path.basename(md_page)
         # get the directory containing the markdown file
@@ -298,38 +305,18 @@ def generate_page_html(
 
         # set the output path
         out_path = out_directory + html_page
+        ###########################################
 
         # update header imports with the relative paths
         # ------------------------------------------------------------
-        # get path from root to styles.css
-        css_path = os.path.join(
-            os.getcwd(),
-            "content",
-            "assets",
-            "styles.css",
-        )
-        # get the relative path for the styles.css
-        relative_css_path = os.path.relpath(
-            css_path,
-            start=out_directory,
-        )
+        relative_css_path = css_path.relative_to(new_output_dir_path, walk_up=True)
         # update the 'header' import for styles.css
         page_components["header"] = page_components["header"].replace(
             '<link rel="stylesheet" href="styles.css">',
             f'<link rel="stylesheet" href="{relative_css_path}">',
         )
 
-        # get path from root to scripts.js
-        js_path = os.path.join(
-            os.getcwd(),
-            "templates",
-            "scripts.js",
-        )
-        # get relative path for scripts.js
-        relative_js_path = os.path.relpath(
-            js_path,
-            start=out_directory,
-        )
+        relative_js_path = js_path.relative_to(new_output_dir_path, walk_up=True)
         # update the 'header' import for scripts.js
         page_components["header"] = page_components["header"].replace(
             '<script src="scripts.js" defer></script>',
