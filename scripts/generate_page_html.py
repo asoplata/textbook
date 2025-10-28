@@ -70,8 +70,7 @@ def _load_simple_templates(templates_path):
     return html_parts
 
 
-def _get_html_from_json(
-    nb_name,
+def _get_nb_html_from_nb_json(
     nb_path,
 ):
     """Get the structured .json output for a specified
@@ -91,21 +90,27 @@ def _get_html_from_json(
     -------
     agg_html : str
     """
-    json_path = nb_path.split(".ipynb")[0] + ".json"
-    with open(json_path, "r") as file:
-        nb_outputs = json.load(file)
-        nb_outputs = nb_outputs.get(nb_name, {})
-        agg_html = ""
-        for section, content in nb_outputs.items():
-            if isinstance(content, dict) and "html" in content:
-                agg_html += content["html"]
-    return agg_html
+    json_path = nb_path.with_suffix(".json")
+    try:
+        with open(json_path, "r") as file:
+            nb_outputs = json.load(file)
+            nb_outputs = nb_outputs.get(nb_path.name, {})
+            agg_html = ""
+            for section, content in nb_outputs.items():
+                if isinstance(content, dict) and "html" in content:
+                    agg_html += content["html"]
+        return agg_html
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            f"The notebook at '{nb_path}' does not appear to have a corresponding "
+            "output JSON file. Please restart the build process with one of the execution "
+            "types enabled, in order to execute the notebook. Exiting build process."
+        )
 
 
 def add_nb_to_html(
     converted_html,
-    path,
-    md_page,
+    input_dir_path,
 ):
     """
     Function to insert Jupyter notebook html outputs into html
@@ -166,13 +171,13 @@ def add_nb_to_html(
 
         if match and args:
             nb_name = match.group(1)
-            nb_path = path.split(md_page)[0] + nb_name
+            nb_path = input_dir_path / nb_name
             print(f"nb with args found: {line}")
             print("Argument handling will be added in a future update")
             output_lines.append(line)
         elif match:
             nb_name = match.group(1)
-            nb_path = path.split(md_page)[0] + nb_name
+            nb_path = input_dir_path / nb_name
 
             # specify nb button with correct file reference
             nb_button = nb_button.replace(
@@ -182,11 +187,12 @@ def add_nb_to_html(
             output_lines.append(
                 nb_button,
             )
-
             # generate and append the nb html output
-            nb_html = _get_html_from_json(nb_name, nb_path)
+            nb_html = _get_nb_html_from_nb_json(nb_path)
             output_lines.append(nb_html)
         else:
+            # This line is very important! This is where most of the md-page content
+            # passes through.
             output_lines.append(line)
 
     combined_html = "\n".join(output_lines)
@@ -256,8 +262,7 @@ def generate_page_html(
     # AES TODO Ideally, we generate ALL the output HTML file paths before creating
     # either the sidebar OR the files themselves. That way we're not searching for all
     # the paths twice.
-    md_paths = _get_markdown_paths(content_path)
-
+    # md_paths = _get_markdown_paths(content_path)
 
     # Create the template for the sidebar/navbar, and the ordering of the pages
     # html_parts["navbar"], ordered_links = generate_sidebar_html(index_path, dev_build)
@@ -292,57 +297,24 @@ def generate_page_html(
     # README.md files)
     # AES
     # md_paths = _get_markdown_paths(content_path)
-    for md_page, path_old in md_paths.items():
-        # Le new pathlib stuff
-        md_path = Path(path_old)
-        if dev_build:
-            # This needs to be done separately in both the notebook-execution code and
-            # here in the page-generation code, since there is not necessarily a 1-to-1
-            # correspondence between every markdown file and every notebook.
-            #
-            # Replace "content" parent directory with "dev" in the markdown-file-path
-            new_output_dir_path = Path(str(md_path).replace("content", "dev"))
-            # Switch to the parent directory, and create it if necessary
-            new_output_dir_path = new_output_dir_path.parents[0]
-            new_output_dir_path.mkdir(parents=True, exist_ok=True)
-        else:
-            new_output_dir_path = md_path.parents[0]
-
-        new_output_html_path = new_output_dir_path / (md_path.stem.split("_", 1)[1] + ".html")
-
+    # for md_page, path_old in md_paths.items():
+    for page in flat_index:
         page_components = html_parts.copy()
-
-        ###########################################
-        # SET FOR DEMOLITION
-        # get the filename from the realtive path
-        md_page = os.path.basename(md_page)
-        # get the directory containing the markdown file
-        out_directory = path_old.split(md_page)[0]
-
-        if dev_build:
-            out_directory = out_directory.replace(
-                "content",
-                "dev",
-            )
-
-        # remove leading `##_` from page and change extension to .html
-        html_page = md_page.split("_", 1)[1]
-        html_page = html_page.split(".md")[0] + ".html"
-
-        # set the output path
-        out_path = out_directory + html_page
-        ###########################################
+        input_md_path = page["absolute_input_path"]
+        input_dir_path = page["absolute_input_path"].parents[0]
+        abs_out_html_path = page["absolute_output_html_path"]
+        abs_out_dir_path = page["absolute_output_html_path"].parents[0]
 
         # update header imports with the relative paths
         # ------------------------------------------------------------
-        relative_css_path = css_path.relative_to(new_output_dir_path, walk_up=True)
+        relative_css_path = css_path.relative_to(abs_out_dir_path, walk_up=True)
         # update the 'header' import for styles.css
         page_components["header"] = page_components["header"].replace(
             '<link rel="stylesheet" href="styles.css">',
             f'<link rel="stylesheet" href="{relative_css_path}">',
         )
 
-        relative_js_path = js_path.relative_to(new_output_dir_path, walk_up=True)
+        relative_js_path = js_path.relative_to(abs_out_dir_path, walk_up=True)
         # update the 'header' import for scripts.js
         page_components["header"] = page_components["header"].replace(
             '<script src="scripts.js" defer></script>',
@@ -351,9 +323,6 @@ def generate_page_html(
 
         # update 'footer' page_component with the correct links
         # ------------------------------------------------------------
-        if dev_build:
-            out_path = out_path.replace("content", "dev")
-
         # location = None
         # last_page = len(ordered_links) - 1
         # for i, link in enumerate(ordered_links):
@@ -403,7 +372,7 @@ def generate_page_html(
         # load markdown and add yaml metadata
         # ------------------------------------------------------------
         # read markdown file into a string
-        with open(path_old, "r", encoding="utf-8") as f:
+        with open(input_md_path, "r", encoding="utf-8") as f:
             markdown_text = f.read()
 
         # add check for title section in markdown file
@@ -426,8 +395,8 @@ def generate_page_html(
 
         # set relative image paths when doing a dev build
         # ------------------------------------------------------------
-        # images stored locally in "content" are not automatically propagated to the
-        # new dev build folder "dev".
+        # images stored locally in "content", and which are not generated by notebooks,
+        # are not automatically propagated to the new dev build folder "dev".
         #
         # html filepaths therefore need to be adjusted for images local to the repo
         #
@@ -437,28 +406,28 @@ def generate_page_html(
         # but for now, all images in "content" should be contained in an "images"
         # sub directory
         if dev_build:
-            textbook_root = out_directory.split("textbook")[0] + "textbook"
-            dev_path = out_directory.split("textbook")[-1]
-
-            rel_path = os.path.relpath(
-                textbook_root,
-                out_directory,
+            # input_md_path is always under "contents", never "dev"
+            relative_local_content_image_path = abs_out_dir_path.relative_to(
+                input_dir_path,
+                walk_up=True,
             )
-
-            rel_path = rel_path + dev_path.replace(
-                "dev",
-                "content",
+            relative_local_content_image_path = (
+                relative_local_content_image_path / "images"
             )
-
+            relative_local_content_image_path = str(
+                relative_local_content_image_path
+            ).replace("dev", "content")
             converted_html = converted_html.replace(
                 'img src="images',
-                f'img src="{rel_path}images',
+                f'img src="{relative_local_content_image_path}',
             )
 
+        # Add any notebook content
+        # ------------------------------------------------------------
+        # This line is very important, since all markdown-page content is replaced by it.
         combined_html = add_nb_to_html(
             converted_html,
-            path_old,
-            md_page,
+            input_dir_path,
         )
 
         # Aggregate all page components and write output
@@ -470,11 +439,7 @@ def generate_page_html(
             file_contents += page_components[section]
         file_contents += "\n</body>\n</html>"
 
-        if dev_build:
-            # check that folder exists else create it
-            os.makedirs(out_directory, exist_ok=True)
-
-        with open(out_path, "w") as out:
+        with open(abs_out_html_path, "w") as out:
             out.write(file_contents)
 
     return

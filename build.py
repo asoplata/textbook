@@ -32,7 +32,7 @@ def main():
             "execute-absolutely-all-notebooks",
         ],
         help=textwrap.dedent(
-"""Specify different criteria for which notebooks you want to execute before converting
+            """Specify different criteria for which notebooks you want to execute before converting
 them to HTML. The default is 'no-execution'. The four options are below, in order of
 more execution:
 - 'no-execution': This will not execute any notebooks. You may receive warnings if
@@ -42,7 +42,8 @@ more execution:
 - 'execute-all-unskipped-notebooks': Execute all notebooks except those flagged for
     skipping.
 - 'execute-absolutely-all-notebooks': Execute all notebooks.
-"""),
+"""
+        ),
     )
     parser.add_argument(
         "--build-on-dev",
@@ -67,7 +68,7 @@ more execution:
             "custom",
         ],
         help=textwrap.dedent(
-"""Specify which version of HNN-core you want to use for building the textbook. The
+            """Specify which version of HNN-core you want to use for building the textbook. The
 default is 'stable'. This ASSUMES you have the correct version installed in your local
 environment. The three options are below:
 - 'stable': This builds the textbook using the latest stable version of HNN-Core, as
@@ -84,13 +85,14 @@ environment. The three options are below:
         "--custom-owner-commit",
         type=str,
         help=textwrap.dedent(
-""" Optionally provide a specific commit of HNN-core to use in the form of
+            """Optionally provide a specific commit of HNN-core to use in the form of
 <owner>:<commit>. For example, if you wanted to build using the commit at
 https://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96 ,
 you would use '--custom-owner-commit asoplata:92b000c'. This assumes that the
 fork/repository name is always 'hnn-core'. This is required if you are using
 '--build-type custom'.
-        """),
+        """
+        ),
     )
 
     # add all above arguments to the parser
@@ -102,33 +104,38 @@ fork/repository name is always 'hnn-core'. This is required if you are using
         root_path = textbook_root_path
 
     content_path = Path(root_path / "content")
-    hier_index_path = Path(root_path / "scripts" / "hier_index.json")
-    flat_index_path = Path(root_path / "scripts" / "flat_index.json")
+    # hier_index_path = Path(root_path / "scripts" / "hier_index.json")
+    # flat_index_path = Path(root_path / "scripts" / "flat_index.json")
+    # # AES Stop saving index files
+    hier_index_path = None
+    flat_index_path = None
     nb_hash_path = Path(root_path / "scripts" / "nb_hashes.json")
     nb_skip_path = Path(root_path / "scripts" / "nbs_to_skip.json")
     templates_path = Path(root_path / "templates")
 
-    print(textwrap.dedent(
-        f"""
+    print(
+        textwrap.dedent(
+            f"""
 Configuration: Choosing notebooks based on '--execution-filter={args.execution_filter}'
 Configuration: Building notebooks based on '--build-type={args.build_type}'
         """
-    ))
+        )
+    )
 
-    # commit_hash = get_commit_hash(
-    #     args.build_on_dev,
-    #     args.build_type,
-    #     args.custom_owner_commit,
-    # )
+    commit_hash = get_commit_hash(
+        args.build_on_dev,
+        args.build_type,
+        args.custom_owner_commit,
+    )
 
-    # execute_and_convert_nbs_to_json(
-    #     content_path,
-    #     nb_hash_path,
-    #     nb_skip_path,
-    #     args.execution_filter,
-    #     dev_build=commit_hash,
-    #     write_standalone_html=True,
-    # )
+    execute_and_convert_nbs_to_json(
+        content_path,
+        nb_hash_path,
+        nb_skip_path,
+        args.execution_filter,
+        dev_build=commit_hash,
+        write_standalone_html=True,
+    )
 
     generate_page_html(
         content_path,

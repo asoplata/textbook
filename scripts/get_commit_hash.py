@@ -45,8 +45,10 @@ def get_commit_hash(build_on_dev_arg, build_type, custom_owner_commit):
                     "\n"
                     "Try creating an environment by running the following commands "
                     "in a terminal:"
-                    "\nmake create-textbook-dev-build"
-                    "\nconda activate textbook-dev-build"
+                    "\n   $ make create-textbook-dev-build"
+                    "\n   $ conda activate textbook-dev-build"
+                    "\n   $ pip install --upgrade --force-reinstall --no-cache-dir "
+                    f'"hnn-core[dev] @ git+https://github.com/jonescompneurolab/hnn-core.git@{commit_hash}"'
                 )
         else:
             repo_hash = build_on_dev_arg.strip()

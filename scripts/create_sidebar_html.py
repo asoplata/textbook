@@ -49,12 +49,11 @@ def build_sidebar(hier_index, flat_index):
             dynamic_links_html += create_toggle_section(toggle_label)
             # Add pages under toggle
             for sub_filename, sub_title in toggle_contents.items():
-
                 label = sub_title
                 for page in flat_index:
                     if page["title"] == sub_title:
                         link = page["relative_output_html_path"]
-                dynamic_links_html += f'\n{indent+indent}<a href="{link}">{label}</a>'
+                dynamic_links_html += f'\n{indent + indent}<a href="{link}">{label}</a>'
 
                 # ordered_links.append(page_paths[sub_filename])
                 # ordered_pages.append(sub_title)
@@ -184,13 +183,6 @@ def create_sidebar_html(
         )
 
         sidebar_html += workshop_link
-
-    # # AES updating of the index has been moved upwards into generate_page_html
-    # with open(
-    #     index_path,
-    #     "r",
-    # ) as f:
-    #     hier_index = json.load(f)
 
     # build the page navigation elements
     # from the updated page index
