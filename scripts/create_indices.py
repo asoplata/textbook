@@ -59,8 +59,7 @@ def create_hier_index(content_path, hier_index_path=None):
 
 def create_flat_index(content_path, flat_index_path=None, dev_build=False):
     def _create_flat_index(content_path: Path):
-        """TODO
-        """
+        """TODO"""
         # This glob is recursive, see
         # https://docs.python.org/3/library/pathlib.html#pathlib-pattern-language
         paths_all = sorted(content_path.glob("**/*.md"))
@@ -74,14 +73,13 @@ def create_flat_index(content_path, flat_index_path=None, dev_build=False):
         # "relative input" is relative to "textbook_root / content"
         flat_index = [
             {
-                "absolute_input_path" : input_path,
+                "absolute_input_path": input_path,
                 # "relative_input_path" : input_path.relative_to(content_path), AES TODO
-                "title" : _get_title(input_path),
+                "title": _get_title(input_path),
             }
             for input_path in paths_excluding_readme
         ]
         return flat_index
-
 
     def _generate_output_html_paths(content_path, flat_index, dev_build=False):
         """TODO
@@ -102,6 +100,9 @@ def create_flat_index(content_path, flat_index_path=None, dev_build=False):
                 # Replace "content" with "dev" among all the parents. We do NOT know how
                 # many levels above it will be.
                 abs_out_dir_path = Path(str(abs_out_dir_path).replace("content", "dev"))
+                # This needs to be done separately in both the notebook-execution code
+                # and here in the page-generation code, since there is not necessarily a
+                # 1-to-1 correspondence between every markdown file and every notebook.
                 abs_out_dir_path.mkdir(parents=True, exist_ok=True)
             abs_out_html_path = abs_out_dir_path / new_filename
 
@@ -115,12 +116,13 @@ def create_flat_index(content_path, flat_index_path=None, dev_build=False):
             # Finally, change our path to treat the website root as root.
             rel_out_html_path = "/" + str(rel_out_html_path)
 
-            page.update({
-                "absolute_output_html_path": abs_out_html_path,
-                "relative_output_html_path": rel_out_html_path,
-            })
+            page.update(
+                {
+                    "absolute_output_html_path": abs_out_html_path,
+                    "relative_output_html_path": rel_out_html_path,
+                }
+            )
         return flat_index
-
 
     flat_index_no_output = _create_flat_index(content_path)
     flat_index = _generate_output_html_paths(
