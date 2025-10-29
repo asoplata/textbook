@@ -16,13 +16,14 @@ def main():
     AES TODO: describe required file structure
     """
 
-    # accept command line arguments
+    # ----------------------------------------------------------------------------------
+    # Define command line arguments
     parser = argparse.ArgumentParser(
         description="Generate html pages for deployment",
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
-        "--execution-filter",
+        "--execution-type",
         action="store",
         default="no-execution",
         choices=[
@@ -103,7 +104,8 @@ fork/repository name is always 'hnn-core'. This is required if you are using
         ),
     )
 
-    # add all above arguments to the parser
+    # ----------------------------------------------------------------------------------
+    # Process CLI arguments, and set paths
     args = parser.parse_args()
 
     if args.custom_root_path:
@@ -121,26 +123,35 @@ fork/repository name is always 'hnn-core'. This is required if you are using
     print(
         textwrap.dedent(
             f"""
-Configuration: Choosing notebooks based on '--execution-filter={args.execution_filter}'
+Configuration: Choosing notebooks based on '--execution-type={args.execution_type}'
 Configuration: Building notebooks based on '--build-type={args.build_type}'
         """
         )
     )
+
+    # ----------------------------------------------------------------------------------
+    # Begin the actual work: First, figure out the environment and version:
     commit_hash = get_commit_hash(
         args.build_on_dev,
         args.build_type,
-        args.custom_owner_commit,
+        custom_owner_commit=args.custom_owner_commit,
     )
 
+    # ----------------------------------------------------------------------------------
+    # Execute appropriate Jupyter notebooks, and save their output for later webpage
+    # assembly:
     execute_and_convert_nbs_to_json(
         content_path,
         nb_hash_path,
         nb_skip_path,
-        args.execution_filter,
+        args.execution_type,
         dev_build=commit_hash,
         write_standalone_html=True,
     )
 
+    # ----------------------------------------------------------------------------------
+    # Finally, use the Markdown files and Jupyter notebook output to assemble the
+    # webpages and website as a whole:
     generate_page_html(
         content_path,
         templates_path,

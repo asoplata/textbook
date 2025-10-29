@@ -378,7 +378,7 @@ def _load_nb_hashes(nb_hash_path):
 
     If the hash file does not exist (e.g., first build or after cleaning), an empty
     dictionary is returned, which will cause all notebooks to be treated as new and
-    trigger execution according to the execution filter settings.
+    trigger execution according to the execution type settings.
 
     Parameters
     ----------
@@ -550,7 +550,7 @@ def _load_nbs_to_skip(nb_skip_path, dev_build):
     This allows different notebooks to be skipped depending on the build context.
 
     Skipped notebooks will not be executed even if they have changed content, unless
-    the execution filter is set to "execute-absolutely-all-notebooks". Notebooks in the
+    the execution type is set to "execute-absolutely-all-notebooks". Notebooks in the
     skip list should have been successfully executed previously, otherwise warnings will
     be issued about potentially incomplete outputs.
 
@@ -638,7 +638,7 @@ def _process_nb(
     nbs_to_skip,
     nb_json_output_dir,
     dev_build,
-    execution_filter,
+    execution_type,
 ):
     """
     Process a notebook by determining if execution is needed and executing if appropriate.
@@ -666,7 +666,7 @@ def _process_nb(
     dev_build : str or bool
         False if not running a dev build. Otherwise, a string containing
         the repo and commit hash to be used for the build
-    execution_filter : str
+    execution_type : str
         Execution mode that determines which notebooks to execute. See the 'help'
         description of 'build.py's CLI for what these different values mean. Valid
         values:
@@ -718,7 +718,7 @@ def _process_nb(
         current_hash,
         nbs_to_skip,
         dev_build,
-        execution_filter,
+        execution_type,
         prior_commit_if_any,
         prior_execution_if_any,
         prior_version_if_any,
@@ -774,7 +774,7 @@ def _determine_should_execute_nb(
     current_hash,
     nbs_to_skip,
     dev_build,
-    execution_filter,
+    execution_type,
     prior_commit_if_any,
     prior_execution_if_any,
     prior_version_if_any,
@@ -788,10 +788,10 @@ def _determine_should_execute_nb(
     - Whether the notebook is "new" (not associated with a json output)
     - Whether the user is performing a 'dev' build
     - Whether the notebook hash has changed since last execution
-    - The execution filter mode specified by the user
+    - The execution type specified by the user
 
     Warnings are printed if the notebook appears outdated or if execution
-    is needed but skipped based on the execution filter.
+    is needed but skipped based on the execution type.
 
     Parameters
     ----------
@@ -808,7 +808,7 @@ def _determine_should_execute_nb(
     dev_build : str or bool
         False if not running a dev build. Otherwise, a string containing
         the repo and commit hash to be used for the build
-    execution_filter : str
+    execution_type : str
         Execution mode that determines which notebooks to execute. See the 'help'
         description of 'build.py's CLI for what these different values mean. Valid
         values:
@@ -834,7 +834,7 @@ def _determine_should_execute_nb(
     """
     # 1) handle super omega execute all notebooks, including skipped
     #     - This is a brand-new option.
-    if execution_filter == "execute-absolutely-all-notebooks":
+    if execution_type == "execute-absolutely-all-notebooks":
         print(
             "Execution set to all notebooks, including skipped! CHARGE PROTON TORPEDOS!"
         )
@@ -843,7 +843,7 @@ def _determine_should_execute_nb(
     # 2) handle no execution of any notebooks
     #     - This was formerly the "silent default" behavior of "python build.py" with no
     #     args.
-    if execution_filter == "no-execution":
+    if execution_type == "no-execution":
         # 2.1) if nb new
         if filename not in nb_hashes:
             print(
@@ -852,7 +852,7 @@ def _determine_should_execute_nb(
                 # Notebook
                 # '{filename}'
                 # appears to be new and needs to be executed. Not performing execution
-                # since execution_filter is set to '{execution_filter}'.
+                # since execution_type is set to '{execution_type}'.
                 # ----------------------------------------------------------------------
             """)
             )
@@ -864,7 +864,7 @@ def _determine_should_execute_nb(
                 # Notebook
                 # '{filename}'
                 # appears to have been updated and needs to be executed. Not performing
-                # execution since execution_filter is set to '{execution_filter}'.
+                # execution since execution_type is set to '{execution_type}'.
                 # ----------------------------------------------------------------------
             """)
             )
@@ -890,8 +890,8 @@ def _determine_should_execute_nb(
                         # Installed version:
                         #    {hnn_version}
                         #
-                        # Not performing execution since execution_filter is set to
-                        # '{execution_filter}'.
+                        # Not performing execution since execution_type is set to
+                        # '{execution_type}'.
                         # --------------------------------------------------------------
                     """)
                     )
@@ -906,8 +906,8 @@ def _determine_should_execute_nb(
                 # was run. The html and json output may be incomplete. Please consider
                 # re-executing this notebook.
                 #
-                # Not performing execution since execution_filter is set to
-                # '{execution_filter}'.
+                # Not performing execution since execution_type is set to
+                # '{execution_type}'.
                 # ----------------------------------------------------------------------
             """)
             )
@@ -935,7 +935,7 @@ def _determine_should_execute_nb(
                 #
                 # Please either remove the notebook from the skipped list JSON file, or
                 # re-run the script with
-                # '--execution-filter=execute-absolutely-all-notebooks'
+                # '--execution-type=execute-absolutely-all-notebooks'
                 # to ensure that the notebook outputs are correct.
                 # ----------------------------------------------------------------------
             """)
@@ -951,7 +951,7 @@ def _determine_should_execute_nb(
                 #
                 # Please either remove the notebook from the skipped list JSON file, or
                 # re-run the script with
-                # '--execution-filter=execute-absolutely-all-notebooks'
+                # '--execution-type=execute-absolutely-all-notebooks'
                 # to ensure that the notebook outputs are correct.
                 # ----------------------------------------------------------------------
             """)
@@ -962,13 +962,13 @@ def _determine_should_execute_nb(
     # 4) Handle executing everything except skipped, since skippable nbs have already
     # been skipped above.
     #     - This was formerly called via the "--force-execute-all" CLI arg.
-    if execution_filter == "execute-all-unskipped-notebooks":
+    if execution_type == "execute-all-unskipped-notebooks":
         print(f"Executing '{filename}'")
         return True
 
     # 5) handle "regular" execute
     #     - This was formerly called via the "--execute-notebooks" CLI arg.
-    if execution_filter == "execute-updated-unskipped-notebooks":
+    if execution_type == "execute-updated-unskipped-notebooks":
         # 5.1) if the hash has not changed
         if (filename in nb_hashes) and (nb_hashes[filename] == current_hash):
             if dev_build:
@@ -1211,7 +1211,7 @@ def execute_and_convert_nbs_to_json(
     content_path,
     nb_hash_path,
     nb_skip_path,
-    execution_filter,
+    execution_type,
     dev_build=False,
     use_base64=False,
     write_standalone_html=False,
@@ -1251,7 +1251,7 @@ def execute_and_convert_nbs_to_json(
     nb_skip_path : pathlib.Path
         Path to the JSON file containing skip configuration lists, typically
         'scripts/nbs_to_skip.json'
-    execution_filter : str
+    execution_type : str
         Execution mode controlling which notebooks get executed. Valid values:
         - 'no-execution': Skip all notebook execution
         - 'execute-updated-unskipped-notebooks': Execute only changed/new unskipped notebooks
@@ -1322,7 +1322,7 @@ def execute_and_convert_nbs_to_json(
                 nbs_to_skip,
                 nb_json_output_dir,
                 dev_build,
-                execution_filter,
+                execution_type,
             )
         )
 
