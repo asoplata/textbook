@@ -1,4 +1,6 @@
 {
+    "last_execution_successful": false,
+    "last_hnn_version_used": "NA",
     "full_executed": true,
     "hnn_version": "NA",
     "optimize_simulated_evoked_response_parameters_notebook.ipynb": {
