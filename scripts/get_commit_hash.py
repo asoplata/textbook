@@ -1,126 +1,184 @@
 import subprocess
-
 import requests
-from hnn_core import __version__ as installed_hnn_version
+
+from hnn_core import __version__ as installed_version
 
 
-def get_commit_hash(build_on_dev_arg, build_type, custom_owner_commit):
-    argument_name = "--build-on-dev"
-    # get the hash of hnn version installed in the environment
-    # this is needed for the checks below
+def get_commit_hash(build_on_dev_arg, code_version, custom_owner_commit=None):
+    # ----------------------------------------------------------------------------------
+    # Try to get the commit hash of the current installation of hnn_core:
     try:
-        installed_hnn_commit = subprocess.check_output(["pip", "freeze"], text=True)
-        for line in installed_hnn_commit.splitlines():
+        installed_commit = subprocess.check_output(["pip", "freeze"], text=True)
+        for line in installed_commit.splitlines():
             if "hnn" in line:
                 if "@" in line:
-                    installed_hnn_commit = line.split("@")[2].split("#")[0]
+                    installed_commit = line.split("@")[2].split("#")[0]
                 else:
-                    installed_hnn_commit = line.split("hnn-core==")[-1]
+                    installed_commit = line.split("hnn-core==")[-1]
         print(
             "\nConfiguration: The installed version of hnn-core is:\n"
-            f"    {installed_hnn_version}"
-            "\n\nConfiguration: The installed commit of hnn-core is:\n"
-            f"    {installed_hnn_commit}\n"
+            f"    {installed_version}"
+            "\n\nConfiguration: The installed commit (or, if not installed from source, "
+            "version) of hnn-core is:\n"
+            f"    {installed_commit}\n"
         )
-
     except Exception as e:
         raise RuntimeError(
-            f"Could not import hnn_core and retrieve the latest commit:\n{e}"
+            f"Could not import hnn_core and retrieve the installed commit:\n{e}"
         )
-
-    if build_on_dev_arg is not None:
-        if build_on_dev_arg == "master":
-            # get the latest commit from upstream/master
-            url = (
-                "https://api.github.com/repos/jonescompneurolab/hnn-core/commits/master"
-            )
-            response = requests.get(url)
-            response.raise_for_status()
-            commit_hash = response.json()["sha"]
-            if commit_hash != installed_hnn_commit:
-                raise RuntimeError(
-                    f"The latest commit on master ({commit_hash}) "
-                    "does not match the latest commit on the installed "
-                    f"version of hnn-core ({installed_hnn_commit})."
-                    "\n"
-                    "Try creating an environment by running the following commands "
-                    "in a terminal:"
-                    "\n   $ make create-textbook-dev-build"
-                    "\n   $ conda activate textbook-dev-build"
-                    "\n   $ pip install --upgrade --force-reinstall --no-cache-dir "
-                    f'"hnn-core[dev] @ git+https://github.com/jonescompneurolab/hnn-core.git@{commit_hash}"'
-                )
-        else:
-            repo_hash = build_on_dev_arg.strip()
-            try:
-                repo, commit = repo_hash.split(":")
-
-                url = f"https://api.github.com/repos/{repo}/hnn-core/commits/{commit}"
-                response = requests.get(url)
-                response.raise_for_status()
-                commit_hash = response.json()["sha"]
-
-            except Exception as e:
-                raise RuntimeError(
-                    f"The {argument_name} argument must be specified in the following"
-                    f'format: {argument_name} "your-repository-owner:your-commit-hash" '
-                    "\nE.g., a valid input would be: asoplata:92b000c, which "
-                    "would correspond to the commit at "
-                    "\nhttps://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96"
-                    f"\n\nError message: {e}"
-                )
-
-            if commit_hash != installed_hnn_commit:
-                # AES TODO why does this mention the latest? Only equality should matter
-                raise RuntimeError(
-                    "The repository-owner and commit you specified: "
-                    f"\n   Repository Owner: {repo}"
-                    f"\n   Commit: {commit_hash} "
-                    "\nDo not match the latest commit on the installed "
-                    "version of hnn-core: "
-                    f"\n   Installed version / commit: {installed_hnn_commit}"
-                    "\nPlease ensure you have installed the proper version of "
-                    "hnn-core in your local environment."
-                    "\nTry creating an environment by running the following "
-                    "commands in a terminal:"
-                    "\n   $ make create-textbook-dev-build"
-                    "\n   $ conda activate textbook-dev-build"
-                    "\n   $ pip install --upgrade --force-reinstall --no-cache-dir "
-                    f'"hnn-core[dev] @ git+https://github.com/{repo}/hnn-core.git@{commit}"'
-                )
-    else:
+    # ----------------------------------------------------------------------------------
+    # Deal with each different variation of which HNN version (and/or commit hash) the
+    # user wants, versus which version is installed in the environment:
+    if code_version == "stable":
+        # We don't need the commit hash if simply using the latest stable.
+        # AES TODO switch to None
         commit_hash = False
-
-        latest_stable = requests.get("https://pypi.org/pypi/hnn-core/json").json()[
+        # Lookup online the latest stable version
+        latest_stable_version = requests.get("https://pypi.org/pypi/hnn-core/json").json()[
             "info"
         ]["version"]
-
-        if installed_hnn_version > latest_stable:
-            print(
-                "\nWARNING: your installed version of hnn-core is ahead of the "
-                f"current stable version, but you did not use the {argument_name} "
-                "argument:"
-                f"\n   Stable version: {latest_stable}"
-                f"\n   Installed version: {installed_hnn_version}"
-                f"\nIt is generally advisable to use the {argument_name} argument "
-                "when generating the textbook on versions of hnn-core that are "
-                "ahead of the current stable version."
+        # "stable" case version validation
+        if installed_version > latest_stable_version:
+            raise RuntimeError(
+                "Your installed version of hnn-core is ahead of the "
+                "latest stable version:"
+                f"\n   Latest stable version: {latest_stable_version}"
+                f"\n   Installed version:     {installed_version}"
+                "\nIf you want to generate the textbook website using a version of "
+                "hnn-core that is newer than the latest stable version, you must "
+                "provide a different argument to '--code-version'. "
+                "See 'build.py --help' for more details."
             )
-        elif installed_hnn_version != latest_stable:
-            # AES need to rewrite this warning
-            print(
-                "\nWARNING: you are attempting to build the textbook on a "
-                "version of hnn-core that does not match the latest stable version."
-                f"\n   Stable version: {latest_stable}"
-                f"\n   Installed version: {installed_hnn_version}"
-                "\n\nIf your installed version is behind the latest stable "
-                "version, pase consider updating your local install before "
-                "pushing any changes."
+        elif installed_version != latest_stable_version:
+            raise RuntimeError(
+                "Your installed version of hnn-core does not match the latest stable "
+                "version, and is probably out of date: "
+                f"\n   Latest stable version: {latest_stable_version}"
+                f"\n   Installed version:     {installed_version}"
+                "\nIf your installed version is behind the latest stable "
+                "version, you can update your local install using: "
+                "\n   $ pip install --upgrade 'hnn-core[dev]'"
                 "\n\nIf your installed version references a particular commit or "
                 "branch (e.g.: hnn-core @ git+https://github.com/jonescompneurolab"
-                "/hnn-core.git@1413550b2c610b700b7bb12ce7e1ae408ef8d4d3),"
-                f" we recommend that you use the {argument_name} argument to specify "
-                "the version of hnn-core that should be used."
+                "/hnn-core.git@1413550b2c610b700b7bb12ce7e1ae408ef8d4d3), "
+                "then you need to either change your environment or provide a different "
+                "value to the '--code-version' argument of 'build.py'. "
+                "See 'build.py --help' for more details."
             )
+        elif installed_version == latest_stable_version:
+            print(
+                "Configuration: Success: Your installed version and the latest stable "
+                "version of hnn-core appear to be equivalent: "
+                f"\n   Latest stable version: {latest_stable_version}"
+                f"\n   Installed version:     {installed_version}"
+            )
+
+    elif code_version == "master":
+        # Lookup online the latest commit hash from upstream/master
+        url = (
+            "https://api.github.com/repos/jonescompneurolab/hnn-core/commits/master"
+        )
+        response = requests.get(url)
+        response.raise_for_status()
+        latest_master_commit = response.json()["sha"]
+        # AES TODO
+        commit_hash = latest_master_commit
+
+        # "master" case version/commit validation
+        if installed_commit != latest_master_commit:
+            raise RuntimeError(
+                "Your installed commit hash of hnn-core does not match the latest "
+                "'master' branch commit hash:"
+                f"\n   Latest master commit hash: {latest_master_commit}"
+                f"\n   Installed commit hash:     {installed_commit}"
+                "To build the textbook website against the latest 'master', you can "
+                "create a valid environment by running the following commands in a "
+                "terminal:"
+                "\n   $ make create-textbook-dev-build"
+                "\n   $ conda activate textbook-dev-build"
+                "\n   $ pip install --upgrade --force-reinstall --no-cache-dir "
+                f'"hnn-core[dev] @ git+https://github.com/jonescompneurolab/hnn-core.git@{latest_master_commit}"'
+                "\nSee 'build.py --help' for more details."
+            )
+        elif installed_commit == latest_master_commit:
+            print(
+                "Configuration: Success: Your installed commit and the latest master "
+                "commit of hnn-core appear to be equivalent: "
+                f"\n   Latest master commit hash: {latest_master_commit}"
+                f"\n   Installed commit hash:     {installed_commit}"
+            )
+
+    elif code_version == "custom":
+        if not custom_owner_commit:
+            raise RuntimeError(
+                "If you specify '--code-version=custom', you are also required to "
+                "specify the combination of repo-owner and commit using the following "
+                "format: "
+                "\n--custom-owner-commit=<repository-owner>:<commit-hash>"
+                "\nFor example, a valid input would be: "
+                "\n--custom-owner-commit=asoplata:92b000c "
+                "\nwhich would correspond to the commit at "
+                "\nhttps://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96 "
+                "\nSee 'build.py --help' for more details."
+            )
+
+        # "custom" case "<owner>:<commit>" input processing and validation
+        owner_hash = custom_owner_commit.strip()
+        try:
+            owner, provided_commit = owner_hash.split(":")
+
+            url = f"https://api.github.com/repos/{owner}/hnn-core/commits/{provided_commit}"
+            response = requests.get(url)
+            response.raise_for_status()
+            full_provided_commit = response.json()["sha"]
+            # AES TODO
+            commit_hash = full_provided_commit
+
+        except Exception as e:
+            raise RuntimeError(
+                "You must"
+                "specify the combination of repo-owner and commit using the following "
+                "format: "
+                "\n--custom-owner-commit=<repository-owner>:<commit-hash> "
+                "\nFor example, a valid input would be: "
+                "\n--custom-owner-commit=asoplata:92b000c "
+                "\nwhich would correspond to the commit at "
+                "\nhttps://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96 "
+                "\nSee 'build.py --help' for more details."
+                f"\n\nError message: {e}"
+            )
+
+        # "custom" case version/commit validation
+        if installed_commit != full_provided_commit:
+            raise RuntimeError(
+                "Your installed version/commit of hnn-core does not match the custom "
+                "repository-owner and commit you specified: "
+                f"\n   Provided repository owner: {owner}"
+                f"\n   Provided commit hash (full):      {full_provided_commit} "
+                f"\n   Installed version or commit hash: {installed_commit}"
+                "\nTo build the textbook website against the owner and commit you "
+                "provided, you can create a valid environment by running the following "
+                "commands in a terminal:"
+                "\n   $ make create-textbook-dev-build"
+                "\n   $ conda activate textbook-dev-build"
+                "\n   $ pip install --upgrade --force-reinstall --no-cache-dir "
+                f'"hnn-core[dev] @ git+https://github.com/{owner}/hnn-core.git@{full_provided_commit}"'
+                "\nSee 'build.py --help' for more details."
+            )
+        elif installed_commit == full_provided_commit:
+            print(
+                "Configuration: Success: Your installed commit and the provided commit "
+                "of hnn-core appear to be equivalent: "
+                f"\n   Provided commit hash (full):      {full_provided_commit} "
+                f"\n   Installed version or commit hash: {installed_commit}"
+            )
+
+    elif code_version == "no-check":
+        # AES TODO
+        commit_hash = False
+        print(
+        "\nConfiguration: Checking of hnn-core version/commit has been disabled for "
+        "this build."
+        )
 
     return commit_hash
