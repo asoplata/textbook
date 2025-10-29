@@ -173,7 +173,7 @@ def get_commit_hash(code_version, custom_owner_commit=None):
 
     elif code_version == "no-check":
         # AES TODO
-        commit_hash = False
+        commit_hash = installed_commit
         print(
             "\nConfiguration: Checking of hnn-core version/commit has been disabled for "
             "this build."

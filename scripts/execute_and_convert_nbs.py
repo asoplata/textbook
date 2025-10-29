@@ -521,15 +521,15 @@ def _read_nb_json_output_metadata(
         with open(json_path, "r") as file:
             nb_outputs = json.load(file)
             execution_check = nb_outputs.get(
-                "full_executed",
+                "last_execution_successful",
                 False,
             )
             version_check = nb_outputs.get(
-                "hnn_version",
+                "last_hnn_version_used",
                 False,
             )
             commit_check = nb_outputs.get(
-                "commit",
+                "last_hnn_dev_commit_used",
                 False,
             )
 
@@ -1052,15 +1052,16 @@ def _write_nb_html_to_json(
     if execution_initiated:
         # Add execution status directly to json output
         # Track version used in nb execution
+
+        # AES TODO need to think about version vs commit here.
         nb_html_json = {
-            "full_executed": execution_successful,
-            "hnn_version": hnn_version,
+            "last_execution_successful": execution_successful,
+            "last_hnn_version_used": hnn_version,
             **nb_html_json,
         }
         if code_version in ("master", "custom", "no-check"):
-            print("Dev version to use:", code_version)
             print("Commit to use:", commit_hash)
-            nb_html_json["commit"] = commit_hash
+            nb_html_json["last_hnn_dev_commit_used"] = commit_hash
     else:
         # get previously-used hnn version from json file
         previous_version = "NA"
@@ -1068,15 +1069,15 @@ def _write_nb_html_to_json(
             with open(output_json_path, "r") as f:
                 nb_html_json = json.load(f)
             # check for hnn_version key
-            if "hnn_version" in nb_html_json:
-                previous_version = nb_html_json["hnn_version"]
+            if "last_hnn_version_used" in nb_html_json:
+                previous_version = nb_html_json["last_hnn_version_used"]
         nb_html_json = {
-            "full_executed": execution_successful,
-            "hnn_version": previous_version,
+            "last_execution_successful": execution_successful,
+            "last_hnn_version_used": previous_version,
             **nb_html_json,
         }
         if code_version in ("master", "custom", "no-check"):
-            nb_html_json["commit"] = commit_hash
+            nb_html_json["last_hnn_dev_commit_used"] = commit_hash
 
     with open(output_json_path, "w") as f:
         json.dump(nb_html_json, f, indent=4)

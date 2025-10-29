@@ -47,7 +47,9 @@ in your local environment. The three options are below:
     repository-owner and/or commit you want using the '--custom-repo-commit' argument.
     This compiles the output HTML into the 'dev' folder, creating one if it doesn't
     exist.
-- 'no-check': AES TODO
+- 'no-check': This builds the textbook using whichever version of HNN-Core
+    you have installed, without checking any online sources. This compiles the
+    output HTML into the 'dev' folder, creating one if it doesn't exist.
 """
         ),
     )
