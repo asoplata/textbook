@@ -13,7 +13,7 @@ from logger_setup import setup_logger
 textbook_root_path = Path(__file__).parents[1]
 
 
-# AES: This output probably shouldn't be set to "debug" specifically as opposed to
+# AES TODO: This output probably shouldn't be set to "debug" specifically as opposed to
 # expected output, but that should be fixed only after logging in general is better
 # integrated with the code.
 
