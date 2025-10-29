@@ -1076,8 +1076,9 @@ def _write_nb_html_to_json(
             "last_hnn_version_used": previous_version,
             **nb_html_json,
         }
-        if code_version in ("master", "custom", "no-check"):
-            nb_html_json["last_hnn_dev_commit_used"] = commit_hash
+        # # AES: Potential mistake to write the hash here
+        # if code_version in ("master", "custom", "no-check"):
+        #     nb_html_json["last_hnn_dev_commit_used"] = commit_hash
 
     with open(output_json_path, "w") as f:
         json.dump(nb_html_json, f, indent=4)
