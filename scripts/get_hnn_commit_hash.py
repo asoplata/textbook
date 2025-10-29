@@ -4,7 +4,7 @@ import requests
 from hnn_core import __version__ as installed_version
 
 
-def get_commit_hash(code_version, custom_owner_commit=None):
+def get_hnn_commit_hash(code_version, custom_owner_commit=None):
     # ----------------------------------------------------------------------------------
     # Try to get the commit hash of the current installation of hnn_core:
     try:
@@ -31,8 +31,7 @@ def get_commit_hash(code_version, custom_owner_commit=None):
     # user wants, versus which version is installed in the environment:
     if code_version == "stable":
         # We don't need the commit hash if simply using the latest stable.
-        # AES TODO switch to None
-        commit_hash = False
+        hnn_commit_hash = None
         # Lookup online the latest stable version
         latest_stable_version = requests.get(
             "https://pypi.org/pypi/hnn-core/json"
@@ -79,8 +78,7 @@ def get_commit_hash(code_version, custom_owner_commit=None):
         response = requests.get(url)
         response.raise_for_status()
         latest_master_commit = response.json()["sha"]
-        # AES TODO
-        commit_hash = latest_master_commit
+        hnn_commit_hash = latest_master_commit
 
         # "master" case version/commit validation
         if installed_commit != latest_master_commit:
@@ -130,7 +128,7 @@ def get_commit_hash(code_version, custom_owner_commit=None):
             response.raise_for_status()
             full_provided_commit = response.json()["sha"]
             # AES TODO
-            commit_hash = full_provided_commit
+            hnn_commit_hash = full_provided_commit
 
         except Exception as e:
             raise RuntimeError(
@@ -172,11 +170,10 @@ def get_commit_hash(code_version, custom_owner_commit=None):
             )
 
     elif code_version == "no-check":
-        # AES TODO
-        commit_hash = installed_commit
+        hnn_commit_hash = installed_commit
         print(
             "\nConfiguration: Checking of hnn-core version/commit has been disabled for "
             "this build."
         )
 
-    return commit_hash
+    return hnn_commit_hash

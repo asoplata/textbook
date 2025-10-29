@@ -3,15 +3,6 @@ import json
 from pathlib import Path
 
 
-# AES TODO: "Index" and "ordered_page_links" should probably be greatly expanded to
-# prevent frequent re-searching of Markdown and other files in
-# generate_page_html.py. For example, "Index" could have titles removed and consist only
-# of the hierarchical mapping, while "ordered_page_links" could be changed to something
-# like "page_metadata", where each Section (dir containing md files) and markdown
-# filenames each contain child data like "title", "relative root path" (to textbook
-# root), "output path" (where their output html goes, if necessary), etc.
-
-
 def _get_title(file_path):
     with open(file_path, "r") as file:
         title = "NA"
@@ -50,6 +41,7 @@ def create_hier_index(content_path, save_indices=False, hier_index_path=None):
 
     hier_index = _recur_create_hier_index(content_path)
 
+    # Save our hierarchical index, if desired:
     if save_indices and hier_index_path:
         with open(hier_index_path, "w", encoding="utf-8") as f:
             json.dump(hier_index, f, ensure_ascii=False, indent=4)
@@ -60,40 +52,36 @@ def create_hier_index(content_path, save_indices=False, hier_index_path=None):
 def create_flat_index(
     content_path, code_version, save_indices=False, flat_index_path=None
 ):
+    # Get all markdown files, but excluding 'README.md' files. We don't care about the
+    # sections.
     # ----------------------------------------------------------------------------------
-    # Create the initial flat index, containing only input files
-
     # This glob is recursive, see
     # https://docs.python.org/3/library/pathlib.html#pathlib-pattern-language
     paths_all = sorted(content_path.glob("**/*.md"))
     paths_excluding_readme = [p for p in paths_all if ("README" not in str(p))]
-    # md_paths = {
-    #     p.relative_to(content_path): p.absolute()
-    #     for p in paths_excluding_readme
-    # }
 
-    # AES TODO hopefully we don't need relative input
-    # "relative input" is relative to "textbook_root / content"
+    # Create the initial flat index, containing only input files:
+    # ----------------------------------------------------------------------------------
     flat_index = [
         {
-            "absolute_input_path": input_path,
-            # "relative_input_path" : input_path.relative_to(content_path), AES TODO
+            "absolute_input_md_path": input_path,
             "title": _get_title(input_path),
         }
         for input_path in paths_excluding_readme
     ]
-    # ----------------------------------------------------------------------------------
+
     # Update the flat index to include output files, and create any output directories
-    # we need
+    # we need:
+    # ----------------------------------------------------------------------------------
     for page in flat_index:
-        abs_inp_md_path = page["absolute_input_path"]
-        # --------------------------------------------------------------------------
-        # First, let's make the new filename, independent of any parent directories
+        abs_inp_md_path = page["absolute_input_md_path"]
+        # First, let's make the new filename, independent of any parent directories:
         new_filename = abs_inp_md_path.stem.split("_", 1)[1] + ".html"
 
-        # --------------------------------------------------------------------------
-        # Let's make the new absolute output path, and create any necessary parent dirs
-        # along the way. This is needed to create the actual output files.
+        # Let's make the new absolute output directory path, which will contain the new
+        # output file. If we're usind a "dev" version, let's also change it to be a
+        # "dev" version of the directory path, and create the directories along that
+        # path if necessary.
         abs_out_dir_path = abs_inp_md_path.parents[0]
         if code_version in ("master", "custom", "no-check"):
             # This needs to be done separately in both the notebook-execution code
@@ -111,17 +99,16 @@ def create_flat_index(
             abs_out_dir_path.mkdir(parents=True, exist_ok=True)
         abs_out_html_path = abs_out_dir_path / new_filename
 
-        # --------------------------------------------------------------------------
         # Let's make the new "relative" output path, which will be used to insert the
-        # proper links in the website HTML for pages relative to the website root.
+        # proper links in the website HTML for pages relative to the website root:
         #
-        # Since "content" is always a child of the textbook root, parents[1] can be used to
-        # give us the textbook root.
+        # Since "content" is always a child of the textbook root, parents[1] can be used
+        # to give us the textbook root.
         rel_out_html_path = abs_out_html_path.relative_to(content_path.parents[1])
-        # Finally, change our path to treat the website root as root.
+        # Finally, change our path to treat the website root as root:
         rel_out_html_path = "/" + str(rel_out_html_path)
 
-        # Add our new paths to the dictionary of the page
+        # Add our new paths to the dictionary of the individual markdown page:
         page.update(
             {
                 "absolute_output_html_path": abs_out_html_path,
@@ -129,6 +116,7 @@ def create_flat_index(
             }
         )
 
+    # Save our flat index, if desired:
     if save_indices and flat_index_path:
         flat_index_serializable = deepcopy(flat_index)
         for idx, page in enumerate(flat_index):
