@@ -261,7 +261,7 @@ def generate_page_html(
     # - header: We simply load a generic template for this.
     # - navbar: TODO
     # - topbar: We simply load a generic template for this.
-    # - body: 
+    # - body:
     # - footer: We first load a generic template for this.
     # - script: We simply load a generic template for this.
 

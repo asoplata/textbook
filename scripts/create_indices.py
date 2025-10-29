@@ -57,7 +57,9 @@ def create_hier_index(content_path, save_indices=False, hier_index_path=None):
     return hier_index
 
 
-def create_flat_index(content_path, code_version, save_indices=False, flat_index_path=None):
+def create_flat_index(
+    content_path, code_version, save_indices=False, flat_index_path=None
+):
     # ----------------------------------------------------------------------------------
     # Create the initial flat index, containing only input files
 

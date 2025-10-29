@@ -127,12 +127,12 @@ fork/repository name is always 'hnn-core'. This is required if you are using
     else:
         printed_output_dir = content_path
     print(
-            "Configuration: Choice of notebooks to execute will be based on "
-            f"\n    '--execution-type={args.execution_type}'"
-            "\nConfiguration: Choice of HNN version to use will be based on "
-            f"\n    '--code-version={args.code_version}'"
-            "\nConfiguration: Local website files will be built in "
-            f"\n    '{printed_output_dir}'"
+        "Configuration: Choice of notebooks to execute will be based on "
+        f"\n    '--execution-type={args.execution_type}'"
+        "\nConfiguration: Choice of HNN version to use will be based on "
+        f"\n    '--code-version={args.code_version}'"
+        "\nConfiguration: Local website files will be built in "
+        f"\n    '{printed_output_dir}'"
     )
 
     # ----------------------------------------------------------------------------------

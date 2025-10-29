@@ -34,9 +34,9 @@ def get_commit_hash(code_version, custom_owner_commit=None):
         # AES TODO switch to None
         commit_hash = False
         # Lookup online the latest stable version
-        latest_stable_version = requests.get("https://pypi.org/pypi/hnn-core/json").json()[
-            "info"
-        ]["version"]
+        latest_stable_version = requests.get(
+            "https://pypi.org/pypi/hnn-core/json"
+        ).json()["info"]["version"]
         # "stable" case version validation
         if installed_version > latest_stable_version:
             raise RuntimeError(
@@ -75,9 +75,7 @@ def get_commit_hash(code_version, custom_owner_commit=None):
 
     elif code_version == "master":
         # Lookup online the latest commit hash from upstream/master
-        url = (
-            "https://api.github.com/repos/jonescompneurolab/hnn-core/commits/master"
-        )
+        url = "https://api.github.com/repos/jonescompneurolab/hnn-core/commits/master"
         response = requests.get(url)
         response.raise_for_status()
         latest_master_commit = response.json()["sha"]
@@ -177,8 +175,8 @@ def get_commit_hash(code_version, custom_owner_commit=None):
         # AES TODO
         commit_hash = False
         print(
-        "\nConfiguration: Checking of hnn-core version/commit has been disabled for "
-        "this build."
+            "\nConfiguration: Checking of hnn-core version/commit has been disabled for "
+            "this build."
         )
 
     return commit_hash
