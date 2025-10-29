@@ -1,73 +1,12 @@
+from copy import deepcopy
 import json
 import re
-import os
-from pathlib import Path
+import textwrap
 
 import pypandoc
-import textwrap
 
 from .create_sidebar_html import create_sidebar_html
 from .create_indices import create_hier_index, create_flat_index
-
-
-def _get_markdown_paths(content_path: Path):
-    """Recursively get paths to all markdown files in a directory (except READMEs)
-
-    Parameters
-    ----------
-    content_path : pathlib.Path
-        Path to the directory containing all directories which contain markdown files,
-        notebook files, and possibly their outputs. This is ALWAYS
-        "<textbook_root>/content" and never "<textbook_root>/dev", since we do not
-        support "dev"-only versions of markdown files.
-
-    Returns
-    -------
-    dict
-        A dictionary mapping markdown page paths relative to the "content" directory
-        to their absolute paths in the form of:
-
-        {
-            relative_path: absolute_path,
-            ...
-        }
-
-        This may seem redundant at a first glance, but having the absolute paths as
-        well aids greatly in producing the correct path links for local/dev builds
-        where the absolute URL is not known
-
-    Notes
-    -----
-    - README.md files are excluded.
-    """
-    # This glob is recursive, see
-    # https://docs.python.org/3/library/pathlib.html#pathlib-pattern-language
-    paths_all = sorted(content_path.glob("**/*.md"))
-    paths_excluding_readme = [p for p in paths_all if ("README" not in str(p))]
-    md_paths = {
-        str(p.relative_to(content_path)): str(p.absolute())
-        for p in paths_excluding_readme
-    }
-    return md_paths
-
-
-def _load_simple_templates(templates_path):
-    """
-    TODO
-    """
-    templates = [
-        "header",
-        "topbar",
-        "footer",
-        "script",
-    ]
-    html_parts = {}
-
-    for template in templates:
-        with open((templates_path / f"{template}.html"), "r") as f:
-            html_parts[template] = f.read()
-
-    return html_parts
 
 
 def _get_nb_html_from_nb_json(
@@ -102,13 +41,58 @@ def _get_nb_html_from_nb_json(
         return agg_html
     except FileNotFoundError:
         raise FileNotFoundError(
-            f"The notebook at '{nb_path}' does not appear to have a corresponding "
-            "output JSON file. Please restart the build process with one of the execution "
-            "types enabled, in order to execute the notebook. Exiting build process."
+            f"The notebook at '{nb_path}' does not appear to have a corresponding"
+            " output JSON file. Please restart the build process with one of the"
+            " execution types enabled, in order to execute the notebook. Exiting build"
+            " process."
         )
 
 
-def add_nb_to_html(
+def _add_ordering_to_footer(input_footer, page_idx, flat_index):
+    output_footer = deepcopy(input_footer)
+
+    if page_idx is None:
+        prev_page = ""
+        prev_title = ""
+        next_page = ""
+        next_title = ""
+    elif page_idx == 0:
+        prev_page = "None"
+        prev_title = ""
+        next_page = flat_index[page_idx + 1]["relative_output_html_path"]
+        next_title = flat_index[page_idx + 1]["title"]
+    elif page_idx == (len(flat_index) - 1):
+        prev_page = flat_index[page_idx - 1]["relative_output_html_path"]
+        prev_title = flat_index[page_idx - 1]["title"]
+        next_page = "None"
+        next_title = "None"
+    else:
+        prev_page = flat_index[page_idx - 1]["relative_output_html_path"]
+        prev_title = flat_index[page_idx - 1]["title"]
+        next_page = flat_index[page_idx + 1]["relative_output_html_path"]
+        next_title = flat_index[page_idx + 1]["title"]
+
+    output_footer = output_footer.replace(
+        '<div class="previous-area" data-link="None">',
+        f'<div class="previous-area" data-link="{prev_page}">',
+    )
+    output_footer = output_footer.replace(
+        '<div class="next-area" data-link="None">',
+        f'<div class="next-area" data-link="{next_page}">',
+    )
+    output_footer = output_footer.replace(
+        "<a>PreviousTitle</a>",
+        f"<a>{prev_title}</a>",
+    )
+    output_footer = output_footer.replace(
+        "<a>NextTitle</a>",
+        f"<a>{next_title}</a>",
+    )
+
+    return output_footer
+
+
+def _add_nb_to_html(
     converted_html,
     input_dir_path,
 ):
@@ -201,10 +185,12 @@ def add_nb_to_html(
 
 def generate_page_html(
     content_path,
-    hier_index_path,
-    flat_index_path,
     templates_path,
     dev_build=False,
+    save_indices=False,
+    hier_index_path=None,
+    flat_index_path=None,
+
 ):
     """
     Converts markdown pages into HTML pages and saves them in the same directory.
@@ -227,10 +213,6 @@ def generate_page_html(
         False if not running a dev build. Otherwise, this variable will be
         a string containing the repo and commit hash to be used for the build
     """
-
-    # This loads the generic templates for the header, topbar, footer, and script, but
-    # not others.
-    html_parts = _load_simple_templates(templates_path)
     css_path = content_path / "assets" / "styles.css"
     js_path = templates_path / "scripts.js"
 
@@ -240,9 +222,10 @@ def generate_page_html(
     # The "hierarchical index" is only used for the sidebar. It contains only simple
     # page names, their nested sections if any, and the titles of each section and/or
     # page. It does NOT contain output filenames or anything like it. It is unchanged
-    # from before the great refactorings.
+    # from before the Great Refactors.
     hier_index = create_hier_index(
         content_path,
+        save_indices,
         hier_index_path,
     )
     # The "flat index" is used for the sidebar and everything else in the website. Its
@@ -255,6 +238,7 @@ def generate_page_html(
     # output paths are created as well!
     flat_index = create_flat_index(
         content_path,
+        save_indices,
         flat_index_path,
         dev_build,
     )
@@ -262,13 +246,11 @@ def generate_page_html(
     # AES TODO Ideally, we generate ALL the output HTML file paths before creating
     # either the sidebar OR the files themselves. That way we're not searching for all
     # the paths twice.
-    # md_paths = _get_markdown_paths(content_path)
 
-    # Create the template for the sidebar/navbar, and the ordering of the pages
-    # html_parts["navbar"], ordered_links = generate_sidebar_html(index_path, dev_build)
-    html_parts["navbar"] = create_sidebar_html(hier_index, flat_index, dev_build)
-
-    # specify the order of components for assembling pages
+    # update/load the dynamically-generated
+    # page index from the index.json file
+    # ----------------------------------
+    # Specify the order of components for assembling pages
     order = [
         "header",
         "navbar",
@@ -277,28 +259,43 @@ def generate_page_html(
         "footer",
         "script",
     ]
+    # Each of these components is handled with different complexity:
+    # - header: We simply load a generic template for this.
+    # - navbar: 
+    # - topbar: We simply load a generic template for this.
+    # - body: 
+    # - footer: We first load a generic template for this.
+    # - script: We simply load a generic template for this.
 
-    # # Don't need to reload all these things every time on the main loop
-    # with open((templates_path / "ordered_page_links.json"), "r") as f:
-    #     ordered_page_links = json.load(f)
+    html_parts = {}
+    generic_templates = [
+        "header",
+        "topbar",
+        "footer",
+        "script",
+    ]
+    for template in generic_templates:
+        with open((templates_path / f"{template}.html"), "r") as f:
+            html_parts[template] = f.read()
 
-    #     ordered_links = ordered_page_links["links"]
-    #     ordered_titles = ordered_page_links["titles"]
+    # Create the template for the sidebar/navbar, and the ordering of the pages
+    # html_parts["navbar"], ordered_links = generate_sidebar_html(index_path, dev_build)
+    html_parts["navbar"] = create_sidebar_html(hier_index, flat_index, dev_build)
 
-    #     if dev_build:
-    #         ordered_links = [
-    #             link.replace("content", "dev") for link in ordered_page_links["links"]
-    #         ]
-
+    # update/load the dynamically-generated
+    # page index from the index.json file
+    # ----------------------------------
     with open((templates_path / "md_yaml_metadata.txt"), "r") as f:
         md_yaml_metadata = f.read()
 
+    # update/load the dynamically-generated
+    # page index from the index.json file
+    # ----------------------------------
     # iterate over all markdown pages found in the "content" directory (excluding ...
     # README.md files)
     # AES
-    # md_paths = _get_markdown_paths(content_path)
     # for md_page, path_old in md_paths.items():
-    for page in flat_index:
+    for page_idx, page in enumerate(flat_index):
         page_components = html_parts.copy()
         input_md_path = page["absolute_input_path"]
         input_dir_path = page["absolute_input_path"].parents[0]
@@ -323,51 +320,11 @@ def generate_page_html(
 
         # update 'footer' page_component with the correct links
         # ------------------------------------------------------------
-        # location = None
-        # last_page = len(ordered_links) - 1
-        # for i, link in enumerate(ordered_links):
-        #     # print(f'{link} | {out_path}')
-        #     if link in out_path:
-        #         location = i
-
-        # if location is None:
-        #     prev_page = ""
-        #     prev_title = ""
-        #     next_page = ""
-        #     next_title = ""
-        # elif location == 0:
-        #     prev_page = "None"
-        #     prev_title = ""
-        #     next_page = ordered_links[location + 1]
-        #     next_title = ordered_titles[location + 1]
-        # elif location == last_page:
-        #     prev_page = ordered_links[location - 1]
-        #     prev_title = ordered_titles[location - 1]
-        #     next_page = "None"
-        #     next_title = "None"
-        # else:
-        #     prev_page = ordered_links[location - 1]
-        #     prev_title = ordered_titles[location - 1]
-        #     next_page = ordered_links[location + 1]
-        #     next_title = ordered_titles[location + 1]
-
-        # page_components["footer"] = page_components["footer"].replace(
-        #     '<div class="previous-area" data-link="None">',
-        #     f'<div class="previous-area" data-link="{prev_page}">',
-        # )
-        # page_components["footer"] = page_components["footer"].replace(
-        #     '<div class="next-area" data-link="None">',
-        #     f'<div class="next-area" data-link="{next_page}">',
-        # )
-
-        # page_components["footer"] = page_components["footer"].replace(
-        #     "<a>PreviousTitle</a>",
-        #     f"<a>{prev_title}</a>",
-        # )
-        # page_components["footer"] = page_components["footer"].replace(
-        #     "<a>NextTitle</a>",
-        #     f"<a>{next_title}</a>",
-        # )
+        page_components["footer"] = _add_ordering_to_footer(
+            page_components["footer"],
+            page_idx,
+            flat_index,
+        )
 
         # load markdown and add yaml metadata
         # ------------------------------------------------------------
@@ -425,7 +382,7 @@ def generate_page_html(
         # Add any notebook content
         # ------------------------------------------------------------
         # This line is very important, since all markdown-page content is replaced by it.
-        combined_html = add_nb_to_html(
+        combined_html = _add_nb_to_html(
             converted_html,
             input_dir_path,
         )
@@ -441,5 +398,3 @@ def generate_page_html(
 
         with open(abs_out_html_path, "w") as out:
             out.write(file_contents)
-
-    return

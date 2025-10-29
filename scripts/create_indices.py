@@ -23,7 +23,7 @@ def _get_title(file_path):
     return title
 
 
-def create_hier_index(content_path, hier_index_path=None):
+def create_hier_index(content_path, save_indices=False, hier_index_path=None):
     def _recur_create_hier_index(input_path):
         """
         TODO
@@ -50,14 +50,14 @@ def create_hier_index(content_path, hier_index_path=None):
 
     hier_index = _recur_create_hier_index(content_path)
 
-    if hier_index_path:
+    if save_indices and hier_index_path:
         with open(hier_index_path, "w", encoding="utf-8") as f:
             json.dump(hier_index, f, ensure_ascii=False, indent=4)
 
     return hier_index
 
 
-def create_flat_index(content_path, flat_index_path=None, dev_build=False):
+def create_flat_index(content_path, save_indices=False, flat_index_path=None, dev_build=False):
     def _create_flat_index(content_path: Path):
         """TODO"""
         # This glob is recursive, see
@@ -131,7 +131,7 @@ def create_flat_index(content_path, flat_index_path=None, dev_build=False):
         dev_build,
     )
 
-    if flat_index_path:
+    if save_indices and flat_index_path:
         flat_index_serializable = deepcopy(flat_index)
         for idx, page in enumerate(flat_index):
             for key, val in page.items():

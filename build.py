@@ -94,6 +94,14 @@ fork/repository name is always 'hnn-core'. This is required if you are using
         """
         ),
     )
+    parser.add_argument(
+        "--save-indices",
+        type=bool,
+        help=textwrap.dedent(
+            """Optionally provide whether or not to save the webpage-indexing files
+            during the build process. Defaults to False."""
+        ),
+    )
 
     # add all above arguments to the parser
     args = parser.parse_args()
@@ -104,11 +112,8 @@ fork/repository name is always 'hnn-core'. This is required if you are using
         root_path = textbook_root_path
 
     content_path = Path(root_path / "content")
-    # hier_index_path = Path(root_path / "scripts" / "hier_index.json")
-    # flat_index_path = Path(root_path / "scripts" / "flat_index.json")
-    # # AES Stop saving index files
-    hier_index_path = None
-    flat_index_path = None
+    hier_index_path = Path(root_path / "scripts" / "hier_index.json")
+    flat_index_path = Path(root_path / "scripts" / "flat_index.json")
     nb_hash_path = Path(root_path / "scripts" / "nb_hashes.json")
     nb_skip_path = Path(root_path / "scripts" / "nbs_to_skip.json")
     templates_path = Path(root_path / "templates")
@@ -121,7 +126,6 @@ Configuration: Building notebooks based on '--build-type={args.build_type}'
         """
         )
     )
-
     commit_hash = get_commit_hash(
         args.build_on_dev,
         args.build_type,
@@ -139,10 +143,11 @@ Configuration: Building notebooks based on '--build-type={args.build_type}'
 
     generate_page_html(
         content_path,
-        hier_index_path,
-        flat_index_path,
         templates_path,
         dev_build=args.build_on_dev,
+        save_indices=args.save_indices,
+        hier_index_path=hier_index_path,
+        flat_index_path=flat_index_path,
     )
 
 
