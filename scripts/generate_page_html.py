@@ -186,11 +186,11 @@ def _add_nb_to_html(
 def generate_page_html(
     content_path,
     templates_path,
-    dev_build=False,
     save_indices=False,
     hier_index_path=None,
     flat_index_path=None,
-
+    code_version=None,
+    commit_hash=None,
 ):
     """
     Converts markdown pages into HTML pages and saves them in the same directory.
@@ -209,10 +209,8 @@ def generate_page_html(
     templates_path : pathlib.Path
         Path to the directory containing various template files. Typically the
         "templates" subdirectory of the textbook root directory
-    dev_build : str or bool
-        False if not running a dev build. Otherwise, this variable will be
-        a string containing the repo and commit hash to be used for the build
     """
+    print("Building: Beginning build of website HTML pages.")
     css_path = content_path / "assets" / "styles.css"
     js_path = templates_path / "scripts.js"
 
@@ -238,9 +236,9 @@ def generate_page_html(
     # output paths are created as well!
     flat_index = create_flat_index(
         content_path,
+        code_version,
         save_indices,
         flat_index_path,
-        dev_build,
     )
 
     # AES TODO Ideally, we generate ALL the output HTML file paths before creating
@@ -261,7 +259,7 @@ def generate_page_html(
     ]
     # Each of these components is handled with different complexity:
     # - header: We simply load a generic template for this.
-    # - navbar: 
+    # - navbar: TODO
     # - topbar: We simply load a generic template for this.
     # - body: 
     # - footer: We first load a generic template for this.
@@ -279,8 +277,7 @@ def generate_page_html(
             html_parts[template] = f.read()
 
     # Create the template for the sidebar/navbar, and the ordering of the pages
-    # html_parts["navbar"], ordered_links = generate_sidebar_html(index_path, dev_build)
-    html_parts["navbar"] = create_sidebar_html(hier_index, flat_index, dev_build)
+    html_parts["navbar"] = create_sidebar_html(hier_index, flat_index)
 
     # update/load the dynamically-generated
     # page index from the index.json file
@@ -362,7 +359,7 @@ def generate_page_html(
         # "images" folder in "content". We could expand this later to find all images,
         # but for now, all images in "content" should be contained in an "images"
         # sub directory
-        if dev_build:
+        if code_version in ("master", "custom", "no-check"):
             # input_md_path is always under "contents", never "dev"
             relative_local_content_image_path = abs_out_dir_path.relative_to(
                 input_dir_path,
@@ -398,3 +395,5 @@ def generate_page_html(
 
         with open(abs_out_html_path, "w") as out:
             out.write(file_contents)
+
+    print("Building: Finished building of website HTML pages.")

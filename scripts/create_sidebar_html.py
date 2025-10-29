@@ -85,7 +85,6 @@ def build_sidebar(hier_index, flat_index):
 def create_sidebar_html(
     hier_index,
     flat_index,
-    dev_build=False,
     add_workshop_link=False,
 ):
     """
@@ -95,9 +94,6 @@ def create_sidebar_html(
 
     Inputs
     ------
-    dev_build : str or bool
-        False if not running a dev build. Otherwise, this variable will be
-        a string containing the repo and commit hash to be used for the build
 
     Returns
     -------

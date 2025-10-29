@@ -4,7 +4,7 @@ import requests
 from hnn_core import __version__ as installed_version
 
 
-def get_commit_hash(build_on_dev_arg, code_version, custom_owner_commit=None):
+def get_commit_hash(code_version, custom_owner_commit=None):
     # ----------------------------------------------------------------------------------
     # Try to get the commit hash of the current installation of hnn_core:
     try:
@@ -16,10 +16,10 @@ def get_commit_hash(build_on_dev_arg, code_version, custom_owner_commit=None):
                 else:
                     installed_commit = line.split("hnn-core==")[-1]
         print(
-            "\nConfiguration: The installed version of hnn-core is:\n"
+            "Configuration: The installed version of hnn-core is:\n"
             f"    {installed_version}"
-            "\n\nConfiguration: The installed commit (or, if not installed from source, "
-            "version) of hnn-core is:\n"
+            "\nConfiguration: The installed commit (or version if not installed from "
+            "source) of hnn-core is:\n"
             f"    {installed_commit}\n"
         )
     except Exception as e:

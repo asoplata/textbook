@@ -89,7 +89,6 @@ def _extract_html_from_nb(
     nb,
     nb_path,
     nb_json_output_dir,
-    dev_build=False,
     use_base64=False,
 ):
     """
@@ -117,9 +116,6 @@ def _extract_html_from_nb(
     nb_json_output_dir : pathlib.Path
         Directory where the notebook's JSON output file is located. This will become the
         parent of the new directory where any images will be stored.
-    dev_build : str or bool
-        False if not running a dev build. Otherwise, a string containing the repo and
-        commit hash to be used for the build.
     use_base64 : bool, optional
         If True, embed images as Base64-encoded strings in the HTML.
         If False, save images as separate PNG files and link to them.
@@ -540,7 +536,7 @@ def _read_nb_json_output_metadata(
     return commit_check, execution_check, version_check
 
 
-def _load_nbs_to_skip(nb_skip_path, dev_build):
+def _load_nbs_to_skip(nb_skip_path, code_version):
     """
     Load list of notebooks to skip during execution based on build type.
 
@@ -565,10 +561,6 @@ def _load_nbs_to_skip(nb_skip_path, dev_build):
     nb_skip_path : str or pathlib.Path
         Path to the JSON file containing skip lists, typically
         'scripts/nbs_to_skip.json' in the repository root
-    dev_build : str or bool
-        False if running a production/stable build, in which case the "skip_if_stable"
-        list is used. Otherwise, a string containing the repo and commit hash for a dev
-        build, in which case the "skip_if_dev" list is used
 
     Returns
     -------
@@ -579,7 +571,7 @@ def _load_nbs_to_skip(nb_skip_path, dev_build):
     with open(nb_skip_path, "r") as f:
         nbs_to_skip = json.load(f)
 
-    if dev_build:
+    if code_version in ("master", "custom", "no-check"):
         # AES maybe most are in the "skip if dev" for debugging? not sure why
         nbs_to_skip = nbs_to_skip["skip_if_dev"]
     else:
@@ -637,8 +629,9 @@ def _process_nb(
     nb_hashes,
     nbs_to_skip,
     nb_json_output_dir,
-    dev_build,
     execution_type,
+    code_version,
+    commit_hash,
 ):
     """
     Process a notebook by determining if execution is needed and executing if appropriate.
@@ -663,9 +656,6 @@ def _process_nb(
         List of notebook filenames that should be skipped during execution
     nb_json_output_dir : pathlib.Path
         Directory where the notebook's JSON output file is located
-    dev_build : str or bool
-        False if not running a dev build. Otherwise, a string containing
-        the repo and commit hash to be used for the build
     execution_type : str
         Execution mode that determines which notebooks to execute. See the 'help'
         description of 'build.py's CLI for what these different values mean. Valid
@@ -717,11 +707,12 @@ def _process_nb(
         nb_hashes,
         current_hash,
         nbs_to_skip,
-        dev_build,
         execution_type,
         prior_commit_if_any,
         prior_execution_if_any,
         prior_version_if_any,
+        code_version,
+        commit_hash,
     )
     # execute nb as needed
     if should_execute:
@@ -773,11 +764,12 @@ def _determine_should_execute_nb(
     nb_hashes,
     current_hash,
     nbs_to_skip,
-    dev_build,
     execution_type,
     prior_commit_if_any,
     prior_execution_if_any,
     prior_version_if_any,
+    code_version,
+    commit_hash,
 ):
     """
     Determine whether a notebook should be executed based on various factors.
@@ -805,9 +797,6 @@ def _determine_should_execute_nb(
         Newly-determined SHA256 hash of the notebook based on its current state
     nbs_to_skip : list
         List of notebook filenames that should be skipped during execution
-    dev_build : str or bool
-        False if not running a dev build. Otherwise, a string containing
-        the repo and commit hash to be used for the build
     execution_type : str
         Execution mode that determines which notebooks to execute. See the 'help'
         description of 'build.py's CLI for what these different values mean. Valid
@@ -971,14 +960,14 @@ def _determine_should_execute_nb(
     if execution_type == "execute-updated-unskipped-notebooks":
         # 5.1) if the hash has not changed
         if (filename in nb_hashes) and (nb_hashes[filename] == current_hash):
-            if dev_build:
+            if code_version in ("master", "custom", "no-check"):
                 # check if the commit specified to use by the dev build
                 # matches the commit last used to run the nb per the
                 # prior_commit_if_any (returned by _read_nb_json_output_metadata)
                 #
                 # if the versions do not match, the nb is flagged to
                 # be re-executed by setting "prior_execution_if_any=False"
-                if dev_build != prior_commit_if_any:
+                if commit_hash != prior_commit_if_any:
                     prior_execution_if_any = False
                     print(f"Executing '{filename}' due to dev build commit mismatch.")
                     return True
@@ -1003,7 +992,8 @@ def _write_nb_html_to_json(
     nb_json_output_dir,
     execution_initiated,
     execution_successful,
-    dev_build=False,
+    code_version,
+    commit_hash,
 ):
     """
     Generate and save structured JSON output file containing notebook HTML and metadata.
@@ -1034,9 +1024,6 @@ def _write_nb_html_to_json(
     execution_successful : bool
         True if the notebook was fully executed successfully (all non-empty code
         cells completed execution), False otherwise
-    dev_build : str or bool, optional
-        False if not running a dev build. Otherwise, a string containing the repo
-        and commit hash to be used for the build. Default is False
 
     Returns
     -------
@@ -1070,9 +1057,10 @@ def _write_nb_html_to_json(
             "hnn_version": hnn_version,
             **nb_html_json,
         }
-        if dev_build:
-            print("Dev version to use:", dev_build)
-            nb_html_json["commit"] = dev_build
+        if code_version in ("master", "custom", "no-check"):
+            print("Dev version to use:", code_version)
+            print("Commit to use:", commit_hash)
+            nb_html_json["commit"] = commit_hash
     else:
         # get previously-used hnn version from json file
         previous_version = "NA"
@@ -1087,8 +1075,8 @@ def _write_nb_html_to_json(
             "hnn_version": previous_version,
             **nb_html_json,
         }
-        if dev_build:
-            nb_html_json["commit"] = dev_build
+        if code_version in ("master", "custom", "no-check"):
+            nb_html_json["commit"] = commit_hash
 
     with open(output_json_path, "w") as f:
         json.dump(nb_html_json, f, indent=4)
@@ -1212,9 +1200,10 @@ def execute_and_convert_nbs_to_json(
     nb_hash_path,
     nb_skip_path,
     execution_type,
-    dev_build=False,
     use_base64=False,
     write_standalone_html=False,
+    code_version=None,
+    commit_hash=None,
 ):
     """
     Main orchestration function for processing all Jupyter notebooks in the textbook.
@@ -1257,10 +1246,6 @@ def execute_and_convert_nbs_to_json(
         - 'execute-updated-unskipped-notebooks': Execute only changed/new unskipped notebooks
         - 'execute-all-unskipped-notebooks': Execute all notebooks except those in skip list
         - 'execute-absolutely-all-notebooks': Execute all notebooks including skipped ones
-    dev_build : str or bool, optional
-        False for production/stable builds (default). For development builds, provide
-        a string containing the repo and commit hash. Affects skip list selection and
-        commit tracking in JSON metadata. Default is False
     use_base64 : bool, optional
         If True, embed notebook output images as Base64 strings in HTML. If False,
         save images as separate PNG files. Default is False
@@ -1293,7 +1278,7 @@ def execute_and_convert_nbs_to_json(
     updated_hashes = nb_hashes.copy()
 
     # get list of nbs to skip
-    nbs_to_skip = _load_nbs_to_skip(nb_skip_path, dev_build)
+    nbs_to_skip = _load_nbs_to_skip(nb_skip_path, code_version)
 
     # ==================== #
     # Loop through notebooks
@@ -1302,12 +1287,13 @@ def execute_and_convert_nbs_to_json(
         print(f"\nProcessing notebook: '{nb_path.name}'")
 
         nb_path = Path(nb_path)
-        if dev_build:
-            # This needs to be done separately in both the notebook-execution code and
-            # here in the page-generation code, since there is not necessarily a 1-to-1
-            # correspondence between every markdown file and every notebook.
+        if code_version in ("master", "custom", "no-check"):
+            # This needs to be done separately in both the notebook-execution code here
+            # and later in the page-generation code, since there is not necessarily a
+            # 1-to-1 correspondence between every markdown file and every notebook.
             #
-            # Replace "content" parent directory with "dev" one, and safely make it
+            # Replace "content" parent directory with "dev" one, and, importantly,
+            # create parent directories if they don't exist
             nb_json_output_dir = Path(str(nb_path).replace("content", "dev"))
             nb_json_output_dir = nb_json_output_dir.parents[0]
             nb_json_output_dir.mkdir(parents=True, exist_ok=True)
@@ -1321,8 +1307,9 @@ def execute_and_convert_nbs_to_json(
                 nb_hashes,
                 nbs_to_skip,
                 nb_json_output_dir,
-                dev_build,
                 execution_type,
+                code_version,
+                commit_hash,
             )
         )
 
@@ -1331,7 +1318,6 @@ def execute_and_convert_nbs_to_json(
             loaded_nb,
             nb_path,
             nb_json_output_dir,
-            dev_build=dev_build,
             use_base64=use_base64,
         )
 
@@ -1342,7 +1328,8 @@ def execute_and_convert_nbs_to_json(
             nb_json_output_dir,
             execution_initiated,
             execution_successful,
-            dev_build=dev_build,
+            code_version,
+            commit_hash,
         )
 
         # optionally write standalone nb to an html file

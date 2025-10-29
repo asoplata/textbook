@@ -23,11 +23,6 @@ def main():
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
-        "--build-on-dev",
-        type=str,
-        help="Optionally provide the commit from upstream/master",
-    )
-    parser.add_argument(
         "--code-version",
         action="store",
         default="stable",
@@ -125,19 +120,24 @@ fork/repository name is always 'hnn-core'. This is required if you are using
     nb_skip_path = Path(root_path / "scripts" / "nbs_to_skip.json")
     templates_path = Path(root_path / "templates")
 
+    # This "printed" variable is only used here for logging, never for actual output
+    # pathing.
+    if args.code_version in ("master", "custom", "no-check"):
+        printed_output_dir = Path(root_path / "dev")
+    else:
+        printed_output_dir = content_path
     print(
-        textwrap.dedent(
-            f"""
-Configuration: Choosing notebooks based on '--execution-type={args.execution_type}'
-Configuration: Building notebooks based on '--code-version={args.code_version}'
-        """
-        )
+            "Configuration: Choice of notebooks to execute will be based on "
+            f"\n    '--execution-type={args.execution_type}'"
+            "\nConfiguration: Choice of HNN version to use will be based on "
+            f"\n    '--code-version={args.code_version}'"
+            "\nConfiguration: Local website files will be built in "
+            f"\n    '{printed_output_dir}'"
     )
 
     # ----------------------------------------------------------------------------------
     # Begin the actual work: First, figure out the environment and version:
     commit_hash = get_commit_hash(
-        args.build_on_dev,
         args.code_version,
         custom_owner_commit=args.custom_owner_commit,
     )
@@ -150,8 +150,9 @@ Configuration: Building notebooks based on '--code-version={args.code_version}'
         nb_hash_path,
         nb_skip_path,
         args.execution_type,
-        dev_build=commit_hash,
         write_standalone_html=True,
+        code_version=args.code_version,
+        commit_hash=commit_hash,
     )
 
     # ----------------------------------------------------------------------------------
@@ -160,10 +161,11 @@ Configuration: Building notebooks based on '--code-version={args.code_version}'
     generate_page_html(
         content_path,
         templates_path,
-        dev_build=args.build_on_dev,
         save_indices=args.save_indices,
         hier_index_path=hier_index_path,
         flat_index_path=flat_index_path,
+        code_version=args.code_version,
+        commit_hash=commit_hash,
     )
 
 
