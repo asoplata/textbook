@@ -1089,7 +1089,7 @@ def _write_nb_html_to_json(
     return output_json_path
 
 
-def _write_standalone_html(
+def _save_standalone_nb_html(
     html_content,
     nb_path,
     nb_json_output_dir,
@@ -1209,8 +1209,8 @@ def execute_and_convert_nbs_to_json(
     execution_type,
     code_version,
     hnn_commit_hash,
+    save_standalone_nb_html,
     use_base64=False,
-    write_standalone_html=False,
 ):
     """
     Main orchestration function for processing all Jupyter notebooks in the textbook.
@@ -1256,7 +1256,7 @@ def execute_and_convert_nbs_to_json(
     use_base64 : bool, optional
         If True, embed notebook output images as Base64 strings in HTML. If False,
         save images as separate PNG files. Default is False
-    write_standalone_html : bool, optional
+    save_standalone_nb_html : bool, optional
         If True, generate standalone HTML preview files for each notebook in addition
         to the JSON outputs. These are useful for development but not used in the
         published site. Default is False
@@ -1338,8 +1338,8 @@ def execute_and_convert_nbs_to_json(
         )
 
         # optionally write standalone nb to an html file
-        if write_standalone_html:
-            _write_standalone_html(
+        if save_standalone_nb_html:
+            _save_standalone_nb_html(
                 html_content,
                 nb_path,
                 nb_json_output_dir,
@@ -1366,7 +1366,7 @@ def execute_and_convert_nbs_to_json(
 #     execute_and_convert_nbs_to_json(
 #         input_folder=input_folder,
 #         use_base64=False,
-#         write_standalone_html=True,
+#         save_standalone_nb_html=True,
 #         execute_nbs=True,
 #     )
 
