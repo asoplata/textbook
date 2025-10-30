@@ -5,6 +5,34 @@ from hnn_core import __version__ as installed_version
 
 
 def get_hnn_commit_hash(code_version, custom_owner_commit=None):
+    """Validate and retrieve the hnn-core commit hash for textbook builds.
+
+    This function verifies that the installed hnn-core version/commit matches the
+    requested version/commit for building the textbook, then returns the appropriate
+    commit hash to use for documentation links. The function requires internet access to
+    query PyPI and/or GitHub APIs, unless you are using the 'no-check' code_version.
+
+    Parameters
+    ----------
+    code_version : str
+        The desired hnn-core version to validate against. See 'python build.py --help'
+        for more details. Must be one of:
+        - 'stable': Latest stable release from PyPI
+        - 'master': Latest commit from the master branch
+        - 'custom': Custom repository owner and commit hash
+        - 'no-check': Skip validation and use installed version
+    custom_owner_commit : str, optional
+        Required when code_version='custom'. Format: '<owner>:<commit-hash>'
+        Example: 'asoplata:92b000c' to retrieve the commit for
+        https://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96
+
+    Returns
+    -------
+    str or None
+        The commit hash to use for documentation links. Returns None for 'stable'
+        version (since stable releases don't require commit hashes), otherwise
+        returns the full commit SHA.
+    """
     # ----------------------------------------------------------------------------------
     # Try to get the commit hash of the current installation of hnn_core:
     try:
