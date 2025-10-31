@@ -1,5 +1,5 @@
 from copy import deepcopy
-import json
+from pathlib import Path
 import re
 import textwrap
 
@@ -7,10 +7,12 @@ import pypandoc
 
 from .create_sidebar_html import create_sidebar_html
 from .create_indices import create_hier_index, create_flat_index
+from .execute_and_convert_nbs import load_nb_json_output
 
 
-def _get_nb_html_from_nb_json(
+def _read_nb_json_output_html_contents(
     nb_path,
+    nb_json_output_dir,
 ):
     """Get the structured .json output for a specified
     .ipynb notebook, extract the relevent html components,
@@ -18,33 +20,32 @@ def _get_nb_html_from_nb_json(
 
     Arguments
     ---------
-    nb_name : str
-        Jupyter notebook file name
-        E.g., 'simulate_erps.ipynb'
-    nb_path : str
-        Path to notebook
-        E.g.: 'website/content/erps/simulate_erps.ipynb'
+    nb_path : pathlib.Path
+        Path to the Jupyter notebook file (.ipynb)
+    nb_json_output_dir : pathlib.Path
+        Directory where the notebook's JSON output file will be located (and, if it
+        exists, is present currently from a prior execution)
 
     Returns
     -------
     agg_html : str
+
     """
-    json_path = nb_path.with_suffix(".json")
-    try:
-        with open(json_path, "r") as file:
-            nb_outputs = json.load(file)
-            nb_outputs = nb_outputs.get(nb_path.name, {})
-            agg_html = ""
-            for section, content in nb_outputs.items():
-                if isinstance(content, dict) and "html" in content:
-                    agg_html += content["html"]
+    # Has content if the file is found, otherwise returns None
+    nb_outputs_if_any = load_nb_json_output(nb_path, nb_json_output_dir)
+    if nb_outputs_if_any:
+        nb_outputs = nb_outputs_if_any.get(nb_path.name, {})
+        agg_html = ""
+        for section, content in nb_outputs.items():
+            if isinstance(content, dict) and "html" in content:
+                agg_html += content["html"]
         return agg_html
-    except FileNotFoundError:
+    else:
         raise FileNotFoundError(
-            f"The notebook at '{nb_path}' does not appear to have a corresponding"
-            " output JSON file. Please restart the build process with one of the"
-            " execution types enabled, in order to execute the notebook. Exiting build"
-            " process."
+            f"The notebook at '{nb_path}' does not appear to have a corresponding "
+            "JSON output file. Please restart the build process with one of the "
+            "execution types enabled, in order to execute the notebook. Exiting build "
+            "process."
         )
 
 
@@ -95,6 +96,7 @@ def _add_ordering_to_footer(input_footer, page_idx, flat_index):
 def _add_nb_to_html(
     converted_html,
     input_dir_path,
+    is_dev_build,
 ):
     """
     Function to insert Jupyter notebook html outputs into html
@@ -172,7 +174,17 @@ def _add_nb_to_html(
                 nb_button,
             )
             # generate and append the nb html output
-            nb_html = _get_nb_html_from_nb_json(nb_path)
+            # --------------------------------------
+            # Ugh, if we're doing a "dev" build, then we need to load the "dev" version
+            # of the notebook's JSON output file. For this, we need to reconstruct that
+            # location:
+            if is_dev_build:
+                nb_json_output_dir = Path(str(nb_path).replace("content", "dev"))
+                nb_json_output_dir = nb_json_output_dir.parents[0]
+            else:
+                nb_json_output_dir = nb_path.parents[0]
+
+            nb_html = _read_nb_json_output_html_contents(nb_path, nb_json_output_dir)
             output_lines.append(nb_html)
         else:
             # This line is very important! This is where most of the md-page content
@@ -392,6 +404,7 @@ def generate_page_html(
         combined_html = _add_nb_to_html(
             converted_html,
             input_dir_path,
+            is_dev_build,
         )
 
         # Aggregate all page components and write output

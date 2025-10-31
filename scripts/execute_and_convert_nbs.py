@@ -19,6 +19,41 @@ from nbconvert.preprocessors import (
 from packaging.version import Version
 
 
+def load_nb_json_output(
+    nb_path,
+    nb_json_output_dir,
+):
+    """
+    Parameters
+    ----------
+    nb_path : pathlib.Path
+        Path to the Jupyter notebook file (.ipynb)
+    nb_json_output_dir : pathlib.Path
+        Directory where the notebook's JSON output file will be located (and, if it
+        exists, is present currently from a prior execution)
+
+    Returns
+    -------
+    nb_outputs_if_any
+"""
+
+    # Important: If doing a "stable" build, then ONLY the 'textbook/content/**' version
+    # of the JSON output file will attempt to be loaded. However, if doing a "dev"
+    # build, then ONLY the 'textbook/dev/**' version of the JSON output file will
+    # attempt to be loaded. In other words, in the "dev" case, we are reading the
+    # notebook itself from the "content" path, but only interested in pre-existing JSON
+    # output from the "dev" path.
+    json_path = nb_json_output_dir / f"{nb_path.stem}.json"
+
+    if json_path.exists():
+        with open(json_path, "r") as file:
+            nb_outputs_if_any = json.load(file)
+    else:
+        nb_outputs_if_any = None
+
+    return nb_outputs_if_any
+
+
 def _convert_nb_html_to_json(
     html_input: str,
     nb_path: Path,
@@ -607,35 +642,28 @@ def _read_nb_json_output_metadata(
         successfully since recording versions of last successful execution.
     """
 
-    # Important: If doing a "stable" build, then ONLY the 'textbook/content/**' version
-    # of the JSON output file will attempt to be loaded. However, if doing a "dev"
-    # build, then ONLY the 'textbook/dev/**' version of the JSON output file will
-    # attempt to be loaded. In other words, in the "dev" case, we are reading the
-    # notebook itself from the "content" path, but only interested in pre-existing JSON
-    # output from the "dev" path.
-    json_path = nb_json_output_dir / f"{nb_path.stem}.json"
-
     prior_commit_if_any = False
     prior_execution_if_any = False
     prior_version_if_any = False
 
+    # Has content if the file is found, otherwise returns None
+    nb_outputs_if_any = load_nb_json_output(nb_path, nb_json_output_dir)
+
     # if the json output exists, get the execution status, base version,
     # and latest commit used to execute the nb
-    if json_path.exists():
-        with open(json_path, "r") as file:
-            nb_outputs = json.load(file)
-            prior_commit_if_any = nb_outputs.get(
-                "last_hnn_dev_commit_used",
-                False,
-            )
-            prior_execution_if_any = nb_outputs.get(
-                "last_execution_successful",
-                False,
-            )
-            prior_version_if_any = nb_outputs.get(
-                "last_hnn_version_used",
-                False,
-            )
+    if nb_outputs_if_any:
+        prior_commit_if_any = nb_outputs_if_any.get(
+            "last_hnn_dev_commit_used",
+            False,
+        )
+        prior_execution_if_any = nb_outputs_if_any.get(
+            "last_execution_successful",
+            False,
+        )
+        prior_version_if_any = nb_outputs_if_any.get(
+            "last_hnn_version_used",
+            False,
+        )
 
     return prior_commit_if_any, prior_execution_if_any, prior_version_if_any
 
