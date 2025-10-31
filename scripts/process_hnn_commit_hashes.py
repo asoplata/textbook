@@ -64,9 +64,10 @@ def validate_hnn_versions(installed_commit, code_version, custom_owner_commit=No
     Returns
     -------
     str or None
-        The commit hash to use for documentation links. Returns None for 'stable'
-        version (since stable releases don't require commit hashes), otherwise
-        returns the full commit SHA.
+        The commit hash of the hnn_core code version to use for either new execution or
+        comparison with the old execution history. None if doing a 'stable' build (since
+        stable releases don't require commit hashes), otherwise (i.e. 'dev' build) is
+        the full commit SHA.
     """
     # 'stable' version checks
     # ----------------------------------------------------------------------------------
