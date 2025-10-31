@@ -1375,10 +1375,10 @@ def execute_and_convert_nbs_to_json(
             # and later in the page-generation code, since there is not necessarily a
             # 1-to-1 correspondence between every markdown file and every notebook.
             #
-            # Replace "content" parent directory with "dev" one, and, importantly,
-            # create parent directories if they don't exist
+            # Replace "content" parent directory with "dev" one:
             nb_json_output_dir = Path(str(nb_path).replace("content", "dev"))
             nb_json_output_dir = nb_json_output_dir.parents[0]
+            # Importantly, create parent directories if they don't exist:
             nb_json_output_dir.mkdir(parents=True, exist_ok=True)
         else:
             nb_json_output_dir = nb_path.parents[0]
