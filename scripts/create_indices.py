@@ -50,7 +50,7 @@ def create_hier_index(content_path, save_indices=False, hier_index_path=None):
 
 
 def create_flat_index(
-    content_path, code_version, save_indices=False, flat_index_path=None
+    content_path, is_dev_build, save_indices=False, flat_index_path=None
 ):
     # Get all markdown files, but excluding 'README.md' files. We don't care about the
     # sections.
@@ -83,7 +83,7 @@ def create_flat_index(
         # "dev" version of the directory path, and create the directories along that
         # path if necessary.
         abs_out_dir_path = abs_inp_md_path.parents[0]
-        if code_version in ("master", "custom", "no-check"):
+        if is_dev_build:
             # This needs to be done separately in both the notebook-execution code
             # before and here in the page-generation code, since there is not
             # necessarily a 1-to-1 correspondence between every markdown file and every

@@ -4,7 +4,7 @@ import textwrap
 
 from scripts.execute_and_convert_nbs import execute_and_convert_nbs_to_json
 from scripts.generate_page_html import generate_page_html
-from scripts.get_hnn_commit_hash import get_hnn_commit_hash
+from scripts.process_hnn_commit_hashes import get_hnn_commit_hash, validate_hnn_versions
 
 textbook_root_path = Path(__file__).parents[0]
 
@@ -367,10 +367,17 @@ during the build process. Defaults to False.
 
     # Begin the actual work: First, figure out the environment and version:
     # ----------------------------------------------------------------------------------
-    hnn_commit_hash = get_hnn_commit_hash(
+    installed_commit = get_hnn_commit_hash()
+
+    hnn_commit_hash = validate_hnn_versions(
+        installed_commit,
         args.code_version,
         custom_owner_commit=args.custom_owner_commit,
     )
+    # Determine if we're in a "dev" build or not
+    is_dev_build = False
+    if args.code_version in ("master", "custom", "no-check"):
+        is_dev_build = True
 
     # Execute appropriate Jupyter notebooks, and save their output for later webpage
     # assembly:
@@ -380,7 +387,7 @@ during the build process. Defaults to False.
         nb_hash_path,
         nb_skip_path,
         args.execution_type,
-        args.code_version,
+        is_dev_build,
         hnn_commit_hash,
         args.save_standalone_nb_html,
     )
@@ -391,7 +398,7 @@ during the build process. Defaults to False.
     generate_page_html(
         content_path,
         templates_path,
-        args.code_version,
+        is_dev_build,
         save_indices=args.save_indices,
         hier_index_path=hier_index_path,
         flat_index_path=flat_index_path,

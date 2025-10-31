@@ -186,7 +186,7 @@ def _add_nb_to_html(
 def generate_page_html(
     content_path,
     templates_path,
-    code_version,
+    is_dev_build,
     save_indices=False,
     hier_index_path=None,
     flat_index_path=None,
@@ -249,7 +249,7 @@ def generate_page_html(
     # output paths are created as well!
     flat_index = create_flat_index(
         content_path,
-        code_version,
+        is_dev_build,
         save_indices,
         flat_index_path,
     )
@@ -366,7 +366,7 @@ def generate_page_html(
         #
         # TODO: We could expand this later to find all images, but for now, all images
         # in "content" should be contained in an "images" sub directory.
-        if code_version in ("master", "custom", "no-check"):
+        if is_dev_build:
             # Input paths including `input_dir_path` always under "contents", never
             # "dev"
             relative_local_content_image_path = abs_out_dir_path.relative_to(
