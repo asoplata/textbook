@@ -19,21 +19,34 @@ from packaging.version import Version
 
 
 def _convert_nb_html_to_json(
-    html: str,
+    html_input: str,
     nb_path: Path,
 ):
     """
-    Convert a notebook's html content into a custom structured json format
+    Convert a notebook's HTML content into a custom structured JSON format.
 
-    This function converts the notebook HTML content into a structured JSON structure
-    organized by section headers and saves it to a JSON file.
+    The structured JSON structure are organized by section headers. TODO More
+    description will be added in the future...
 
-    Notes:
-    ------
-    In the future, this section pertains to a planned enhancement to enable inserting
-    sections of a nb into an html file by specifing the headers to include. E.g.,
+    Parameters
+    ----------
+    html_input : str
+        The complete HTML content of the notebook, as obtained from
+        `_extract_html_from_nb`
+    nb_path : pathlib.Path
+        Path to the Jupyter notebook file currently being converted
+
+    Returns
+    -------
+    dict
+        The complete structured JSON content containing all converted notebook cells
+
+    Notes
+    -----
+    TODO In the future, this section pertains to a planned enhancement to enable inserting
+    sections of a nb into an HTML file by specifing the headers to include. E.g.,
     including '[[notebook][start header][end header]]' in your .md file would inject
-    only the .html for those header sections into your html output file.
+    only the .html for those header sections into your HTML output file.
     """
     filename = str(nb_path.name)
 
@@ -51,7 +64,7 @@ def _convert_nb_html_to_json(
             "\t",
             "    ",
         )
-        for line in html.splitlines()
+        for line in html_input.splitlines()
         # if line.strip()
     ]
 
@@ -96,6 +109,81 @@ def _convert_nb_html_to_json(
     return contents
 
 
+def _structure_json(contents):
+    """
+    (Unused) Determine the hierarchy of sections based on levels without adding content.
+
+    Returns a list of sections in order of their hierarchy.
+
+    TODO This is currently unused and will be expanded in future updates.
+    """
+    hierarchy = {}
+
+    for filename, sections in contents.items():
+        hierarchy[filename] = {}
+
+        # list to track parent sections for potential nesting
+        parent_stack = []
+
+        for section_title, section_data in sections.items():
+            level = section_data["level"]
+            html_contents = section_data["html"]
+
+            # Create a section dict with 'title', 'level', and 'sub-sections'
+            section_info = {
+                "title": section_title,
+                "level": level,
+                "html": html_contents,
+                "sub-sections": [],
+            }
+
+            # Ensure only sections with a level greater than the current
+            # section remain in the stack as potential parents
+            while parent_stack and parent_stack[-1]["level"] >= level:
+                parent_stack.pop()
+
+            if parent_stack:
+                # Add the section as a child of the last parent
+                parent_stack[-1]["sub-sections"].append(section_info)
+            else:
+                # Add the section as a top-level section
+                hierarchy[filename][section_title] = section_info
+
+            # Add the current section to the parent stack for future nesting
+            parent_stack.append(section_info)
+
+    def remove_blank_subsections(sections):
+        seek = "sub-sections"
+
+        for k, v in list(sections.items()):
+            if isinstance(v, dict):
+                # check for 'sub-sections' key in dict
+                if seek in v:
+                    # delete empty sub-sections
+                    if v[seek] == []:
+                        del v[seek]
+
+                    # Recursively check all sub-sections
+                    else:
+                        for sub_section in v[seek]:
+                            remove_blank_subsections(sub_section)
+
+            elif isinstance(v, list):
+                # if v is an empty list, delete it
+                if v == []:
+                    del sections[k]
+                # if v is a list of dicts, iterate through the dicts
+                else:
+                    for dictionary in v:
+                        remove_blank_subsections(dictionary)
+
+        return sections
+
+    hierarchy[filename] = remove_blank_subsections(hierarchy[filename])
+
+    return hierarchy
+
+
 def _extract_html_from_nb(
     nb,
     nb_path,
@@ -107,7 +195,7 @@ def _extract_html_from_nb(
 
     This function processes all cells in a Jupyter notebook and converts them to
     formatted HTML. Code cells are rendered with their source and outputs (text,
-    images, errors). Markdown cells are converted to HTML using PyPandoc. Images from
+    images, errors). Markdown cells are converted to HTML using Pandoc. Images from
     notebook outputs are either embedded as Base64 strings or saved as PNG files.
 
     The function handles:
@@ -280,7 +368,7 @@ def _extract_html_from_nb(
             # accumulate remaining cell outputs
             # ==============================
             # If there are accumulated outputs for the cell that have not
-            # yet been added to the html, append the outputs to html_output
+            # yet been added to the HTML, append the outputs to html_output
             aggregated_output = _aggregate_outputs(
                 html_output,
                 aggregated_output,
@@ -336,14 +424,14 @@ def _calculate_nb_hash(nb_path):
 
     Parameters
     ----------
-    nb_path : str or pathlib.Path
+    nb_path : pathlib.Path
         Path to the Jupyter notebook file (.ipynb) to hash
 
     Returns
     -------
     str
-        A 64-character hexadecimal string representing the SHA256 hash
-        of the cleaned notebook content
+        A 64-character hexadecimal string representing the SHA256 hash of the cleaned
+        notebook content
     """
 
     with open(nb_path, "r", encoding="utf-8") as f:
@@ -373,7 +461,7 @@ def _calculate_nb_hash(nb_path):
     return hasher.hexdigest()
 
 
-def _load_nb_hashes(nb_hash_path):
+def _load_nb_hashes(nb_hashes_path):
     """
     Load previously-recorded notebook content hashes from JSON file.
 
@@ -381,72 +469,73 @@ def _load_nb_hashes(nb_hash_path):
     across builds. The hashes are used by the build system to determine which notebooks
     have been modified and possibly need re-execution. Each hash represents the
     content-only state of a notebook (code and markdown cells), excluding execution
-    outputs and metadata, as generated by _hash_nb().
+    outputs and metadata, as generated by `_calculate_hash_nb`.
 
-    If the hash file does not exist (e.g., first build or after cleaning), an empty
-    dictionary is returned, which will cause all notebooks to be treated as new and
-    trigger execution according to the execution type settings.
+    If the hash file does not exist (e.g., first build), an empty dictionary is
+    returned, which will cause all notebooks to be treated as new. Later in the code,
+    this will trigger execution according to the '--execution-type' settings.
 
     Parameters
     ----------
-    nb_hash_path : pathlib.Path
+    nb_hashes_path : pathlib.Path
         Path to the JSON file containing notebook hashes, typically
-        'scripts/nb_hashes.json' in the repository root
+        'scripts/nb_hashes.json' in the textbook-root directory
 
     Returns
     -------
     dict
-        Mapping of notebook filenames (str) to their SHA256 hash values (str).
-        Keys are notebook filenames (e.g., "example.ipynb"), values are 64-character
-        hexadecimal hash strings. Returns an empty dictionary if the hash file
-        does not exist
+        Mapping of notebook filenames (str) to their SHA256 hash values (str). Keys are
+        local notebook filenames (e.g., "example.ipynb"), values are 64-character
+        hexadecimal hash strings. Returns an empty dictionary if the hash file does not
+        exist
     """
     # AES if we want to support optional or fresh hash building, we should do it at the
     # CLI in main, not here, but leaving this as-is for now.
-    if nb_hash_path.exists():
-        with open(nb_hash_path, "r") as f:
+    if nb_hashes_path.exists():
+        with open(nb_hashes_path, "r") as f:
             return json.load(f)
     return {}
 
 
 def _save_nb_hashes(
     new_hashes,
-    nb_hash_path,
+    nb_hashes_path,
 ):
     """
-    Persist updated notebook content hashes to JSON file for tracking changes.
+    Persist updated notebook content hashes to a JSON file for tracking changes.
 
     This function saves a dictionary mapping notebook filenames to their SHA256 content
     hashes. These hashes are used by the build system to determine which notebooks need
-    re-execution after their content has changed. The hashes are generated by _hash_nb()
-    and track only the code/markdown content (not execution outputs or metadata).
+    re-execution after their content has changed. The hashes are generated by
+    `_calculate_hash_nb` and track only the code/markdown content (not execution outputs
+    or metadata, see that function for details).
 
     Parameters
     ----------
     new_hashes : dict
         Mapping of notebook filenames (str) to their SHA256 hash values (str).
-        Keys are notebook filenames (e.g., "example.ipynb"), values are 64-character
+        Keys are local notebook filenames (e.g., "example.ipynb"), values are 64-character
         hexadecimal hash strings
-    nb_hash_path : str or pathlib.Path
+    nb_hashes_path : pathlib.Path
         Path to the JSON file where hashes will be saved, typically
-        'scripts/nb_hashes.json' in the repository root
+        'scripts/nb_hashes.json' in the textbook-root directory
 
     Returns
     -------
     None
         Writes the hash dictionary to disk as formatted JSON with 4-space indentation
     """
-    with open(nb_hash_path, "w") as f:
+    with open(nb_hashes_path, "w") as f:
         json.dump(new_hashes, f, indent=4)
 
 
 def _load_nb(nb_path):
     """
-    Load a Jupyter notebook object from a path to a file.
+    Load a Jupyter notebook object from a file path.
 
     Parameters
     ----------
-    nb_path : str or pathlib.Path
+    nb_path : pathlib.Path
         Path to the Jupyter notebook file (.ipynb) to load
 
     Returns
@@ -481,7 +570,6 @@ def _is_nb_fully_executed(nb):
             and (cell.get("source") != "")
         ):
             return False
-
     return True
 
 
@@ -505,15 +593,14 @@ def _read_nb_json_output_metadata(
 
     Returns
     -------
-    commit_check : str or bool
-        The commit hash from the previous execution if available and the notebook
-        was executed. False if the JSON file doesn't exist or doesn't contain
-        commit information
-    execution_check : bool
+    prior_commit_if_any : str or bool
+        The commit hash from the previous execution if available. False if the JSON file
+        doesn't exist or doesn't contain commit information
+    prior_execution_if_any : bool
         True if the notebook was fully executed in a prior run (all non-empty
         code cells completed execution). False if the JSON file doesn't exist
         or if the prior execution was incomplete
-    version_check : str or bool
+    prior_version_if_any : str or bool
         The version string of hnn-core used in the previous execution (e.g., "0.4.2").
         False if the JSON file doesn't exist or doesn't contain version
         information. "NA" if the metadata exists, but the notebook has not been run
@@ -522,29 +609,29 @@ def _read_nb_json_output_metadata(
 
     json_path = nb_json_output_dir / f"{nb_path.stem}.json"
 
-    execution_check = False
-    version_check = False
-    commit_check = False
+    prior_commit_if_any = False
+    prior_execution_if_any = False
+    prior_version_if_any = False
 
     # if the json output exists, get the execution status, base version,
     # and latest commit used to execute the nb
     if json_path.exists():
         with open(json_path, "r") as file:
             nb_outputs = json.load(file)
-            execution_check = nb_outputs.get(
-                "last_execution_successful",
-                False,
-            )
-            version_check = nb_outputs.get(
-                "last_hnn_version_used",
-                False,
-            )
-            commit_check = nb_outputs.get(
+            prior_commit_if_any = nb_outputs.get(
                 "last_hnn_dev_commit_used",
                 False,
             )
+            prior_execution_if_any = nb_outputs.get(
+                "last_execution_successful",
+                False,
+            )
+            prior_version_if_any = nb_outputs.get(
+                "last_hnn_version_used",
+                False,
+            )
 
-    return commit_check, execution_check, version_check
+    return prior_commit_if_any, prior_execution_if_any, prior_version_if_any
 
 
 def _load_nbs_to_skip(nb_skip_path, is_dev_build):
@@ -569,11 +656,11 @@ def _load_nbs_to_skip(nb_skip_path, is_dev_build):
 
     Parameters
     ----------
-    nb_skip_path : str or pathlib.Path
+    nb_skip_path : pathlib.Path
         Path to the JSON file containing skip lists, typically
-        'scripts/nbs_to_skip.json' in the repository root
+        'scripts/nbs_to_skip.json' in the textbook-root directory
     is_dev_build : bool
-        Flag for if we are doing a "dev" build and need to use the "dev" version of
+        Flag for if we are doing a "dev" build, requiring use of the "dev" version of
         which notebooks should be skipped.
 
     Returns
@@ -600,7 +687,7 @@ def _execute_nb(nb_path, timeout=600):
 
     Parameters
     ----------
-    nb_path : str or pathlib.Path
+    nb_path : pathlib.Path
         Path to the Jupyter notebook file (.ipynb) to execute
     timeout : int, optional
         Maximum time in seconds to wait for each cell to execute.
@@ -755,8 +842,8 @@ def _process_nb(
                 # ERROR: Execution of notebook
                 # '{filename}'
                 # could not be initiated successfully. Please investigate the notebook
-                # to determine why execution was not successfully initiated. The html
-                # and json outputs may be incomplete.
+                # to determine why execution was not successfully initiated. The HTML
+                # and JSON outputs may be incomplete.
                 # ----------------------------------------------------------------------
             """)
             )
@@ -768,7 +855,7 @@ def _process_nb(
                 # '{filename}'
                 # was initiated but did not complete successfully. Please investigate
                 # the notebook to determine why execution was not successfully
-                # completed. The html and json outputs may be incomplete.
+                # completed. The HTML and JSON outputs may be incomplete.
                 # ----------------------------------------------------------------------
             """)
             )
@@ -796,7 +883,7 @@ def _determine_should_execute_nb(
     This function evaluates multiple conditions including:
     - Whether the notebook has been executed previously
     - Whether the notebook is flagged for skipping
-    - Whether the notebook is "new" (not associated with a json output)
+    - Whether the notebook is "new" (not associated with a JSON output)
     - Whether the user is performing a 'dev' build
     - Whether the notebook hash has changed since last execution
     - The execution type specified by the user
@@ -826,11 +913,11 @@ def _determine_should_execute_nb(
         - 'execute-absolutely-all-notebooks'
     prior_commit_if_any : str or bool
         Commit hash from the previous execution, loaded from the notebook's
-        corresponding json output file. False if not found. Used for
+        corresponding JSON output file. False if not found. Used for
         checking/validating versions when doing a 'dev' build
     prior_execution_if_any : bool
         True if the notebook was fully executed previously (per the
-        notebook's corresponding json output file), False otherwise
+        notebook's corresponding JSON output file), False otherwise
     prior_version_if_any : str or bool
         The version of hnn-core that was last used to execute the notebook.
         False if not found, "NA" if never executed
@@ -917,7 +1004,7 @@ def _determine_should_execute_nb(
                 # WARNING: Notebook
                 # '{filename}'
                 # does not appear to have been successfully executed the last time it
-                # was run, or has never been executed. The html and json output may be
+                # was run, or has never been executed. The HTML and JSON output may be
                 # incomplete. Please consider re-executing this notebook.
                 #
                 # Not performing execution since execution_type is set to
@@ -946,7 +1033,7 @@ def _determine_should_execute_nb(
                 # '{filename}'
                 # is flagged to be skipped, but does not appear to have been
                 # successfully executed the last time it was run, or has never been
-                # executed. The html and json output may be incomplete.
+                # executed. The HTML and JSON output may be incomplete.
                 #
                 # Please either remove the notebook from the skipped list JSON file, or
                 # re-run the script with
@@ -1033,9 +1120,9 @@ def _write_nb_json_output(
 
     Parameters
     ----------
-    nb_json_content : str
+    nb_json_content : dict
         The complete structured JSON content containing all converted notebook cells,
-        as returned by _convert_nb_html_to_json
+        as returned by `_convert_nb_html_to_json`
     nb_path : pathlib.Path
         Path to the Jupyter notebook file (.ipynb). Used to determine the output
         JSON filename (stem of the notebook filename)
@@ -1135,83 +1222,9 @@ def _save_standalone_nb_html(
         f.write("\n</body></html>")
 
 
-def _structure_json(contents):
-    """
-    TODO: Determine the hierarchy of sections based on levels without adding content.
-    Returns a list of sections in order of their hierarchy.
-
-    This will be expanded in future updates.
-    """
-    hierarchy = {}
-
-    for filename, sections in contents.items():
-        hierarchy[filename] = {}
-
-        # list to track parent sections for potential nesting
-        parent_stack = []
-
-        for section_title, section_data in sections.items():
-            level = section_data["level"]
-            html_contents = section_data["html"]
-
-            # Create a section dict with 'title', 'level', and 'sub-sections'
-            section_info = {
-                "title": section_title,
-                "level": level,
-                "html": html_contents,
-                "sub-sections": [],
-            }
-
-            # Ensure only sections with a level greater than the current
-            # section remain in the stack as potential parents
-            while parent_stack and parent_stack[-1]["level"] >= level:
-                parent_stack.pop()
-
-            if parent_stack:
-                # Add the section as a child of the last parent
-                parent_stack[-1]["sub-sections"].append(section_info)
-            else:
-                # Add the section as a top-level section
-                hierarchy[filename][section_title] = section_info
-
-            # Add the current section to the parent stack for future nesting
-            parent_stack.append(section_info)
-
-    def remove_blank_subsections(sections):
-        seek = "sub-sections"
-
-        for k, v in list(sections.items()):
-            if isinstance(v, dict):
-                # check for 'sub-sections' key in dict
-                if seek in v:
-                    # delete empty sub-sections
-                    if v[seek] == []:
-                        del v[seek]
-
-                    # Recursively check all sub-sections
-                    else:
-                        for sub_section in v[seek]:
-                            remove_blank_subsections(sub_section)
-
-            elif isinstance(v, list):
-                # if v is an empty list, delete it
-                if v == []:
-                    del sections[k]
-                # if v is a list of dicts, iterate through the dicts
-                else:
-                    for dictionary in v:
-                        remove_blank_subsections(dictionary)
-
-        return sections
-
-    hierarchy[filename] = remove_blank_subsections(hierarchy[filename])
-
-    return hierarchy
-
-
 def execute_and_convert_nbs_to_json(
     content_path,
-    nb_hash_path,
+    nb_hashes_path,
     nb_skip_path,
     execution_type,
     is_dev_build,
@@ -1248,7 +1261,7 @@ def execute_and_convert_nbs_to_json(
         notebook files, and possibly their outputs. This is ALWAYS
         "<textbook_root>/content" and never "<textbook_root>/dev", since "dev" versions
         of required directories will be created as needed.
-    nb_hash_path : pathlib.Path
+    nb_hashes_path : pathlib.Path
         Path to the JSON file for loading/saving notebook content hashes, typically
         'scripts/nb_hashes.json'
     nb_skip_path : pathlib.Path
@@ -1296,7 +1309,7 @@ def execute_and_convert_nbs_to_json(
     all_nb_paths = sorted(content_path.glob("**/*.ipynb"))
 
     # get nb hashes from json
-    nb_hashes = _load_nb_hashes(nb_hash_path)
+    nb_hashes = _load_nb_hashes(nb_hashes_path)
     updated_hashes = nb_hashes.copy()
 
     # get list of nbs to skip
@@ -1367,14 +1380,17 @@ def execute_and_convert_nbs_to_json(
             hnn_commit_hash,
         )
 
-        print(f"Successfully converted '{nb_path.name}' to html, then json")
+        print(
+            f"\nExecution: Success: Converted '{nb_path.name}' "
+            "to HTML, then structured JSON."
+        )
 
         updated_hashes[nb_path.name] = processed_hash
 
     # Finally, save updated hashes
     _save_nb_hashes(
         updated_hashes,
-        nb_hash_path,
+        nb_hashes_path,
     )
 
 
