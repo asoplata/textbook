@@ -35,7 +35,12 @@ def get_hnn_commit_hash():
     return installed_commit
 
 
-def validate_hnn_versions(installed_commit, code_version, custom_owner_commit=None):
+def validate_hnn_versions(
+        installed_commit,
+        code_version,
+        custom_owner_commit=None,
+        no_version_validation=False,
+):
     """Validate the installed hnn-core version/hash against 'code-version' options.
 
     This function verifies that the installed hnn-core version/commit matches the
@@ -51,15 +56,18 @@ def validate_hnn_versions(installed_commit, code_version, custom_owner_commit=No
         source. Otherwise, the current version of hnn-core that is installed
     code_version : str
         The desired hnn-core version to use and validate against. See 'python build.py
-        --help' for more details. Must be one of:
+        --help' with the '--code-version' CLI argument for more details. Must be one of:
         - 'stable': Latest stable release from PyPI
         - 'master': Latest commit from the master branch
         - 'custom': Custom repository owner and commit hash
-        - 'no-check': Skip validation and use installed version
     custom_owner_commit : str, optional
         Required when code_version='custom'. Format: '<owner>:<commit-hash>'
         Example: 'asoplata:92b000c' to retrieve the commit for
         https://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96
+    no_version_validation: bool, optional
+        Whether to NOT validate the installed version. This descends from the optional
+        '--no-version-validation' CLI argument to 'build.py'. See 'python build.py
+        --help' for more details.
 
     Returns
     -------
@@ -74,6 +82,13 @@ def validate_hnn_versions(installed_commit, code_version, custom_owner_commit=No
     if code_version == "stable":
         # We don't need the commit hash if simply using the latest stable.
         hnn_commit_hash = None
+
+        # Skip validation if desired, returning a None hash as required in a "stable"
+        # build.
+        if no_version_validation:
+            print("Skipping version validation.")
+            return hnn_commit_hash
+
         # Lookup online the latest stable version
         latest_stable_version = requests.get(
             "https://pypi.org/pypi/hnn-core/json"
@@ -118,6 +133,12 @@ def validate_hnn_versions(installed_commit, code_version, custom_owner_commit=No
     # 'master' version checks and commit setting
     # ----------------------------------------------------------------------------------
     elif code_version == "master":
+        # Skip validation if desired, and simply use the installed commit
+        if no_version_validation:
+            print("Skipping version validation.")
+            hnn_commit_hash = installed_commit
+            return hnn_commit_hash
+
         # Lookup online the latest commit hash from upstream/master
         url = "https://api.github.com/repos/jonescompneurolab/hnn-core/commits/master"
         response = requests.get(url)
@@ -164,6 +185,12 @@ def validate_hnn_versions(installed_commit, code_version, custom_owner_commit=No
                 "\nhttps://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96 "
                 "\nSee 'build.py --help' for more details."
             )
+
+        # Skip validation if desired, and simply use the installed commit
+        if no_version_validation:
+            print("Skipping version validation.")
+            hnn_commit_hash = installed_commit
+            return hnn_commit_hash
 
         # "custom" case "<owner>:<commit>" input processing and validation
         owner_hash = custom_owner_commit.strip()

@@ -244,26 +244,36 @@ Synopsis:
             "stable",
             "master",
             "custom",
-            "no-check",
         ],
         help=textwrap.dedent("""
 Specify which version of HNN-core you want to use for building the textbook. The default
-is 'stable'. This ASSUMES you have the correct version installed in your local
-environment. The three options are below:
-- 'stable': This builds the textbook using the latest stable version of HNN-Core, as
-    detected from a request to PyPI. This compiles the output HTML into the 'content'
-    folder.
-- 'master': This builds the textbook using the latest development version of HNN-Core
-    from the 'master' branch, as detected from a request to Github. This compiles the
-    output HTML into the 'dev' folder, creating one if it doesn't exist.
+is 'stable'. This validates whether you have the correct version installed in your local
+environment unless you also pass the '--no-version-validation' argument. The three
+options are below:
+- 'stable': This builds the textbook using the latest stable version of HNN-Core. This
+    version is validated based on a request to PyPI, checking if your version is using
+    the latest stable. This produces a 'stable' build, meaning it creates the output
+    HTML files in the 'textbook/content' folder.
+- 'master': This builds the textbook using the latest development version of
+    HNN-Core. This version is validated based on a request to Github, checking if your
+    version is using the latest commit on the 'master' branch. This produces a 'dev'
+    build, meaning it creates the output HTML files in the 'textbook/dev' folder
+    (creating all output directories if they don't exist).
 - 'custom': This builds the textbook using a custom commit and, optionally, a custom
     repository-owner's version of HNN-Core. If using this option, you must provide the
-    repository-owner and/or commit you want using the '--custom-repo-commit' argument.
-    This compiles the output HTML into the 'dev' folder, creating one if it doesn't
-    exist.
-- 'no-check': This builds the textbook using whichever version of HNN-Core
-    you have installed, without checking any online sources. This compiles the
-    output HTML into the 'dev' folder, creating one if it doesn't exist.
+    repository-owner and/or commit you want using the '--custom-repo-commit'
+    argument. This version is validated based on a request to Github, checking for the
+    existence of the commit you have provided. This produces a 'dev' build, meaning it
+    creates the output HTML files in the 'textbook/dev' folder (creating all output
+    directories if they don't exist).
+"""),
+    )
+    parser.add_argument(
+        "--no-version-validation",
+        action="store_true",  # Confusingly, this defaults to False
+        help=textwrap.dedent("""
+Optionally indicate that you do NOT want your hnn-core installed version to be
+validated, based on the value of the '--code-version' argument. Defaults to False.
 """),
     )
     parser.add_argument(
@@ -313,7 +323,7 @@ Optionally provide a different 'root' location for your textbook files,
     )
     parser.add_argument(
         "--save-indices",
-        type=bool,
+        action="store_true",  # Confusingly, this defaults to False
         help=textwrap.dedent("""
 Optionally provide whether or not to save the webpage-indexing files during the build
 process. Defaults to False.
@@ -321,7 +331,7 @@ process. Defaults to False.
     )
     parser.add_argument(
         "--save-standalone-nb-html",
-        type=bool,
+        action="store_true",  # Confusingly, this defaults to False
         help=textwrap.dedent("""
 Optionally provide whether or not to save each Jupyter Python notebook's raw HTML output
 during the build process. Defaults to False.
@@ -369,14 +379,18 @@ during the build process. Defaults to False.
     # ----------------------------------------------------------------------------------
     installed_commit = get_hnn_commit_hash()
 
+    # We can't pre-empt this function in the no-validation case, since the value of the
+    # hash varies between "stable" and "dev" builds
     hnn_commit_hash = validate_hnn_versions(
         installed_commit,
         args.code_version,
         custom_owner_commit=args.custom_owner_commit,
+        no_version_validation=args.no_version_validation,
     )
+
     # Determine if we're in a "dev" build or not
     is_dev_build = False
-    if args.code_version in ("master", "custom", "no-check"):
+    if args.code_version in ("master", "custom"):
         is_dev_build = True
 
     # Execute appropriate Jupyter notebooks, and save their output for later webpage
