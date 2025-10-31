@@ -4,37 +4,15 @@ import requests
 from hnn_core import __version__ as installed_version
 
 
-def get_hnn_commit_hash(code_version, custom_owner_commit=None):
-    """Validate and retrieve the hnn-core commit hash for textbook builds.
-
-    This function verifies that the installed hnn-core version/commit matches the
-    requested version/commit for building the textbook, then returns the appropriate
-    commit hash to use for documentation links. The function requires internet access to
-    query PyPI and/or GitHub APIs, unless you are using the 'no-check' code_version.
-
-    Parameters
-    ----------
-    code_version : str
-        The desired hnn-core version to validate against. See 'python build.py --help'
-        for more details. Must be one of:
-        - 'stable': Latest stable release from PyPI
-        - 'master': Latest commit from the master branch
-        - 'custom': Custom repository owner and commit hash
-        - 'no-check': Skip validation and use installed version
-    custom_owner_commit : str, optional
-        Required when code_version='custom'. Format: '<owner>:<commit-hash>'
-        Example: 'asoplata:92b000c' to retrieve the commit for
-        https://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96
+def get_hnn_commit_hash():
+    """Retrieve the installed hnn-core version and commit hash
 
     Returns
     -------
-    str or None
-        The commit hash to use for documentation links. Returns None for 'stable'
-        version (since stable releases don't require commit hashes), otherwise
-        returns the full commit SHA.
+    str
+        The commit hash of hnn-core is installed, if hnn-core is installed from
+        source. Otherwise, the current version of hnn-core that is installed
     """
-    # ----------------------------------------------------------------------------------
-    # Try to get the commit hash of the current installation of hnn_core:
     try:
         installed_commit = subprocess.check_output(["pip", "freeze"], text=True)
         for line in installed_commit.splitlines():
@@ -54,9 +32,44 @@ def get_hnn_commit_hash(code_version, custom_owner_commit=None):
         raise RuntimeError(
             f"Could not import hnn_core and retrieve the installed commit:\n{e}"
         )
+    return installed_commit
+
+
+def validate_hnn_versions(installed_commit, code_version, custom_owner_commit=None):
+    """Validate the installed hnn-core version/hash against 'code-version' options
+
+    This function verifies that the installed hnn-core version/commit matches the
+    requested version/commit for building the textbook (unless `code_version` is set to
+    'no-check'), then returns the appropriate commit hash to use for documentation
+    links. The function requires internet access to query PyPI and/or GitHub APIs
+    (unless `code_version` is set to 'no-check').
+
+    Parameters
+    ----------
+    installed_commit : str
+        The commit hash of hnn-core is installed, if hnn-core is installed from
+        source. Otherwise, the current version of hnn-core that is installed
+    code_version : str
+        The desired hnn-core version to use and validate against. See 'python build.py
+        --help' for more details. Must be one of:
+        - 'stable': Latest stable release from PyPI
+        - 'master': Latest commit from the master branch
+        - 'custom': Custom repository owner and commit hash
+        - 'no-check': Skip validation and use installed version
+    custom_owner_commit : str, optional
+        Required when code_version='custom'. Format: '<owner>:<commit-hash>'
+        Example: 'asoplata:92b000c' to retrieve the commit for
+        https://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96
+
+    Returns
+    -------
+    str or None
+        The commit hash to use for documentation links. Returns None for 'stable'
+        version (since stable releases don't require commit hashes), otherwise
+        returns the full commit SHA.
+    """
+    # 'stable' version checks
     # ----------------------------------------------------------------------------------
-    # Deal with each different variation of which HNN version (and/or commit hash) the
-    # user wants, versus which version is installed in the environment:
     if code_version == "stable":
         # We don't need the commit hash if simply using the latest stable.
         hnn_commit_hash = None
@@ -64,6 +77,7 @@ def get_hnn_commit_hash(code_version, custom_owner_commit=None):
         latest_stable_version = requests.get(
             "https://pypi.org/pypi/hnn-core/json"
         ).json()["info"]["version"]
+
         # "stable" case version validation
         if installed_version > latest_stable_version:
             raise RuntimeError(
@@ -100,6 +114,8 @@ def get_hnn_commit_hash(code_version, custom_owner_commit=None):
                 f"\n   Installed version:     {installed_version}"
             )
 
+    # 'master' version checks and commit setting
+    # ----------------------------------------------------------------------------------
     elif code_version == "master":
         # Lookup online the latest commit hash from upstream/master
         url = "https://api.github.com/repos/jonescompneurolab/hnn-core/commits/master"
@@ -132,6 +148,8 @@ def get_hnn_commit_hash(code_version, custom_owner_commit=None):
                 f"\n   Installed commit hash:     {installed_commit}"
             )
 
+    # 'custom' version checks and commit setting
+    # ----------------------------------------------------------------------------------
     elif code_version == "custom":
         if not custom_owner_commit:
             raise RuntimeError(
@@ -155,7 +173,6 @@ def get_hnn_commit_hash(code_version, custom_owner_commit=None):
             response = requests.get(url)
             response.raise_for_status()
             full_provided_commit = response.json()["sha"]
-            # AES TODO
             hnn_commit_hash = full_provided_commit
 
         except Exception as e:
@@ -197,6 +214,8 @@ def get_hnn_commit_hash(code_version, custom_owner_commit=None):
                 f"\n   Installed version or commit hash: {installed_commit}"
             )
 
+    # 'no-check' ignore everything and just do whatever
+    # ----------------------------------------------------------------------------------
     elif code_version == "no-check":
         hnn_commit_hash = installed_commit
         print(
