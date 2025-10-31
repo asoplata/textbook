@@ -73,9 +73,9 @@ def check_version(enable_debug=True, root_path=None):
     ) as f:
         nb_hashes = json.load(f)
 
-    nb_skip_path = root_path / "scripts" / "nbs_to_skip.json"
+    nb_skips_path = root_path / "scripts" / "nbs_to_skip.json"
     with open(
-        nb_skip_path,
+        nb_skips_path,
         "r",
     ) as f:
         nbs_to_skip = json.load(f)

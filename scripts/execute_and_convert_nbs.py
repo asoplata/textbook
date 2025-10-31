@@ -640,7 +640,7 @@ def _read_nb_json_output_metadata(
     return prior_commit_if_any, prior_execution_if_any, prior_version_if_any
 
 
-def _load_nbs_to_skip(nb_skip_path, is_dev_build):
+def _load_nbs_to_skip(nb_skips_path, is_dev_build):
     """
     Load list of notebooks to skip during execution based on build type.
 
@@ -662,7 +662,7 @@ def _load_nbs_to_skip(nb_skip_path, is_dev_build):
 
     Parameters
     ----------
-    nb_skip_path : pathlib.Path
+    nb_skips_path : pathlib.Path
         Path to the JSON file containing skip lists, typically
         'scripts/nbs_to_skip.json' in the textbook-root directory
     is_dev_build : bool
@@ -675,7 +675,7 @@ def _load_nbs_to_skip(nb_skip_path, is_dev_build):
         List of notebook filenames (str) that should be skipped during execution.
         Filenames should match the actual .ipynb file names (e.g., "example.ipynb")
     """
-    with open(nb_skip_path, "r") as f:
+    with open(nb_skips_path, "r") as f:
         nbs_to_skip = json.load(f)
 
     if is_dev_build:
@@ -1242,7 +1242,7 @@ def _save_standalone_nb_html(
 def execute_and_convert_nbs_to_json(
     content_path,
     nb_hashes_path,
-    nb_skip_path,
+    nb_skips_path,
     execution_type,
     is_dev_build,
     hnn_commit_hash,
@@ -1281,7 +1281,7 @@ def execute_and_convert_nbs_to_json(
     nb_hashes_path : pathlib.Path
         Path to the JSON file for loading/saving notebook content hashes, typically
         'scripts/nb_hashes.json'
-    nb_skip_path : pathlib.Path
+    nb_skips_path : pathlib.Path
         Path to the JSON file containing skip configuration lists, typically
         'scripts/nbs_to_skip.json'
     execution_type : str
@@ -1334,7 +1334,7 @@ def execute_and_convert_nbs_to_json(
     updated_hashes = nb_hashes.copy()
 
     # get list of nbs to skip
-    nbs_to_skip = _load_nbs_to_skip(nb_skip_path, is_dev_build)
+    nbs_to_skip = _load_nbs_to_skip(nb_skips_path, is_dev_build)
 
     # Loop through all notebooks
     # ----------------------------------------------------------------------------------

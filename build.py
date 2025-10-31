@@ -341,7 +341,7 @@ during the build process. Defaults to False.
     hier_index_path = Path(root_path / "scripts" / "hier_index.json")
     flat_index_path = Path(root_path / "scripts" / "flat_index.json")
     nb_hashes_path = Path(root_path / "scripts" / "nb_hashes.json")
-    nb_skip_path = Path(root_path / "scripts" / "nbs_to_skip.json")
+    nb_skips_path = Path(root_path / "scripts" / "nbs_to_skip.json")
     # The "templates" directory is assumed to contain at least the following files:
     # - footer.html
     # - header.html
@@ -385,7 +385,7 @@ during the build process. Defaults to False.
     execute_and_convert_nbs_to_json(
         content_path,
         nb_hashes_path,
-        nb_skip_path,
+        nb_skips_path,
         args.execution_type,
         is_dev_build,
         hnn_commit_hash,
