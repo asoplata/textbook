@@ -218,7 +218,7 @@ window.onload = function() {
 }
 
 function toggleSubmenu(event) {
-    const header = event.target.closest('#sidebar-header');
+    const header = event.target.closest('#sidebar-section');
         // Get the clicked header
     const submenu = header.nextElementSibling;
         // Get the submenu

@@ -11,7 +11,7 @@ import textwrap
 def create_toggle_section(toggle_label):
     section = textwrap.dedent(f"""
         <div class="sidebar-list">
-            <a id="sidebar-header" onclick="toggleSubmenu(event)">
+            <a id="sidebar-section" onclick="toggleSubmenu(event)">
                 <span class="toggle-icon">+</span>
                 {toggle_label}
             </a>
