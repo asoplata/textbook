@@ -18,13 +18,25 @@ from nbconvert.preprocessors import (
 from packaging.version import Version
 
 
-def _convert_html_to_json(
+def _convert_nb_html_to_json(
     html: str,
-    filename: str,
+    nb_path: Path,
 ):
     """
-    Convert html into hierarchical json
+    Convert a notebook's html content into a custom structured json format
+
+    This function converts the notebook HTML content into a structured JSON structure
+    organized by section headers and saves it to a JSON file.
+
+    Notes:
+    ------
+    In the future, this section pertains to a planned enhancement to enable inserting
+    sections of a nb into an html file by specifing the headers to include. E.g.,
+    including '[[notebook][start header][end header]]' in your .md file would inject
+    only the .html for those header sections into your html output file.
     """
+    filename = str(nb_path.name)
+
     # variable for processed json output
     contents = {filename: {}}
 
@@ -1003,8 +1015,8 @@ def _determine_should_execute_nb(
             return True
 
 
-def _write_nb_html_to_json(
-    html_content,
+def _write_nb_json_output(
+    nb_json_content,
     nb_path,
     nb_json_output_dir,
     execution_initiated,
@@ -1013,22 +1025,17 @@ def _write_nb_html_to_json(
     hnn_commit_hash,
 ):
     """
-    Generate and save structured JSON output file containing notebook HTML and metadata.
+    Save structured JSON output file containing notebook HTML and metadata.
 
-    This function converts the notebook HTML content into a hierarchical JSON structure
-    organized by section headers and saves it to a JSON file. The output includes
-    execution metadata (execution status, hnn-core version, and optional commit hash
-    for dev builds) along with the structured HTML content.
-
-    (In the future, the JSON structure will enable selective insertion of notebook
-    sections into markdown pages by specifying header ranges (a planned enhancement
-    feature).)
+    The processed structured JSON output from the notebook is combined with execution
+    metadata (execution status, hnn-core version, and optional commit hash for dev
+    builds), and then saved to file.
 
     Parameters
     ----------
-    html_content : str
-        The complete HTML string containing all converted notebook cells, as returned
-        by _extract_html_from_nb
+    nb_json_content : str
+        The complete structured JSON content containing all converted notebook cells,
+        as returned by _convert_nb_html_to_json
     nb_path : pathlib.Path
         Path to the Jupyter notebook file (.ipynb). Used to determine the output
         JSON filename (stem of the notebook filename)
@@ -1051,55 +1058,40 @@ def _write_nb_html_to_json(
     pathlib.Path
         Path to the generated JSON output file
     """
-
-    # Generate structured json output
-    # ----------------------------------------
-    # Note: this section pertains to a planned enhancement
-    # to enable inserting sections of a nb into an
-    # html file by specifing the headers to include; e.g.,
-    # including [[notebook][start header][end header]] in your
-    # .md file would inject only the .html for those header
-    # sections into your html output file
-
-    nb_html_json = _convert_html_to_json(
-        html_content,
-        str(nb_path.name),
-    )
-
     output_json_path = nb_json_output_dir / f"{nb_path.stem}.json"
 
     # Set or load the last version that the nb was executed with
     if execution_initiated:
         # Add execution status directly to json output
         # Track version used in nb execution
-        nb_html_json = {
+        nb_json_content = {
             "last_execution_successful": execution_successful,
             "last_hnn_version_used": hnn_version,
-            **nb_html_json,
+            **nb_json_content,
         }
         if is_dev_build:
             print("Commit to use:", hnn_commit_hash)
-            nb_html_json["last_hnn_dev_commit_used"] = hnn_commit_hash
+            nb_json_content["last_hnn_dev_commit_used"] = hnn_commit_hash
     else:
         # get previously-used hnn version from json file
         previous_version = "NA"
         if output_json_path.exists():
             with open(output_json_path, "r") as f:
-                nb_html_json = json.load(f)
+                nb_json_content = json.load(f)
             # check for hnn_version key
-            if "last_hnn_version_used" in nb_html_json:
-                previous_version = nb_html_json["last_hnn_version_used"]
-        nb_html_json = {
+            if "last_hnn_version_used" in nb_json_content:
+                previous_version = nb_json_content["last_hnn_version_used"]
+        nb_json_content = {
             "last_execution_successful": execution_successful,
             "last_hnn_version_used": previous_version,
-            **nb_html_json,
+            **nb_json_content,
         }
         # # AES: Potential mistake to write the hash here
         # if is_dev_build:
-        #     nb_html_json["last_hnn_dev_commit_used"] = hnn_commit_hash
+        #     nb_json_content["last_hnn_dev_commit_used"] = hnn_commit_hash
 
     with open(output_json_path, "w") as f:
-        json.dump(nb_html_json, f, indent=4)
+        json.dump(nb_json_content, f, indent=4)
 
     return output_json_path
 
@@ -1343,16 +1335,30 @@ def execute_and_convert_nbs_to_json(
         )
 
         # extract the html from the nb, including saving any images if needed
-        html_content = _extract_html_from_nb(
+        nb_html_content = _extract_html_from_nb(
             loaded_nb,
             nb_path,
             nb_json_output_dir,
             use_base64=use_base64,
         )
 
-        # generate complete json output file
-        _write_nb_html_to_json(
-            html_content,
+        # optionally write standalone nb to an html file
+        if save_standalone_nb_html:
+            _save_standalone_nb_html(
+                nb_html_content,
+                nb_path,
+                nb_json_output_dir,
+            )
+
+        # Generate structured json output
+        nb_json_content = _convert_nb_html_to_json(
+            nb_html_content,
+            nb_path,
+        )
+
+        # Save the final json output file
+        _write_nb_json_output(
+            nb_json_content,
             nb_path,
             nb_json_output_dir,
             execution_initiated,
@@ -1360,14 +1366,6 @@ def execute_and_convert_nbs_to_json(
             is_dev_build,
             hnn_commit_hash,
         )
-
-        # optionally write standalone nb to an html file
-        if save_standalone_nb_html:
-            _save_standalone_nb_html(
-                html_content,
-                nb_path,
-                nb_json_output_dir,
-            )
 
         print(f"Successfully converted '{nb_path.name}' to html, then json")
 
