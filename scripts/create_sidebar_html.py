@@ -1,14 +1,26 @@
-import json
-import os
 import textwrap
 
-# %% #####################################
-# functions to generate html for the
-# dynamic components of the sidebar
-# ########################################
 
+def _create_toggle_section(toggle_label):
+    """
+    Create HTML for a collapsible section header in the sidebar navigation.
 
-def create_toggle_section(toggle_label):
+    This function generates the opening HTML structure for a collapsible/expandable
+    section in the sidebar. The section includes a toggle icon (+/-) and a label, and
+    is designed to contain nested page links that can be shown or hidden by the user.
+
+    Arguments
+    ---------
+    toggle_label : str
+        The display text for the collapsible section header (e.g., "Getting Started",
+        "Using HNN API"). This is the section title extracted from the 'README.md'
+        file that should be in the subdirectory for that section.
+
+    Returns
+    -------
+    str
+        HTML string for the collapsible section with its title
+    """
     section = textwrap.dedent(f"""
         <div class="sidebar-list">
             <a id="sidebar-section" onclick="toggleSubmenu(event)">
@@ -24,7 +36,39 @@ def create_toggle_section(toggle_label):
     return section
 
 
-def build_sidebar(hier_index, flat_index):
+def _build_dynamic_sidebar(hier_index, flat_index):
+    """
+    Build the dynamic navigation component of the sidebar from page indices.
+
+    This function processes the hierarchical index to generate HTML links for all pages
+    and sections in the sidebar. It handles both top-level pages (non-collapsible links)
+    and nested sections (collapsible groups of links). The flat index is used to lookup
+    the relative file paths for each page based on matching titles.
+
+    Arguments
+    ---------
+    hier_index : dict
+        Hierarchical index containing the nested structure of pages and sections, as
+        created by `scripts/create_indices.py::create_hier_index()`. Structure:
+        - For sections (directories with README.md): {<dir_name>: [<section_title>,
+          <nested_dict>]}
+        - For pages (markdown files): {<file_name>: <page_title>}
+        - Keys are file/directory names, values are either titles (for pages) or
+          [title, nested_dict] pairs (for sections)
+    flat_index : list of dict
+        A sequential list of all pages in navigation order, as created by
+        `scripts/create_indices.py::create_flat_index()`. Each dict element contains:
+        - 'absolute_input_md_path' : pathlib.Path, input markdown file path
+        - 'absolute_output_html_path' : pathlib.Path, output HTML file path
+        - 'relative_output_html_path' : str, website-relative HTML path (e.g.,
+          '/textbook/content/page.html')
+        - 'title' : str, page title extracted from markdown file
+
+    Returns
+    -------
+    str
+        HTML string containing all navigation links for the sidebar
+    """
     dynamic_links_html = ""
     indent = "\t\t"
     for section, contents in hier_index.items():
@@ -41,7 +85,7 @@ def build_sidebar(hier_index, flat_index):
             toggle_label = contents[0]
             toggle_contents = contents[1]
             # Add toggle <div> sections and link
-            dynamic_links_html += create_toggle_section(toggle_label)
+            dynamic_links_html += _create_toggle_section(toggle_label)
             # Add pages under toggle
             for sub_filename, sub_title in toggle_contents.items():
                 label = sub_title
@@ -63,18 +107,40 @@ def create_sidebar_html(
     add_workshop_link=False,
 ):
     """
-    Function to generate the sidebar ("mySidebar"), including both the static elements
-    and the dynamic elements. The dynamic elements are built from the structure
-    specified in the index.json file, which is updated when this function runs
+    Generate complete sidebar HTML with static header and dynamic navigation links.
 
-    Inputs
-    ------
+    This function assembles the full sidebar HTML by combining static elements with
+    dynamic navigation links generated from the page indices. The sidebar includes the
+    site title, installation link, optional workshop link, and a hierarchical navigation
+    structure with collapsible sections.
+
+    Arguments
+    ---------
+    hier_index : dict
+        Hierarchical index containing the nested structure of pages and sections, as
+        created by `scripts/create_indices.py::create_hier_index()`. Structure:
+        - For sections (directories with README.md): {<dir_name>: [<section_title>,
+          <nested_dict>]}
+        - For pages (markdown files): {<file_name>: <page_title>}
+        - Keys are file/directory names, values are either titles (for pages) or
+          [title, nested_dict] pairs (for sections)
+    flat_index : list of dict
+        A sequential list of all pages in navigation order, as created by
+        `scripts/create_indices.py::create_flat_index()`. Each dict element contains:
+        - 'absolute_input_md_path' : pathlib.Path, input markdown file path
+        - 'absolute_output_html_path' : pathlib.Path, output HTML file path
+        - 'relative_output_html_path' : str, website-relative HTML path (e.g.,
+          '/textbook/content/page.html')
+        - 'title' : str, page title extracted from markdown file
+    add_workshop_link : bool, optional
+        TODO: Experimental. Whether to include a workshop page link in the sidebar
+        header. Default is False. When True, adds a styled button linking to the
+        workshop page. Note: formatting may need updates for current styling.
 
     Returns
     -------
-    html : str
-        The complete sidebar html contained in a string
-    ordered_links :
+    str
+        Complete sidebar HTML string
     """
 
     base_indent = "\t"
@@ -158,7 +224,7 @@ def create_sidebar_html(
     # build the page navigation elements
     # from the updated page index
     # ----------------------------------
-    dynamic_links_html = build_sidebar(hier_index, flat_index)
+    dynamic_links_html = _build_dynamic_sidebar(hier_index, flat_index)
 
     close_sidebar = textwrap.dedent("""
             <div style='height: 30px;'></div>

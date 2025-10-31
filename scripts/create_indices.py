@@ -157,7 +157,7 @@ def create_flat_index(
     Returns
     -------
     list of dict
-        A sequential list of all pages in navigation order. Each dict contains:
+        A sequential list of all pages in navigation order. Each dict element contains:
         - 'absolute_input_md_path' : pathlib.Path, input markdown file path
         - 'absolute_output_html_path' : pathlib.Path, output HTML file path
         - 'relative_output_html_path' : str, website-relative HTML path (e.g.,
