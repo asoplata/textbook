@@ -382,6 +382,8 @@ document.addEventListener("DOMContentLoaded", function() {
 // -----------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
     // Get the full path relative to the 'content' folder
+    // TODO? Currently breaks automatic sidebar display of current page  on "dev"
+    // builds, but probably not worth fixing
     const currentPage = window.location.pathname.split("/content/")[1].split("?")[0];
 
     // Find the active link using the full path
