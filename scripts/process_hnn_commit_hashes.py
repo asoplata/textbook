@@ -5,7 +5,7 @@ from hnn_core import __version__ as installed_version
 
 
 def get_hnn_commit_hash():
-    """Retrieve the installed hnn-core version and commit hash
+    """Retrieve the installed hnn-core version and commit hash.
 
     Returns
     -------
@@ -36,7 +36,7 @@ def get_hnn_commit_hash():
 
 
 def validate_hnn_versions(installed_commit, code_version, custom_owner_commit=None):
-    """Validate the installed hnn-core version/hash against 'code-version' options
+    """Validate the installed hnn-core version/hash against 'code-version' options.
 
     This function verifies that the installed hnn-core version/commit matches the
     requested version/commit for building the textbook (unless `code_version` is set to
