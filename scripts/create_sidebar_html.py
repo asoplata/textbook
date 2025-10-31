@@ -27,8 +27,6 @@ def create_toggle_section(toggle_label):
 def build_sidebar(hier_index, flat_index):
     dynamic_links_html = ""
     indent = "\t\t"
-    # ordered_links = []
-    # ordered_pages = []
     for section, contents in hier_index.items():
         # For pages that are not nested in a toggle
         if isinstance(contents, str):
@@ -38,8 +36,6 @@ def build_sidebar(hier_index, flat_index):
                     link = page["relative_output_html_path"]
 
             dynamic_links_html += f'\n{indent}<a href="{link}">{label}</a>'
-            # ordered_links.append(page_paths[section])
-            # ordered_pages.append(contents)
         # For pages that are nested in a toggle
         elif isinstance(contents, list):
             toggle_label = contents[0]
@@ -54,33 +50,13 @@ def build_sidebar(hier_index, flat_index):
                         link = page["relative_output_html_path"]
                 dynamic_links_html += f'\n{indent + indent}<a href="{link}">{label}</a>'
 
-                # ordered_links.append(page_paths[sub_filename])
-                # ordered_pages.append(sub_title)
             # Close toggle <div> sections
             dynamic_links_html += f"\n{indent}\t</div>"
             dynamic_links_html += f"\n{indent}</div>"
 
-        # # save ordered page links
-        # out_path = os.getcwd() + "/templates/ordered_page_links.json"
-        # ordered_page_links = {}
-        # ordered_page_links["links"] = ordered_links
-        # ordered_page_links["titles"] = ordered_pages
-
-        # with open(out_path, "w", encoding="utf-8") as f:
-        #     json.dump(
-        #         ordered_page_links,
-        #         f,
-        #         ensure_ascii=False,
-        #         indent=4,
-        #     )
-
-    # return dynamic_links_html, ordered_links
     return dynamic_links_html
 
 
-# %% #####################################
-# build the complete sidebar html
-# ########################################
 def create_sidebar_html(
     hier_index,
     flat_index,
@@ -182,7 +158,6 @@ def create_sidebar_html(
     # build the page navigation elements
     # from the updated page index
     # ----------------------------------
-    # dynamic_links_html, ordered_links = build_sidebar(hier_index)
     dynamic_links_html = build_sidebar(hier_index, flat_index)
 
     close_sidebar = textwrap.dedent("""
@@ -196,8 +171,4 @@ def create_sidebar_html(
     sidebar_html += dynamic_links_html
     sidebar_html += close_sidebar
 
-    # return sidebar_html, ordered_links
     return sidebar_html
-
-
-# print(create_sidebar_html())
