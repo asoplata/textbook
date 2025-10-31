@@ -1,4 +1,5 @@
 # %%
+from copy import deepcopy
 import base64
 import hashlib
 import html
@@ -406,7 +407,7 @@ def _extract_html_from_nb(
     return html_output
 
 
-def _calculate_nb_hash(nb_path):
+def _calculate_nb_hash(loaded_nb):
     """
     Generate a content-based SHA256 hash of a notebook.
 
@@ -424,8 +425,8 @@ def _calculate_nb_hash(nb_path):
 
     Parameters
     ----------
-    nb_path : pathlib.Path
-        Path to the Jupyter notebook file (.ipynb) to hash
+    loaded_nb : nbformat.notebooknode.NotebookNode
+        The notebook object, either freshly loaded or executed with outputs
 
     Returns
     -------
@@ -433,9 +434,7 @@ def _calculate_nb_hash(nb_path):
         A 64-character hexadecimal string representing the SHA256 hash of the cleaned
         notebook content
     """
-
-    with open(nb_path, "r", encoding="utf-8") as f:
-        nb = nbformat.read(f, as_version=4)
+    nb = deepcopy(loaded_nb)
 
     # clear all cell outputs
     preprocessor = ClearOutputPreprocessor()
@@ -738,9 +737,9 @@ def _process_nb(
     Process a notebook by determining if execution is needed and executing if appropriate.
 
     This function orchestrates the notebook processing workflow by:
-    1. Computing the current hash of the notebook
-    2. Loading the notebook without executing it
-    3. Checking prior execution status from JSON output files
+    1. Loading the notebook without executing it
+    2. Computing the current hash of the notebook
+    3. Checking prior execution status from pre-existing JSON output files
     4. Determining if the notebook should be executed based on various criteria
     5. Executing the notebook if needed
     6. Issuing warnings for execution failures
@@ -786,11 +785,11 @@ def _process_nb(
     # Don't need to show the whole path in logging and warning messages
     filename = nb_path.name
 
-    # hash the nb in its current state
-    current_nb_hash = _calculate_nb_hash(nb_path)
-
     # get the nb without executing it
     loaded_nb = _load_nb(nb_path)
+
+    # hash the nb in its current state
+    current_nb_hash = _calculate_nb_hash(loaded_nb)
 
     # flag for whether the nb was run, initialized as false
     current_execution_initiated = False
