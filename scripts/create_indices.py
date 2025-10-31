@@ -8,8 +8,8 @@ def _get_title(file_path):
     Extract the title from a markdown file by searching for the '# Title: ' string.
 
     This function reads through a markdown file line-by-line looking for a special
-    comment tag in the format '# Title: <title text>'. This tag is used to specify
-    the display title for pages and sections in the website navigation.
+    comment tag in the format '# Title: <title text>'. This tag is used to specify the
+    display title for pages and sections in the website navigation.
 
     Arguments
     ---------
@@ -38,16 +38,16 @@ def create_hier_index(content_path, save_indices=False, hier_index_path=None):
     """
     Create a hierarchical index of all markdown pages and sections for sidebar navigation.
 
-    This function recursively scans the "textbook/content" directory to build a nested
-    dictionary structure representing the website's page hierarchy. The index includes
-    page titles and section names, preserving the directory structure for use in the
-    navigation sidebar. Unlike the "flat index", this includes section information from
-    README.md files.
+    This function recursively scans the '<textbook-root>/content' directory to build a
+    nested dictionary structure representing the website's page hierarchy. The index
+    includes page titles and section names, preserving the directory structure for use
+    in the navigation sidebar. Unlike the "flat index", this includes section
+    information from README.md files.
 
     Arguments
     ---------
     content_path : pathlib.Path
-        Path to the 'textbook/content' directory containing markdown page files and
+        Path to the '<textbook-root>/content' directory containing markdown page files and
         section subdirectories.
     save_indices : bool, optional
         Whether to save the hierarchical index as a JSON file for debugging purposes.
@@ -76,6 +76,7 @@ def create_hier_index(content_path, save_indices=False, hier_index_path=None):
     - Uses recursive traversal to build the hierarchy
     - Does NOT compute output file paths
     """
+
     def _recur_create_hier_index(input_path):
         """
         Recursively build the hierarchical index structure.
@@ -118,7 +119,7 @@ def create_flat_index(
     """
     Create a flat index of all markdown pages with their paths and titles.
 
-    This function scans the "textbook/content" directory for markdown page files
+    This function scans the "<textbook-root>/content" directory for markdown page files
     (excluding README.md files) and creates a sequential list. Each element contains a
     dictionary with the following keys, along with the appropriate values for each:
     - "absolute_input_md_path": Absolute filesystem path to the existing 'input'
@@ -141,10 +142,11 @@ def create_flat_index(
     Arguments
     ---------
     content_path : pathlib.Path
-        Path to the 'textbook/content' directory containing markdown page files.
+        Path to the '<textbook-root>/content' directory containing markdown page files.
     is_dev_build : bool
         Whether this is a development build. If True, output paths point to
-        'textbook/dev/**' directories instead of 'textbook/content/**' directories.
+        '<textbook-root>/dev/**' directories instead of '<textbook-root>/content/**'
+        directories.
     save_indices : bool, optional
         Whether to save the flat index as a JSON file for debugging purposes. Default is
         False. This descends from the '--save-indices' argument passed to the CLI of

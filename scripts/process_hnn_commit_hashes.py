@@ -36,10 +36,10 @@ def get_hnn_commit_hash():
 
 
 def validate_hnn_versions(
-        installed_commit,
-        code_version,
-        custom_owner_commit=None,
-        no_version_validation=False,
+    installed_commit,
+    code_version,
+    custom_owner_commit=None,
+    no_version_validation=False,
 ):
     """Validate the installed hnn-core version/hash against 'code-version' options.
 

@@ -472,10 +472,10 @@ body.is-mobile .sidebar-close {
 }
 
 /*
-    Element: .navbar-header
+    Element: .sidebar-header
     Description: Contain top-level and non-indexed sidebar elements
 */
-.navbar-header {
+.sidebar-header {
     display: flex;
     padding: 10px 0px 20px 0px;
     align-items: center;
@@ -484,7 +484,7 @@ body.is-mobile .sidebar-close {
 
 }
 
-.navbar-header a {
+.sidebar-header a {
     margin: 0px;
 }
 
@@ -784,7 +784,7 @@ body.dark-mode .topbar {
 
 
 /*
-# Collapse navbar
+# Collapse sidebar
 # ------------------------------------------------------------ 
 */
 

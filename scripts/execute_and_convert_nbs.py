@@ -24,6 +24,15 @@ def load_nb_json_output(
     nb_json_output_dir,
 ):
     """
+    Load the JSON output for a notebook file, depending on "stable"/"dev" build.
+
+    Important: If doing a "stable" build, then ONLY the '<textbook-root>/content/**'
+    version of the JSON output file will attempt to be loaded. However, if doing a "dev"
+    build, then ONLY the '<textbook-root>/dev/**' version of the JSON output file will
+    attempt to be loaded. In other words, in the "dev" case, we are reading the notebook
+    *itself* from the "content" path, but only interested in pre-existing JSON output
+    from the "dev" path.
+
     Parameters
     ----------
     nb_path : pathlib.Path
@@ -35,14 +44,7 @@ def load_nb_json_output(
     Returns
     -------
     nb_outputs_if_any
-"""
-
-    # Important: If doing a "stable" build, then ONLY the 'textbook/content/**' version
-    # of the JSON output file will attempt to be loaded. However, if doing a "dev"
-    # build, then ONLY the 'textbook/dev/**' version of the JSON output file will
-    # attempt to be loaded. In other words, in the "dev" case, we are reading the
-    # notebook itself from the "content" path, but only interested in pre-existing JSON
-    # output from the "dev" path.
+    """
     json_path = nb_json_output_dir / f"{nb_path.stem}.json"
 
     if json_path.exists():
@@ -1322,11 +1324,11 @@ def execute_and_convert_nbs_to_json(
         - 'execute-absolutely-all-notebooks': Execute all notebooks including skipped ones
     is_dev_build : bool
         Flag for if we are doing a "dev" build and should place all processed outputs in
-        a "textbook/dev/" directory, including creating all necessary directories as
-        needed, redirecting the relevant links in the dev HTML output, and using the
-        "dev" version of which notebooks should be skipped. This is determined by a
-        prior step in the overall code process, based on the user-provided option to the
-        '--code-version' argument of 'build.py.
+        a "<textbook-root>/dev/**" directory, including creating all necessary
+        directories as needed, redirecting the relevant links in the dev HTML output,
+        and using the "dev" version of which notebooks should be skipped. This is
+        determined by a prior step in the overall code process, based on the
+        user-provided option to the '--code-version' argument of 'build.py.
     hnn_commit_hash : str or None
         The commit hash of the hnn_core code version to use for either new execution or
         comparison with the old execution history. None if doing a 'stable' build,

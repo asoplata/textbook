@@ -155,8 +155,8 @@ def _add_nb_to_html(
         or not, and the output location will be inferred based on `is_dev_build`.
     is_dev_build : bool
         Whether this is a development build. If True, notebook JSON outputs are read
-        from their 'textbook/dev/**' directory instead of their source
-        'textbook/content/**' directory.
+        from their '<textbook-root>/dev/**' directory instead of their source
+        '<textbook-root>/content/**' directory.
 
     Returns
     -------
@@ -268,17 +268,19 @@ def generate_page_html(
     Arguments
     ---------
     content_path : pathlib.Path
-        Path to the 'textbook/content' directory containing all markdown page files,
-        notebook files, and their outputs. This is ALWAYS 'textbook/content' and never
-        'textbook/dev', since "dev" versions of output files and directories will be
-        created automatically as needed based on `is_dev_build`. Note that we do not
-        support "dev"-only versions of markdown page files or notebooks themselves.
+        Path to the '<textbook-root>/content' directory containing all markdown page
+        files, notebook files, and their outputs. This is ALWAYS
+        '<textbook-root>/content' and never '<textbook-root>/dev', since "dev" versions
+        of output files and directories will be created automatically as needed based on
+        `is_dev_build`. Note that we do not support "dev"-only versions of markdown page
+        files or notebooks themselves.
     templates_path : pathlib.Path
-        Path to the directory containing HTML template files. Typically the 'templates/'
-        subdirectory of the textbook-root directory.
+        Path to the directory containing HTML template files. Typically the
+        '<textbook-root>/templates/' subdirectory.
     is_dev_build : bool
         Whether this is a development build. If True, output HTML files are written to
-        'textbook/dev/**' directories instead of 'textbook/content/**' directories.
+        '<textbook-root>/dev/**' directories instead of '<textbook-root>/content/**'
+        directories.
     save_indices : bool, optional
         Whether to save the hierarchical and flat page indices as JSON files for
         debugging purposes. Default is False. This descends from the '--save-indices'
@@ -347,7 +349,7 @@ def generate_page_html(
     # Specify the order of components for assembling pages
     order = [
         "header",
-        "navbar",
+        "sidebar",
         "topbar",
         "body",
         "footer",
@@ -355,8 +357,7 @@ def generate_page_html(
     ]
     # Each of these components is handled with different complexity:
     # - header: We simply load a generic template for this.
-    # - navbar: AKA the sidebar, this is created using its own module at
-    #     `create_sidebar_html.py`.
+    # - sidebar: This is created using its own module at `create_sidebar_html.py`.
     # - topbar: We simply load a generic template for this.
     # - body: This is where the magic happens; the main loop gradually constructs this
     #     from a combination of processed markdown content and (if necessary) processed
@@ -376,8 +377,8 @@ def generate_page_html(
         with open((templates_path / f"{template}.html"), "r") as f:
             html_parts[template] = f.read()
 
-    # Create the template for the sidebar/navbar based on both indices:
-    html_parts["navbar"] = create_sidebar_html(hier_index, flat_index)
+    # Create the template for the sidebar based on both indices:
+    html_parts["sidebar"] = create_sidebar_html(hier_index, flat_index)
 
     # Load some "MD+YAML" metadata to go at the top of every markdown page, but before
     # it is sent to PyPandoc:
