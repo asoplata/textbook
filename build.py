@@ -139,14 +139,13 @@ Synopsis:
     website. Some of the HTML templates are loaded and then modified during the build
     process.
 
-    - header.html : HTML <head> section with CSS/JS imports
-    - navbar.html : Left sidebar navigation (will be populated with page links)
-    - topbar.html : Top navigation bar
+    - dev_scripts.js : Development-specific JavaScript
     - footer.html : Page footer with prev/next navigation placeholders
+    - header.html : HTML <head> section with CSS/JS imports
+    - md_yaml_metadata.txt : YAML metadata template prepended to markdown page content
     - script.html : JavaScript includes at end of page
     - scripts.js : Main JavaScript functionality for interactive features
-    - dev_scripts.js : Development-specific JavaScript
-    - md_yaml_metadata.txt : YAML metadata template prepended to markdown page content
+    - topbar.html : Top navigation bar
 
     Bibliography File:
     ==================
