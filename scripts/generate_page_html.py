@@ -14,9 +14,8 @@ def _read_nb_json_output_html_contents(
     nb_path,
     nb_json_output_dir,
 ):
-    """Get the structured .json output for a specified
-    .ipynb notebook, extract the relevent html components,
-    and return the aggregated html as a string.
+    """
+    Get the HTML output from the JSON output file of a notebook.
 
     Arguments
     ---------
@@ -29,7 +28,8 @@ def _read_nb_json_output_html_contents(
     Returns
     -------
     agg_html : str
-
+        The aggregated HTML output inside the JSON output file, corresponding to the
+        notebook at `nb_path`.
     """
     # Has content if the file is found, otherwise returns None
     nb_outputs_if_any = load_nb_json_output(nb_path, nb_json_output_dir)
@@ -50,8 +50,45 @@ def _read_nb_json_output_html_contents(
 
 
 def _add_ordering_to_footer(input_footer, page_idx, flat_index):
+    """
+    Inject previous/next page navigation links into the footer HTML template.
+
+    This function takes a footer HTML template with placeholder elements and populates
+    them with navigation links to the previous and next pages in the website's linear
+    page order, as determined from `flat_index`.
+
+    Parameters
+    ----------
+    input_footer : str
+        The footer HTML template string containing placeholder elements that will be
+        replaced with actual navigation data. Expected placeholders:
+        - '<div class="previous-area" data-link="None">' : Previous page link container
+        - '<div class="next-area" data-link="None">' : Next page link container
+        - '<a>PreviousTitle</a>' : Previous page title placeholder
+        - '<a>NextTitle</a>' : Next page title placeholder
+    page_idx : int or None
+        The index of the current page in the flat_index list. Use None for pages that
+        should not have navigation (e.g., standalone pages not in the main sequence).
+    flat_index : list of dict
+        A flat (non-hierarchical) list of all pages in sequential navigation order.
+        Each dict must contain at least:
+        - 'relative_output_html_path' : str, the relative path to the HTML file
+        - 'title' : str, the page title to display in navigation links
+
+    Returns
+    -------
+    str
+        A copy of the input footer HTML with navigation placeholders replaced by:
+        - Actual page paths in data-link attributes (or "None" for missing pages)
+        - Actual page titles in anchor tags (or empty string for missing pages)
+    """
     output_footer = deepcopy(input_footer)
 
+    # AES TODO If we want to support "orphan" pages that are not tracked in the main
+    # ordering of pages across the website, then the best place to do that is to
+    # probably read in some metadata from the orphan markdown page that uses something
+    # like "orphan: true". This is getting complicated. As such, after the current
+    # refactors, the first IF statement will never succeed.
     if page_idx is None:
         prev_page = ""
         prev_title = ""
@@ -99,16 +136,34 @@ def _add_nb_to_html(
     is_dev_build,
 ):
     """
-    Function to insert Jupyter notebook html outputs into html
-    pages converted from markdown files
+    Insert Jupyter notebook HTML outputs into HTML converted from markdown page files.
+
+    This function searches for notebook references in the markdown-converted HTML using
+    the syntax '[[<notebook_name>.ipynb]]' and replaces them with both the notebook's
+    executed output HTML content and a download button. The function processes the HTML
+    line-by-line to locate and replace notebook placeholders.
 
     Arguments
     ---------
     converted_html : str
+        HTML content converted from a markdown page file, which may contain notebook
+        reference placeholders in the format '[[<notebook_name>.ipynb]]'.
+    input_dir_path : pathlib.Path
+        Path to the directory containing the markdown page file and referenced
+        notebooks. This is used to locate the notebook files (.ipynb). However, the JSON
+        output file location for the notebook depends on if we are doing a "dev" build
+        or not, and the output location will be inferred based on `is_dev_build`.
+    is_dev_build : bool
+        Whether this is a development build. If True, notebook JSON outputs are read
+        from their 'textbook/dev/**' directory instead of their source
+        'textbook/content/**' directory.
 
     Returns
     -------
     combined_html : str
+        The modified HTML with notebook placeholders replaced by:
+        - A download button linking to the .ipynb file
+        - The notebook's executed output HTML content (from the JSON output file)
     """
     # regex pattern match for "[[notebook_name.ipynb]" with only
     # a single closing bracket, as additional parameters may be
@@ -204,22 +259,43 @@ def generate_page_html(
     flat_index_path=None,
 ):
     """
-    Converts markdown pages into HTML pages and saves them in the same directory.
+    Convert markdown page files (and embedded notebooks) into HTML pages and save them.
 
-    This function handles all processing steps involved in page conversion by calling
-    various helper functions (which, in turn, call on imported scripts)
+    This function creates page navigation indices, loads HTML templates, converts
+    markdown to HTML using Pandoc, embeds Jupyter notebook outputs, and assembles the
+    final HTML pages with navigation and styling.
 
-    Parameters
-    ----------
+    Arguments
+    ---------
     content_path : pathlib.Path
-        Path to the directory containing all directories which contain markdown files,
-        notebook files, and possibly their outputs. This is ALWAYS
-        "<textbook_root>/content" and never "<textbook_root>/dev", since "dev" versions
-        of required directories will be created as needed. Also, we do not
-        support "dev"-only versions of markdown files.
+        Path to the 'textbook/content' directory containing all markdown page files,
+        notebook files, and their outputs. This is ALWAYS 'textbook/content' and never
+        'textbook/dev', since "dev" versions of output files and directories will be
+        created automatically as needed based on `is_dev_build`. Note that we do not
+        support "dev"-only versions of markdown page files or notebooks themselves.
     templates_path : pathlib.Path
-        Path to the directory containing various template files. Typically the
-        "templates" subdirectory of the textbook root directory
+        Path to the directory containing HTML template files. Typically the 'templates/'
+        subdirectory of the textbook-root directory.
+    is_dev_build : bool
+        Whether this is a development build. If True, output HTML files are written to
+        'textbook/dev/**' directories instead of 'textbook/content/**' directories.
+    save_indices : bool, optional
+        Whether to save the hierarchical and flat page indices as JSON files for
+        debugging purposes. Default is False. This descends from the '--save-indices'
+        argument passed to the CLI of 'build.py'.
+    hier_index_path : pathlib.Path, optional
+        Path where the hierarchical index JSON file should be saved if `save_indices` is
+        True. The hierarchical index is used for the sidebar navigation and contains page
+        names, nested sections, and titles.
+    flat_index_path : pathlib.Path, optional
+        Path where the flat index JSON file should be saved if `save_indices` is True.
+        The flat index contains a sequential list of all pages with their input/output
+        paths and titles, determining the linear page navigation order.
+
+    Returns
+    -------
+    None
+        This function writes HTML files to disk but does not return any value.
     """
     print("Building: Beginning build of website HTML pages.")
     css_path = content_path / "assets" / "styles.css"
@@ -256,9 +332,9 @@ def generate_page_html(
     #     the webpage. This is identical to the page's title as in the
     #     hierarchical-index.
     #
-    # Importantly, this is what creates the appropriate output paths and filenames for
-    # every markdown page file. This is also what ensures that directories for all
-    # output paths are created as well!
+    # Importantly, this is what determines the appropriate output paths and filenames
+    # for every markdown page file. This does NOT create those directories, but instead
+    # only figures out the paths.
     flat_index = create_flat_index(
         content_path,
         is_dev_build,
@@ -319,6 +395,13 @@ def generate_page_html(
         input_dir_path = page["absolute_input_md_path"].parents[0]
         abs_out_html_path = page["absolute_output_html_path"]
         abs_out_dir_path = page["absolute_output_html_path"].parents[0]
+
+        # Create the output directory for the final HTML page (if necessary)
+        # ------------------------------------------------------------------------------
+        # This needs to be done separately in both the notebook-execution code before
+        # and here in the page-generation code, since there is not necessarily a 1-to-1
+        # correspondence between every markdown file and every notebook.
+        abs_out_dir_path.mkdir(parents=True, exist_ok=True)
 
         # Update header imports with the relative paths
         # ------------------------------------------------------------------------------
