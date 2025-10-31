@@ -214,8 +214,8 @@ def _extract_html_from_nb(
         Path to the Jupyter notebook file (.ipynb). Used to determine output file naming
         and location
     nb_json_output_dir : pathlib.Path
-        Directory where the notebook's JSON output file is located. This will become the
-        parent of the new directory where any images will be stored.
+        Directory where the notebook's JSON output file will be located. This will
+        become the parent of the new directory where any images will be stored.
     use_base64 : bool, optional
         If True, embed images as Base64-encoded strings in the HTML.
         If False, save images as separate PNG files and link to them.
@@ -588,7 +588,8 @@ def _read_nb_json_output_metadata(
     nb_path : pathlib.Path
         Path to the Jupyter notebook file (.ipynb)
     nb_json_output_dir : pathlib.Path
-        Directory where the notebook's JSON output file is located
+        Directory where the notebook's JSON output file will be located (and, if it
+        exists, is present currently from a prior execution)
 
     Returns
     -------
@@ -606,6 +607,12 @@ def _read_nb_json_output_metadata(
         successfully since recording versions of last successful execution.
     """
 
+    # Important: If doing a "stable" build, then ONLY the 'textbook/content/**' version
+    # of the JSON output file will attempt to be loaded. However, if doing a "dev"
+    # build, then ONLY the 'textbook/dev/**' version of the JSON output file will
+    # attempt to be loaded. In other words, in the "dev" case, we are reading the
+    # notebook itself from the "content" path, but only interested in pre-existing JSON
+    # output from the "dev" path.
     json_path = nb_json_output_dir / f"{nb_path.stem}.json"
 
     prior_commit_if_any = False
@@ -643,9 +650,9 @@ def _load_nbs_to_skip(nb_skip_path, is_dev_build):
     This allows different notebooks to be skipped depending on the build context.
 
     Skipped notebooks will not be executed even if they have changed content, unless
-    the execution type is set to "execute-absolutely-all-notebooks". Notebooks in the
-    skip list should have been successfully executed previously, otherwise warnings will
-    be issued about potentially incomplete outputs.
+    '--execution-type' was set to "execute-absolutely-all-notebooks" when calling
+    'build.py'. Notebooks in the skip list should have been successfully executed
+    previously, otherwise warnings will be issued about potentially incomplete outputs.
 
     The JSON file structure should resemble:
     {
@@ -768,6 +775,10 @@ def _process_nb(
         Flag for if we are doing a "dev" build and should use the 'hnn_commit_hash' as
         part of our algorithm to determine whether or not a notebook should be
         re-executed.
+    hnn_commit_hash : str or None
+        The commit hash of the hnn_core code version to use for either new execution or
+        comparison with the old execution history. None if doing a 'stable' build,
+        otherwise (i.e. 'dev' build) is the full commit SHA.
 
     Returns
     -------
@@ -893,7 +904,7 @@ def _determine_should_execute_nb(
     Parameters
     ----------
     filename : str
-        The filename of the notebook (e.g., "example.ipynb")
+        The local filename of the notebook (e.g., "example.ipynb")
     nb_hashes : dict
         Mapping of notebook filenames (str) to their SHA256 hash values (str).
         Keys are notebook filenames (e.g., "example.ipynb"), values are 64-character
@@ -912,8 +923,7 @@ def _determine_should_execute_nb(
         - 'execute-absolutely-all-notebooks'
     prior_commit_if_any : str or bool
         Commit hash from the previous execution, loaded from the notebook's
-        corresponding JSON output file. False if not found. Used for
-        checking/validating versions when doing a 'dev' build
+        corresponding JSON output file. False if not found
     prior_execution_if_any : bool
         True if the notebook was fully executed previously (per the
         notebook's corresponding JSON output file), False otherwise
@@ -924,6 +934,10 @@ def _determine_should_execute_nb(
         Flag for if we are doing a "dev" build and should use the 'hnn_commit_hash' as
         part of our algorithm to determine whether or not a notebook should be
         re-executed.
+    hnn_commit_hash : str or None
+        The commit hash of the hnn_core code version to use for either new execution or
+        comparison with the old execution history. None if doing a 'stable' build,
+        otherwise (i.e. 'dev' build) is the full commit SHA.
 
     Returns
     -------
@@ -1138,6 +1152,10 @@ def _write_nb_json_output(
         Flag for if we are doing a "dev" build and should record the 'hnn_commit_hash'
         in the notebook's JSON output, for history tracking of the last version that was
         used to execute
+    hnn_commit_hash : str or None
+        The commit hash of the hnn_core code version to use for either new execution or
+        comparison with the old execution history. None if doing a 'stable' build,
+        otherwise (i.e. 'dev' build) is the full commit SHA.
 
     Returns
     -------
@@ -1209,10 +1227,10 @@ def _save_standalone_nb_html(
         and embedded images
     nb_path : pathlib.Path
         Path to the Jupyter notebook file (.ipynb). The stem of this path (filename
-        without extension) determines the output HTML filename
+        without extension) determines the output HTML filename, which will be
+        `{nb_path.stem}.html`
     nb_json_output_dir : pathlib.Path
-        Directory where the standalone HTML file will be saved. The file will be named
-        {nb_path.stem}.html
+        Directory where the standalone HTML file will be saved
     """
     standalone_html_path = nb_json_output_dir / f"{nb_path.stem}.html"
     with open(standalone_html_path, "w", encoding="utf-8") as f:
@@ -1281,13 +1299,17 @@ def execute_and_convert_nbs_to_json(
         "dev" version of which notebooks should be skipped. This is determined by a
         prior step in the overall code process, based on the user-provided option to the
         '--code-version' argument of 'build.py.
-    use_base64 : bool, optional
-        If True, embed notebook output images as Base64 strings in HTML. If False,
-        save images as separate PNG files. Default is False
+    hnn_commit_hash : str or None
+        The commit hash of the hnn_core code version to use for either new execution or
+        comparison with the old execution history. None if doing a 'stable' build,
+        otherwise (i.e. 'dev' build) is the full commit SHA.
     save_standalone_nb_html : bool, optional
         If True, generate standalone HTML preview files for each notebook in addition
         to the JSON outputs. These are useful for development but not used in the
         published site. Default is False
+    use_base64 : bool, optional
+        If True, embed notebook output images as Base64 strings in HTML. If False,
+        save images as separate PNG files. Default is False
 
     Returns
     -------
