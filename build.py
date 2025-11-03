@@ -1,422 +1,640 @@
 import argparse
-from pathlib import Path
+import json
+import os
+import re
+import subprocess
 import textwrap
 
-from scripts.execute_and_convert_nbs import execute_and_convert_nbs_to_json
-from scripts.generate_page_html import generate_page_html
-from scripts.process_hnn_commit_hashes import get_hnn_commit_hash, validate_hnn_versions
+import pypandoc
+import requests
+from hnn_core import __version__ as installed_hnn_version
 
-textbook_root_path = Path(__file__).parents[0]
+from scripts.convert_notebooks import convert_notebooks_to_html
+from scripts.create_navbar import generate_navbar_html
+from scripts.create_page_index import update_page_index
 
 
-def main():
-    """See 'python build.py --help' for explanation of the code."""
+def compile_page_components(dev_build=False):
+    """Compile base html components for building webpage"""
 
-    # Define command line arguments
-    # ----------------------------------------------------------------------------------
-    parser = argparse.ArgumentParser(
-        description=textwrap.dedent("""
-Synopsis:
----------
-    Build the HNN Textbook website by processing markdown and Jupyter notebooks into HTML.
+    templates_folder = os.path.join(
+        os.getcwd(),
+        "templates",
+    )
+    templates = [
+        "header",
+        "topbar",
+        "footer",
+        "script",
+    ]
+    html_parts = {}
 
-    This code orchestrates the complete website construction process for the HNN (Human
-    Neocortical Neurosolver) Textbook. It validates the installed hnn-core version,
-    executes Jupyter notebooks (if requested), and converts markdown content into
-    structured HTML pages with navigation.
+    for template in templates:
+        templates_path = os.path.join(
+            templates_folder,
+            f"{template}.html",
+        )
+        with open(templates_path, "r") as f:
+            html_parts[template] = f.read()
 
-    Required Files and Directory Structure
-    --------------------------------------
-    All paths are relative to the "textbook-root" directory. This is assumed to be the
-    directory named 'textbook' that contains the file 'build.py', though you can specify
-    your own textbook-root location using '--custom-root-path'. Any textbook-root
-    directory should contain the following files and folders in the below structure.
+    update_page_index()
+    navbar_html, ordered_links = generate_navbar_html(dev_build=dev_build)
+    html_parts["navbar"] = navbar_html
 
-    Content Directory: '<textbook-root>/content/'
-    ======================================
-    This is the main directory for storing website content.
+    return html_parts, ordered_links
 
-    In the top level of the directory (i.e. '<textbook-root>/content/'), you can add
-    markdown page files (which author the webpages), Jupyter Python notebooks, and local
-    images in an 'images/' subdirectory.
 
-    You can also create subdirectories to define "sections" or chapters of your website
-    (e.g. '<textbook-root>/content/05_erps/'). The "sections" have their title (as
-    displayed on the website) defined in a special 'README.md' file inside the section
-    subdirectory. Section subdirectories can also contain markdown page files, Jupyter
-    Python notebooks, and local images in an 'images/' subdirectory.
+def get_page_paths(path=None):
+    """
+    Recursively get paths to all markdown files in a directory
 
-    Markdown page files should follow this naming scheme: '<2-digit number>_<name>.md',
-    for example '<textbook-root>/content/05_erps/02_hnn_core.md'. Each markdown page
-    file will eventually be built into an output HTML file where the numerical prefix is
-    removed, and the filetype is HTML; continuing our example,
-        'textbook/content/05_erps/02_hnn_core.md'
-    will become
-        'textbook/content/05_erps/hnn_core.html'
-    The numerical prefix in the filename is what is used to decide the ordering of the
-    different webpages, both within any sections and across the website overall.
+    Parameters
+    ----------
+    path : (str | None)
+        The root directory to search. If None, defaults to the "content" folder in the
+        working directory. This parameter is used internally for recursion and should
+        initially be called with None or excluded.
 
-    Jupyter Python notebooks should end in '.ipynb' but otherwise can be named
-    anything. Importantly, notebook content is NOT automatically displayed on the
-    website! Instead, to insert the contents of a notebook (including existing cells and
-    possible future output cells), you must insert the name of the notebook somewhere in
-    a markdown page file. For example, the markdown page file
-    'textbook/content/05_erps/02_hnn_core.md' includes the following content:
-        [[plot_simulate_evoked.ipynb]]
-    which determines on which page and where on that page to insert the notebook's
-    contents.
+    Returns
+    -------
+    dict
+        A dictionary mapping markdown page paths relative to the "content" directory
+        to their absolute paths in the form of: { relative_path: absolute_path, ...}
 
-    Finally, '<textbook-root>/content/' should also contain an 'assets/' subdirectory
-    which contains your CSS (filename 'styles.css') and static icon assets.
-
-    All other files inside '<textbook-root>/content/' will output files which are
-    generated by the build system, either as a result of notebook execution or website
-    building. This includes '*.html' files, '*.json' files, and 'output_nb_<notebook
-    name>/' subdirectories. HTML files can be safely deleted and then regenerated on
-    website building. JSON and 'output_nb_*' files *can* technically be deleted and
-    regenerated if you must, but are generally kept and tracked on git, and *should*
-    generally not be deleted. In particular, JSON files store the most recent execution
-    history of each notebook (which we track to decide whether a notebook has been
-    updated), and 'output_nb_*' tends to store heavy image assets which tend *not* to
-    change between hnn-core code versions. In other words, you should feel free to
-    delete HTML files (which can do using `make clean`) but should refrain from deleting
-    JSON and 'output_nb_*' files.
-
-    For example, a valid and minimal file structure of the content directory might look
-    like this, before website building:
-
-    ```
-    textbook/
-             content/
-                     00_preface.md
-                     01_erps/
-                             README.md
-                             01_erps_in_gui.md
-                             02_erps_in_api.md
-                             simulate_erps_api.ipynb
-                             images/
-                                    erp_fig_01.png
-                                    erp_fig_02.gif
-                     assets/
-                            icons/
-                                  bluesky.png
-                            styles.css
-    ```
-
-    Output Directories:
-    ===================
-    If '--code-version' is set to 'stable' (the default), then each output file (HTML,
-    notebook JSON output if executed, and 'output_nb_*' if executed) will go in the same
-    directory as the file used to create them under the '<textbook-root>/content/'
-    directory.
-
-    Else, if '--code-version' is set to anything else ('master', 'custom', or
-    'no-check'), then each output file will go into a new directory with the same name
-    and structure as the file used to create them, *except* that each will be inside
-        '<textbook-root>/dev/'
-    instead of
-        '<textbook-root>/content/'
-    This "dev" folder will be created if it does not exist, is intended for examination
-    of output and comparison with '<textbook-root>/content/', and can be safely deleted.
-
-    Scripts Directory: 'textbook/scripts/'
-    ======================================
-    This is the directory for storing both Python code called by 'build.py' and metadata
-    about Jupyter notebook execution statues (which is updated automatically). Aside
-    from changing the code or inspecting the JSON files during debugging, the only file
-    you are likely to interact with is 'textbook/scripts/nbs_to_skip.json' in case you
-    want to indicate that a new or existing notebook should be skipped from execution.
-
-    Data:
-    - nb_hashes.json : SHA-256 hashes of notebook content to detect changes
-    - nbs_to_skip.json : List of notebooks to skip during execution
-    - hier_index.json : Hierarchical page index (generated if --save-indices=True)
-    - flat_index.json : Flat page index for navigation (generated if --save-indices=True)
-
-    Templates Directory: 'textbook/templates/'
-    ==========================================
-    This directory contains both generic HTML templates and the Javascript used in the
-    website. Some of the HTML templates are loaded and then modified during the build
-    process.
-
-    - dev_scripts.js : Development-specific JavaScript
-    - footer.html : Page footer with prev/next navigation placeholders
-    - header.html : HTML <head> section with CSS/JS imports
-    - md_yaml_metadata.txt : YAML metadata template prepended to markdown page content
-    - script.html : JavaScript includes at end of page
-    - scripts.js : Main JavaScript functionality for interactive features
-    - topbar.html : Top navigation bar
-
-    Bibliography File:
-    ==================
-    - textbook/textbook-bibliography.bib : BibTeX bibliography for citations in markdown
-
-    Website Construction Process
-    ----------------------------
-    1. **Parse command-line arguments** to determine:
-       - Which hnn-core version to validate against (see '--code-version' argument help)
-       - Which notebooks to execute (see '--execution-type' argument help)
-       - Output directory type based on '--code-version'
-
-    2. **Validate hnn-core installation** (via `get_hnn_commit_hash`):
-       - Retrieve installed hnn-core version/commit from `pip freeze`
-       - Fetch requested version/commit from PyPI or GitHub API (unless
-         '--code-version=no-check')
-       - Verify installed version matches requested version (unless
-         '--code-version=no-check')
-       - Determine commit hash for notebook execution history tracking
-
-    3. **Execute Jupyter notebooks** (via `execute_and_convert_nbs_to_json`):
-       - Scan '<textbook-root>/content' directory for .ipynb files
-       - Check notebook hashes to detect changes (from
-         'textbook/scripts/nb_hashes.json') and update if changes are detected
-       - Execute notebooks based on '--execution-type' argument and skip list (i.e.
-         'textbook/scripts/nbs_to_skip.json')
-       - Extract HTML from executed notebook cells (code, output, and markdown cells)
-       - Save structured notebook outputs as '.json' files alongside '.ipynb' files
-       - Optionally generate standalone HTML files for each notebook (if
-         '--save-standalone-nb-html' is true)
-
-    4. **Generate HTML pages** (via `generate_page_html`):
-       - Scan '<textbook-root>/content' directory for numbered markdown files (##_*.md)
-       - Customize appopriate HTML templates based on each markdown page
-       - For each markdown file:
-         a. Create hierarchical- and flat-indices of pages for navigation (footer and
-         sidebar)
-         b. Convert markdown page content to HTML using Pandoc with citation support
-         c. Embed notebook outputs using [[<notebook_name>.ipynb]] syntax
-         d. Inject HTML templates (header, navbar, topbar, footer, scripts)
-         e. Adjust relative image asset paths based on page depth
-         f. Save final HTML page
+        This may seem redundant at a first glance, but having the absolute paths as
+        well aids greatly in producing the correct path links for local/dev builds
+        where the absolute URL is not known
 
     Notes
     -----
-    - You can mix and match all values of '--code-version' and '--execution-type'
-        arguments.
-    - The build process requires internet access unless using '--code-version=no-check'.
-    - Page navigation order is determined by numerical prefixes (##_) in filenames, in
-      addition to numerical prefixes (##_) in their section subdirectory names if they
-      are inside subdirectories.
+    - README.md files are excluded.
+    - Keys in the returned dictionary are paths relative to the "content" directory
+    """
 
-    Examples (not comprehensive)
-    ----------------------------
-    1. Do not execute any notebooks, and build the website using the latest stable
-        release:
+    md_pages = {}
+    if path is None:
+        path = os.path.join(
+            os.getcwd(),
+            "content",
+        )
+    directories = os.listdir(path)
+    for item in directories:
+        item_path = os.path.join(
+            path,
+            item,
+        )
+        if os.path.isdir(item_path):
+            # add items from new dict into md_pages
+            md_pages.update(
+                get_page_paths(item_path),
+            )
+        else:
+            if not item == "README.md" and item.endswith(".md"):
+                rel_path = os.path.relpath(
+                    item_path,
+                    start=os.path.join(
+                        os.getcwd(),
+                        "content",
+                    ),
+                )
+                md_pages[rel_path] = item_path
 
-        $ python build.py
+    return md_pages
 
-    2. Re-execute any notebooks that have been updated/changed (excluding those set to
-        be skipped) using the latest stable release (default), and build the website:
 
-        $ python build.py --execution-type=execute-updated-unskipped-notebooks
+def get_html_from_json(
+    nb_name,
+    nb_path,
+):
+    """Get the structured .json output for a specified
+    .ipynb notebook, extract the relevent html components,
+    and return the aggregated html as a string.
 
-    3. Re-execute any notebooks that have been updated/changed (excluding those set to
-        be skipped) using the latest master (development) branch, and build the website:
+    Arguments
+    ---------
+    nb_name : str
+        Jupyter notebook file name
+        E.g., 'simulate_erps.ipynb'
+    nb_path : str
+        Path to notebook
+        E.g.: 'website/content/erps/simulate_erps.ipynb'
 
-        $ python build.py --execution-type=execute-updated-unskipped-notebooks --code-version=master
+    Returns
+    -------
+    agg_html : str
+    """
+    json_path = nb_path.split(".ipynb")[0] + ".json"
+    with open(json_path, "r") as file:
+        nb_outputs = json.load(file)
+        nb_outputs = nb_outputs.get(nb_name, {})
+        agg_html = ""
+        for section, content in nb_outputs.items():
+            if isinstance(content, dict) and "html" in content:
+                agg_html += content["html"]
+    return agg_html
 
-    4. Re-execute any notebooks that have been updated/changed (excluding those set to
-        be skipped) using a custom fork/commit, and build the website:
 
-        $ python build.py --execution-type=execute-updated-unskipped-notebooks --code-version=custom --custom-owner-commit=username:abc123
+def add_notebook_to_html(
+    converted_html,
+    path,
+    md_page,
+):
+    """
+    Function to insert Jupyter notebook html outputs into html
+    pages converted from markdown files
 
-    5. Re-execute all notebooks, excluding those set to be skipped, using the latest
-        stable release (default), and build the website:
+    Arguments
+    ---------
+    converted_html : str
 
-        $ python build.py --execution-type=execute-all-unskipped-notebooks
+    Returns
+    -------
+    combined_html : str
+    """
+    # regex pattern match for "[[notebook_name.ipynb]" with only
+    # a single closing bracket, as additional parameters may be
+    # included in the notebook specification line
+    nb_match_pattern = re.compile(r"\[\[(.+?\.ipynb)\]")
+    # notebook specifications with additional arguments will
+    # match the exact pattern ".ipynb][" as defined below
+    nb_arguments_pattern = ".ipynb]["
 
-    6. Re-execute ALL notebooks, INCLUDING those set to be skipped, using the latest
-        stable release (default), and build the website:
+    nb_button_indent = "\t\t"
 
-        $ python build.py --execution-type=execute-absolutely-all-notebooks
+    nb_button = textwrap.dedent("""
+        <div class="notebook-download-wrapper">
+            <a href='notebook_name' download>
+                <button class="notebook-download">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span style="width: 8px"></span>
+                    <span>Download Notebook</span>
+                </button>
+            </a>
+        </div>
 
-    7. Do not execute any notebooks, and build the website using whatever version of
-        hnn-core is installed:
+    """)
 
-        $ python build.py --code-version=no-check
-"""),
-        formatter_class=argparse.RawTextHelpFormatter,
+    nb_button = textwrap.indent(
+        nb_button,
+        nb_button_indent,
+    )
+
+    output_lines = []
+    for line in converted_html.splitlines():
+        match = nb_match_pattern.search(line)
+        args = nb_arguments_pattern in line
+
+        if match and args:
+            notebook_name = match.group(1)
+            nb_path = path.split(md_page)[0] + notebook_name
+            print(f"nb with args found: {line}")
+            print("Argument handling will be added in a future update")
+            output_lines.append(line)
+        elif match:
+            notebook_name = match.group(1)
+            nb_path = path.split(md_page)[0] + notebook_name
+
+            # specify notebook button with correct file reference
+            nb_button = nb_button.replace(
+                "notebook_name",
+                notebook_name,
+            )
+            output_lines.append(
+                nb_button,
+            )
+
+            # generate and append the notebook html output
+            notebook_html = get_html_from_json(notebook_name, nb_path)
+            output_lines.append(notebook_html)
+        else:
+            output_lines.append(line)
+
+    combined_html = "\n".join(output_lines)
+    return combined_html
+
+
+def generate_page_html(
+    page_paths,
+    dev_build=False,
+):
+    """
+    Converts markdown pages into HTML pages and saves them in the same directory.
+
+    This function handles all processing steps involved in page conversion by calling
+    various helper functions (which, in turn, call on imported scripts)
+
+    Parameters
+    ----------
+    page_paths : dict
+        A dictionary mapping markdown page paths relative to the "content" directory
+        to their absolute paths in the form: { relative_path: absolute_path, ...}
+
+    dev_build  : bool
+        An indicator for doing a "development" build of the website
+
+    Returns
+    -------
+    None
+    """
+
+    # get the .html templates for building pages
+    html_parts, ordered_links = compile_page_components(dev_build=dev_build)
+
+    # specify the order of components for assembling pages
+    order = [
+        "header",
+        "navbar",
+        "topbar",
+        "body",
+        "footer",
+        "script",
+    ]
+
+    # iterate over all markdown pages found in the "content" directory (excluding ...
+    # README.md files)
+    for md_page, path in page_paths.items():
+        page_components = html_parts.copy()
+
+        # get the filename from the realtive path
+        md_page = os.path.basename(md_page)
+        # get the directory containing the markdown file
+        out_directory = path.split(md_page)[0]
+
+        if dev_build:
+            out_directory = out_directory.replace(
+                "content",
+                "dev",
+            )
+
+        # remove leading `##_` from page and change extension to .html
+        html_page = md_page.split("_", 1)[1]
+        html_page = html_page.split(".md")[0] + ".html"
+
+        # set the output path
+        out_path = out_directory + html_page
+
+        # update header imports with the relative paths
+        # ------------------------------------------------------------
+        # get path from root to styles.css
+        css_path = os.path.join(
+            os.getcwd(),
+            "content",
+            "assets",
+            "styles.css",
+        )
+        # get the relative path for the styles.css
+        relative_css_path = os.path.relpath(
+            css_path,
+            start=out_directory,
+        )
+        # update the 'header' import for styles.css
+        page_components["header"] = page_components["header"].replace(
+            '<link rel="stylesheet" href="styles.css">',
+            f'<link rel="stylesheet" href="{relative_css_path}">',
+        )
+
+        # get path from root to scripts.js
+        js_path = os.path.join(
+            os.getcwd(),
+            "templates",
+            "scripts.js",
+        )
+        # get relative path for scripts.js
+        relative_js_path = os.path.relpath(
+            js_path,
+            start=out_directory,
+        )
+        # update the 'header' import for scripts.js
+        page_components["header"] = page_components["header"].replace(
+            '<script src="scripts.js" defer></script>',
+            f'<script src="{relative_js_path}" defer></script>',
+        )
+
+        # update 'footer' page_component with the correct links
+        # ------------------------------------------------------------
+        footer_path = os.path.join(
+            os.getcwd(),
+            "templates",
+            "ordered_page_links.json",
+        )
+
+        with open(footer_path, "r") as f:
+            ordered_page_links = json.load(f)
+
+        ordered_links = ordered_page_links["links"]
+        ordered_titles = ordered_page_links["titles"]
+
+        if dev_build:
+            ordered_links = [
+                link.replace("content", "dev") for link in ordered_page_links["links"]
+            ]
+            out_path = out_path.replace("content", "dev")
+
+        location = None
+        last_page = len(ordered_links) - 1
+        for i, link in enumerate(ordered_links):
+            # print(f'{link} | {out_path}')
+            if link in out_path:
+                location = i
+
+        if location is None:
+            prev_page = ""
+            prev_title = ""
+            next_page = ""
+            next_title = ""
+        elif location == 0:
+            prev_page = "None"
+            prev_title = ""
+            next_page = ordered_links[location + 1]
+            next_title = ordered_titles[location + 1]
+        elif location == last_page:
+            prev_page = ordered_links[location - 1]
+            prev_title = ordered_titles[location - 1]
+            next_page = "None"
+            next_title = "None"
+        else:
+            prev_page = ordered_links[location - 1]
+            prev_title = ordered_titles[location - 1]
+            next_page = ordered_links[location + 1]
+            next_title = ordered_titles[location + 1]
+
+        page_components["footer"] = page_components["footer"].replace(
+            '<div class="previous-area" data-link="None">',
+            f'<div class="previous-area" data-link="{prev_page}">',
+        )
+        page_components["footer"] = page_components["footer"].replace(
+            '<div class="next-area" data-link="None">',
+            f'<div class="next-area" data-link="{next_page}">',
+        )
+
+        page_components["footer"] = page_components["footer"].replace(
+            "<a>PreviousTitle</a>",
+            f"<a>{prev_title}</a>",
+        )
+        page_components["footer"] = page_components["footer"].replace(
+            "<a>NextTitle</a>",
+            f"<a>{next_title}</a>",
+        )
+
+        # load markdown and add yaml metadata
+        # ------------------------------------------------------------
+        # read markdown file into a string
+        with open(path, "r", encoding="utf-8") as f:
+            markdown_text = f.read()
+
+        path_md_yaml_metadata = os.path.join(
+            os.getcwd(),
+            "templates",
+            "md_yaml_metadata.txt",
+        )
+        with open(path_md_yaml_metadata) as f:
+            md_yaml_metadata = f.read()
+
+        # add check for title section in markdown file
+
+        markdown_text = markdown_text.replace("-->", "-->\n\n" + md_yaml_metadata, 1)
+
+        # convert markdown to html with pypandoc
+        # ------------------------------------------------------------
+        converted_html = pypandoc.convert_text(
+            markdown_text,
+            format="md",
+            to="html",
+            extra_args=[
+                "--bibliography=textbook-bibliography.bib",
+                "--citeproc",
+                "--mathml",
+                "-f",
+                "markdown-auto_identifiers",
+            ],
+        )
+
+        # set relative image paths when doing a dev build
+        # ------------------------------------------------------------
+        # images stored locally in "content" are not automatically propagated to the
+        # new dev build folder "dev".
+        #
+        # html filepaths therefore need to be adjusted for images local to the repo
+        #
+        # to handle this, we match on the `img src="images` pattern, which
+        # indicates a local image. This necessitates that any images are in an
+        # "images" folder in "content". We could expand this later to find all images,
+        # but for now, all images in "content" should be contained in an "images"
+        # sub directory
+        if dev_build:
+            textbook_root = out_directory.split("textbook")[0] + "textbook"
+            dev_path = out_directory.split("textbook")[-1]
+
+            rel_path = os.path.relpath(
+                textbook_root,
+                out_directory,
+            )
+
+            rel_path = rel_path + dev_path.replace("dev", "content")
+
+            converted_html = converted_html.replace(
+                'img src="images', f'img src="{rel_path}images'
+            )
+
+        combined_html = add_notebook_to_html(
+            converted_html,
+            path,
+            md_page,
+        )
+
+        # Aggregate all page components and write output
+        # ------------------------------------------------------------
+        page_components["body"] = combined_html
+
+        file_contents = ""
+        for section in order:
+            file_contents += page_components[section]
+        file_contents += "\n</body>\n</html>"
+
+        if dev_build:
+            # check that folder exists else create it
+            os.makedirs(out_directory, exist_ok=True)
+
+        with open(out_path, "w") as out:
+            out.write(file_contents)
+
+    return
+
+
+def main():
+    """
+    Main function to generate html pages for deployment
+    """
+
+    # accept command line arguments
+    parser = argparse.ArgumentParser(description="Generate html pages for deployment")
+    parser.add_argument(
+        "--execute-notebooks",
+        action="store_true",
+        help="Execute notebooks as needed based on their status "
+        "before converting them to HTML.",
     )
     parser.add_argument(
-        "--code-version",
-        action="store",
-        default="stable",
-        choices=[
-            "stable",
-            "master",
-            "custom",
-        ],
-        help=textwrap.dedent("""
-Specify which version of HNN-core you want to use for building the textbook. The default
-is 'stable'. This validates whether you have the correct version installed in your local
-environment unless you also pass the '--no-version-validation' argument. The three
-options are below:
-- 'stable': This builds the textbook using the latest stable version of HNN-Core. This
-    version is validated based on a request to PyPI, checking if your version is using
-    the latest stable. This produces a 'stable' build, meaning it creates the output
-    HTML files in the '<textbook-root>/content' folder.
-- 'master': This builds the textbook using the latest development version of
-    HNN-Core. This version is validated based on a request to Github, checking if your
-    version is using the latest commit on the 'master' branch. This produces a 'dev'
-    build, meaning it creates the output HTML files in the '<textbook-root>/dev' folder
-    (creating all output directories if they don't exist).
-- 'custom': This builds the textbook using a custom commit and, optionally, a custom
-    repository-owner's version of HNN-Core. If using this option, you must provide the
-    repository-owner and/or commit you want using the '--custom-repo-commit'
-    argument. This version is validated based on a request to Github, checking for the
-    existence of the commit you have provided. This produces a 'dev' build, meaning it
-    creates the output HTML files in the '<textbook-root>/dev' folder (creating all
-    output directories if they don't exist).
-"""),
+        "--force-execute-all",
+        action="store_true",
+        help="Force execute all notebooks regardless of their status",
     )
+
+
     parser.add_argument(
-        "--no-version-validation",
-        action="store_true",  # Confusingly, this defaults to False
-        help=textwrap.dedent("""
-Optionally indicate that you do NOT want your hnn-core installed version to be
-validated, based on the value of the '--code-version' argument. Defaults to False.
-"""),
-    )
-    parser.add_argument(
-        "--execution-type",
-        action="store",
-        default="no-execution",
-        choices=[
-            "no-execution",
-            "execute-updated-unskipped-notebooks",
-            "execute-all-unskipped-notebooks",
-            "execute-absolutely-all-notebooks",
-        ],
-        help=textwrap.dedent("""
-Specify different criteria for which notebooks you want to execute before converting
-them to HTML. The default is 'no-execution'. The four options are below, in order of
-more execution:
-- 'no-execution': This will not execute any notebooks. You may receive warnings if
-    specific notebooks should be executed.
-- 'execute-updated-unskipped-notebooks': Execute only notebooks which have been
-    updated/changed or are new, excluding notebooks flagged for skipping.
-- 'execute-all-unskipped-notebooks': Execute all notebooks except those flagged for
-    skipping.
-- 'execute-absolutely-all-notebooks': Execute all notebooks.
-"""),
-    )
-    parser.add_argument(
-        "--custom-owner-commit",
+        "--build-on-dev",
         type=str,
-        help=textwrap.dedent("""
-Optionally provide a specific commit of HNN-core to use in the form of
-<owner>:<commit>. For example, if you wanted to build using the commit at
-https://github.com/asoplata/hnn-core/commit/92b000c597052a661d9e177b8754695446336b96 ,
-you would use '--custom-owner-commit asoplata:92b000c'. This assumes that the
-fork/repository name is always 'hnn-core'. This is required if you are using
-'--code-version custom'.
-"""),
-    )
-    # AES Not sure we want to support this, but leaving it as an option since I assume
-    # this case was the reason why `os.getcwd()` is used so much in the scripts instead
-    # of absolute paths.
-    parser.add_argument(
-        "--custom-root-path",
-        type=str,
-        help=textwrap.dedent("""
-Optionally provide a different 'root' location for your textbook files,
-"""),
-    )
-    parser.add_argument(
-        "--save-indices",
-        action="store_true",  # Confusingly, this defaults to False
-        help=textwrap.dedent("""
-Optionally provide whether or not to save the webpage-indexing files during the build
-process. Defaults to False.
-"""),
-    )
-    parser.add_argument(
-        "--save-standalone-nb-html",
-        action="store_true",  # Confusingly, this defaults to False
-        help=textwrap.dedent("""
-Optionally provide whether or not to save each Jupyter Python notebook's raw HTML output
-during the build process. Defaults to False.
-"""),
+        help="Optionally provide the commit from upstream/master",
     )
 
-    # Process CLI arguments, and set paths
-    # ----------------------------------------------------------------------------------
+    # add all above arguments to the parser
     args = parser.parse_args()
 
-    if args.custom_root_path:
-        root_path = args.custom_root_path
+    content_path = os.path.join(
+        os.getcwd(),
+        "content",
+    )
+    hash_path = os.path.join(
+        os.getcwd(),
+        "scripts",
+        "notebook_hashes.json",
+    )
+
+    # get the version of hnn installed in the environment
+    # this is needed for the checks below
+    try:
+        installed_hnn_commit = subprocess.check_output(["pip", "freeze"], text=True)
+        for line in installed_hnn_commit.splitlines():
+            if "hnn" in line:
+                if "@" in line:
+                    installed_hnn_commit = line.split("@")[2].split("#")[0]
+                else:
+                    installed_hnn_commit = line.split("hnn-core==")[-1]
+        print(
+            "\nThe installed version of hnn-core being used for this "
+            f"build is:\n   {installed_hnn_commit}"
+        )
+
+    except Exception as e:
+        raise RuntimeError(
+            f"Could not import hnn_core and retrieve the latest commit:\n{e}"
+        )
+
+    if args.build_on_dev is not None:
+        if args.build_on_dev == "master":
+            # get the latest commit from upstream/master
+            url = (
+                "https://api.github.com/repos/jonescompneurolab/hnn-core/commits/master"
+            )
+            response = requests.get(url)
+            response.raise_for_status()
+            commit_hash = response.json()["sha"]
+            if commit_hash != installed_hnn_commit:
+                raise RuntimeError(
+                    f"The latest commit on master ({commit_hash}) "
+                    "does not match the latest commit on the installed "
+                    f"version of hnn-core ({installed_hnn_commit})."
+                    "\n"
+                    "Try creating an environment by running the following commands "
+                    "in a terminal:"
+                    "\nmake create-textbook-dev-build"
+                    "\nconda activate textbook-dev-build"
+                )
+        else:
+            repo_hash = args.build_on_dev.strip()
+            try:
+                repo, commit = repo_hash.split(":")
+
+                url = f"https://api.github.com/repos/{repo}/hnn-core/commits/{commit}"
+                response = requests.get(url)
+                response.raise_for_status()
+                commit_hash = response.json()["sha"]
+
+            except Exception as e:
+                raise RuntimeError(
+                    "the --dev-version argument must be specified in the "
+                    'format: --dev-version "your-repository:your-commit-hash" '
+                    "\nE.g., a valid input would be: jonescompneurolab:9e14b99"
+                    f"\n\nError message: {e}"
+                )
+
+            if commit_hash != installed_hnn_commit:
+                raise RuntimeError(
+                    "The repository and commit you specified: "
+                    f"\n   Repository: {repo}"
+                    f"\n   Commit: {commit_hash} "
+                    "\nDo not match the latest commit on the installed "
+                    "version of hnn-core: "
+                    f"\n   Installed version / commit: {installed_hnn_commit}"
+                    "\nPlease ensure you have installed the proper version of "
+                    "hnn-core in your local environment."
+                    "\nTry creating an environment by running the following "
+                    "commands in a terminal:"
+                    "\n   $ make create-textbook-dev-build"
+                    "\n   $ conda activate textbook-dev-build"
+                    "\n   $ pip install --upgrade --force-reinstall --no-cache-dir "
+                    f'"hnn-core[dev] @ git+https://github.com/{repo}/hnn-core.git@{commit}"'
+                )
     else:
-        root_path = textbook_root_path
+        commit_hash = False
 
-    content_path = Path(root_path / "content")
-    hier_index_path = Path(root_path / "scripts" / "hier_index.json")
-    flat_index_path = Path(root_path / "scripts" / "flat_index.json")
-    nb_hashes_path = Path(root_path / "scripts" / "nb_hashes.json")
-    nb_skips_path = Path(root_path / "scripts" / "nbs_to_skip.json")
-    # The "templates" directory is assumed to contain at least the following files:
-    # - footer.html
-    # - header.html
-    # - md_yaml_metadata.txt
-    # - script.html
-    # - scripts.js
-    # - topbar.html
-    templates_path = Path(root_path / "templates")
+        latest_stable = requests.get("https://pypi.org/pypi/hnn-core/json").json()[
+            "info"
+        ]["version"]
 
-    # This "printed" variable is only used here for logging, never for actual output
-    # pathing.
-    printed_output_dir = (
-        content_path if args.code_version == "stable" else Path(root_path / "dev")
-    )
-    print(
-        "Configuration: Choice of notebooks to execute will be based on "
-        f"\n    '--execution-type={args.execution_type}'"
-        "\nConfiguration: Choice of HNN version to use will be based on "
-        f"\n    '--code-version={args.code_version}'"
-        "\nConfiguration: Local website files will be built in "
-        f"\n    '{printed_output_dir}'"
-    )
+        if installed_hnn_version > latest_stable:
+            print(
+                "Warning: your installed version of hnn-core is ahead of the "
+                "current stable version, but you did not use the --build-on-dev "
+                "flag:"
+                f"\n   Stable version: {latest_stable}"
+                f"\n   Installed version: {installed_hnn_version}"
+                "\nIt is generally advisable to use the --build-on-dev flag "
+                "when generating the textbook on versions of hnn-core that are "
+                "ahead of the current stable version."
+            )
+        elif installed_hnn_version != latest_stable:
+            print(
+                "\nWarning: you are attempting to build the textbook on a "
+                "version of hnn-core that does not match the latest stable version."
+                f"\n   Stable version: {latest_stable}"
+                f"\n   Installed version: {installed_hnn_version}"
+                "\n\nIf your installed version is behind the latest stable "
+                "version, pase consider updating your local install before "
+                "pushing any changes."
+                "\n\nIf your installed version references a particular commit or "
+                "branch (e.g.: hnn-core @ git+https://github.com/jonescompneurolab"
+                "/hnn-core.git@1413550b2c610b700b7bb12ce7e1ae408ef8d4d3),"
+                " we recommend that you use the --build-on-dev flag to specify "
+                "the version of hnn-core that should be used."
+            )
 
-    # Begin the actual work: First, figure out the environment and version:
-    # ----------------------------------------------------------------------------------
-    installed_commit = get_hnn_commit_hash()
-
-    # We can't pre-empt this function in the no-validation case, since the value of the
-    # hash varies between "stable" and "dev" builds
-    hnn_commit_hash = validate_hnn_versions(
-        installed_commit,
-        args.code_version,
-        custom_owner_commit=args.custom_owner_commit,
-        no_version_validation=args.no_version_validation,
-    )
-
-    # Determine if we're in a "dev" build or not
-    is_dev_build = False
-    if args.code_version in ("master", "custom"):
-        is_dev_build = True
-
-    # Execute appropriate Jupyter notebooks, and save their output for later webpage
-    # assembly:
-    # ----------------------------------------------------------------------------------
-    execute_and_convert_nbs_to_json(
-        content_path,
-        nb_hashes_path,
-        nb_skips_path,
-        args.execution_type,
-        is_dev_build,
-        hnn_commit_hash,
-        args.save_standalone_nb_html,
+    convert_notebooks_to_html(
+        input_folder=content_path,
+        hash_path=hash_path,
+        write_html=True,
+        execute_notebooks=args.execute_notebooks,
+        force_execute_all=args.force_execute_all,
+        dev_build=commit_hash,
     )
 
-    # Finally, use the Markdown files and Jupyter notebook output to assemble the
-    # webpages and website as a whole:
-    # ----------------------------------------------------------------------------------
+    page_paths = get_page_paths()
+
     generate_page_html(
-        content_path,
-        templates_path,
-        is_dev_build,
-        save_indices=args.save_indices,
-        hier_index_path=hier_index_path,
-        flat_index_path=flat_index_path,
+        page_paths,
+        dev_build=args.build_on_dev,
     )
 
 
