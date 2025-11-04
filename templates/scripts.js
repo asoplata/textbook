@@ -356,7 +356,7 @@ document.querySelectorAll('.sidebar a').forEach(function(link) {
 // Close all open submenus in the sidebar
 // --------------------------------------
 document.addEventListener("DOMContentLoaded", function() {
-    // Function to close all open submenus in the navbar
+    // Function to close all open submenus in the sidebar
     function closeAllSubmenus() {
         const allSubmenus = document.querySelectorAll('.submenu.open'); // Select all open submenus
         allSubmenus.forEach(submenu => {

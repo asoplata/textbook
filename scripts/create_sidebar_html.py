@@ -104,10 +104,10 @@ def create_sidebar_html(
     base_indent = "\t"
 
     # create mySidebar
-    # create the "navbar header"
+    # create the "sidebar header"
     # ---------------------------------
     # notes:
-    #   the "navbar header" contains the HNN name and the installation page link,
+    #   the "sidebar header" contains the HNN name and the installation page link,
     #   which are not generated dynamically from the directory/file structure
     sidebar_html = textwrap.dedent("""
         <div id="mySidebar" class="sidebar">
@@ -116,7 +116,7 @@ def create_sidebar_html(
                     <use href="#popup-symbol" />
                 </svg>
             </div>
-            <div class="navbar-header">
+            <div class="sidebar-header">
                 <div class="title-row">
                     <a>
                         Human Neocortical Neurosolver

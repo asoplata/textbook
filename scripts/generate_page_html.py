@@ -349,7 +349,7 @@ def generate_page_html(
     # Specify the order of components for assembling pages
     order = [
         "header",
-        "navbar",
+        "sidebar",
         "topbar",
         "body",
         "footer",
@@ -357,8 +357,7 @@ def generate_page_html(
     ]
     # Each of these components is handled with different complexity:
     # - header: We simply load a generic template for this.
-    # - navbar: AKA the sidebar, this is created using its own module at
-    #     `create_sidebar_html.py`.
+    # - sidebar: This is created using its own module at `create_sidebar_html.py`.
     # - topbar: We simply load a generic template for this.
     # - body: This is where the magic happens; the main loop gradually constructs this
     #     from a combination of processed markdown content and (if necessary) processed
@@ -378,8 +377,8 @@ def generate_page_html(
         with open((templates_path / f"{template}.html"), "r") as f:
             html_parts[template] = f.read()
 
-    # Create the template for the sidebar/navbar based on both indices:
-    html_parts["navbar"] = create_sidebar_html(hier_index, flat_index)
+    # Create the template for the sidebar based on both indices:
+    html_parts["sidebar"] = create_sidebar_html(hier_index, flat_index)
 
     # Load some "MD+YAML" metadata to go at the top of every markdown page, but before
     # it is sent to PyPandoc:
