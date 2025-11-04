@@ -31,14 +31,12 @@ jobs:
           print(f"Hello from proc {MPI.COMM_WORLD.Get_rank()}");
           h.quit()'
 
-      # DEBUG
       - name: Build Website
         run: |
           conda run -n textbook-dev-build env PYTHONUNBUFFERED=1 \
           python build.py \
           --code-version master \
-          --execution-type no-execution
-          # --execution-type execute-updated-unskipped-notebooks
+          --execution-type execute-updated-unskipped-notebooks
 
       - name: Deploy to GitHub Pages (Fork)
         if: github.repository != 'jonescompneurolab/textbook'
