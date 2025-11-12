@@ -1,7 +1,5 @@
-import json
-from pathlib import Path
-import requests
 import sys
+from pathlib import Path
 
 sys.path.insert(
     0,
@@ -10,15 +8,8 @@ sys.path.insert(
 
 from logger_setup import setup_logger
 
-textbook_root_path = Path(__file__).parents[1]
 
-
-# AES TODO: This output probably shouldn't be set to "debug" specifically as opposed to
-# expected output, but that should be fixed only after logging in general is better
-# integrated with the code.
-
-
-def check_version(enable_debug=True, root_path=None):
+def check_version(enable_debug=True):
     """
     Return True if all notebooks are run on the same version of hnn_core,
     else False
@@ -41,12 +32,9 @@ def check_version(enable_debug=True, root_path=None):
 
     Inputs
     ------
-    enable_debug : bool
+    debug : bool
         If True, enables debug logging to print verbose information about
         the process
-    root_path : pathlib.Path, optional
-        Path of the "root" directory of the textbook (i.e. the directory containing
-        "content", "scripts", etc.), if you want to use a different root.
 
     Returns
     -------
@@ -54,9 +42,6 @@ def check_version(enable_debug=True, root_path=None):
         True if all executed notebooks were run with the latest
         version of hnn-core, else False
     """
-
-    if not root_path:
-        root_path = textbook_root_path
 
     logger = setup_logger(
         __name__,
@@ -66,24 +51,31 @@ def check_version(enable_debug=True, root_path=None):
     logger.debug(
         "Debugging check_nb_versions.check_version",
     )
-    nb_hashes_path = root_path / "scripts" / "nb_hashes.json"
+    import json
+    import os
+
+    import requests
+
     with open(
-        nb_hashes_path,
+        os.path.join(
+            "scripts",
+            "nb_hashes.json",
+        ),
         "r",
     ) as f:
         nb_hashes = json.load(f)
 
-    nb_skips_path = root_path / "scripts" / "nbs_to_skip.json"
     with open(
-        nb_skips_path,
+        os.path.join(
+            "scripts",
+            "nbs_to_skip.json",
+        ),
         "r",
     ) as f:
         nbs_to_skip = json.load(f)
 
     # get names of nbs to skip
-    # AES TODO BUG, this was not upgraded for "dev" builds, maybe by accident. Maybe it
-    # shouldn't deal with dev builds, but that's for our later workflow architecture
-    # discussion.
+    # AES TODO BUG, this was not upgraded, maybe by accident. Also it should be loading the checker from the main convert module.
     nbs_to_skip = nbs_to_skip["skip_if_stable"]
     logger.debug(
         "\n",
@@ -92,7 +84,6 @@ def check_version(enable_debug=True, root_path=None):
     )
 
     # get json filenames for executed nbs only
-    # Using JSON outputs since IPYNBs are harder to navigate
     json_fnames = [
         nb.replace(".ipynb", ".json")
         for nb in nb_hashes.keys()
@@ -106,27 +97,32 @@ def check_version(enable_debug=True, root_path=None):
 
     # get filepaths for each filename in json_fnames
     json_fpaths = []
-    for root, dirs, files in (root_path / "content").walk():
+    for root, dirs, files in os.walk(
+        os.path.join(
+            os.getcwd(),
+            "content",
+        )
+    ):
         for file in files:
             if file in json_fnames:
-                json_fpaths.append(root / file)
+                json_fpaths.append(os.path.join(root, file))
 
     # get the value of the "hnn_version" key from each json
     nb_versions = []
     execution_statuses = dict()
-    for json_fpath in json_fpaths:
-        filename = json_fpath.name
-        if filename not in execution_statuses.keys():
-            execution_statuses[filename] = dict()
-        with open(json_fpath, "r") as f:
+    for file in json_fpaths:
+        file_key = file.split(os.sep)[-1]
+        if file_key not in execution_statuses.keys():
+            execution_statuses[file_key] = dict()
+        with open(file, "r") as f:
             contents = json.load(f)
             if "hnn_version" in contents:
                 nb_versions.append(contents["hnn_version"])
-                execution_statuses[filename]["hnn_version"] = contents["hnn_version"]
+                execution_statuses[file_key]["hnn_version"] = contents["hnn_version"]
             else:
-                print(f"Version key not found in {json_fpath}")
+                print(f"Version key not found in {file}")
             # if "master_commit" in contents:
-            # execution_statuses[json_fpath]['master_commit'] =
+            # execution_statuses[file]['master_commit'] =
 
     # unique versions for executed nbs
     nb_versions = list(set(nb_versions))

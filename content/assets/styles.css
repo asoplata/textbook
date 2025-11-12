@@ -15,6 +15,14 @@
 }
 
 /* 
+    scroll padding to account for topbar height so anchor
+    links work correctly
+*/
+html {
+  scroll-padding-top: 60px;
+}
+
+/* 
 # Default (light mode) styling for basic elements
 # ------------------------------------------------------------ 
 */
@@ -497,10 +505,10 @@ body.is-mobile .sidebar-close {
 }
 
 /*
-    Element: .sidebar-header
+    Element: .navbar-header
     Description: Contain top-level and non-indexed sidebar elements
 */
-.sidebar-header {
+.navbar-header {
     display: flex;
     padding: 10px 0px 20px 0px;
     align-items: center;
@@ -513,13 +521,13 @@ body.is-mobile .sidebar-close {
     Element: .title-row
     Description: style 'title' text in navbar header
 */
-.sidebar-header .title-row {
+.navbar-header .title-row {
     display: flex;
     align-items: center;
     width: 100%;
 }
 
-.sidebar-header a {
+.navbar-header a {
     margin: 0px;
 }
 
@@ -819,7 +827,7 @@ body.dark-mode .topbar {
 
 
 /*
-# Collapse sidebar
+# Collapse navbar
 # ------------------------------------------------------------ 
 */
 
