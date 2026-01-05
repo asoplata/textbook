@@ -15,14 +15,6 @@
 }
 
 /* 
-    scroll padding to account for topbar height so anchor
-    links work correctly
-*/
-html {
-  scroll-padding-top: 60px;
-}
-
-/* 
 # Default (light mode) styling for basic elements
 # ------------------------------------------------------------ 
 */
@@ -505,10 +497,10 @@ body.is-mobile .sidebar-close {
 }
 
 /*
-    Element: .navbar-header
+    Element: .sidebar-header
     Description: Contain top-level and non-indexed sidebar elements
 */
-.navbar-header {
+.sidebar-header {
     display: flex;
     padding: 10px 0px 20px 0px;
     align-items: center;
@@ -521,13 +513,13 @@ body.is-mobile .sidebar-close {
     Element: .title-row
     Description: style 'title' text in navbar header
 */
-.navbar-header .title-row {
+.sidebar-header .title-row {
     display: flex;
     align-items: center;
     width: 100%;
 }
 
-.navbar-header a {
+.sidebar-header a {
     margin: 0px;
 }
 
@@ -626,29 +618,6 @@ body.is-mobile .sidebar-close {
 
 
 
-/*
-    Element: .survey-row
-    Description: Used for Title and collapse all button
-*/
-.survey-row {
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.survey-row a {
-    margin: 0px;
-    padding: 0px 20px 0px 0px;
-    transition: none !important;
-}
-
-.survey-row:hover a {
-    color: var(--hnn-yellow);
-}
-
-.survey-row:hover .download-icon {
-    stroke: var(--hnn-yellow);
-}
 
 
 /*
@@ -850,7 +819,7 @@ body.dark-mode .topbar {
 
 
 /*
-# Collapse navbar
+# Collapse sidebar
 # ------------------------------------------------------------ 
 */
 
