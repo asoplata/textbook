@@ -245,6 +245,7 @@ Synopsis:
             "stable",
             "master",
             "custom",
+            "no-check",
         ],
         help=textwrap.dedent("""
 Specify which version of HNN-core you want to use for building the textbook. The default
