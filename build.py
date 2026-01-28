@@ -201,37 +201,49 @@ Synopsis:
     Examples (not comprehensive)
     ----------------------------
     1. Do not execute any notebooks, and build the website using the latest stable
-        release:
+        release in your local `content` directory:
 
         $ python build.py
 
     2. Re-execute any notebooks that have been updated/changed (excluding those set to
-        be skipped) using the latest stable release (default), and build the website:
+        be skipped) using the latest stable release (default), and build the website in
+        your local `content` directory:
 
         $ python build.py --execution-type=execute-updated-unskipped-notebooks
 
     3. Re-execute any notebooks that have been updated/changed (excluding those set to
-        be skipped) using the latest master (development) branch, and build the website:
+        be skipped) using the latest master (development) branch, and build the website
+        in your local `dev` directory (creating it if necessary):
 
         $ python build.py --execution-type=execute-updated-unskipped-notebooks --code-version=master
 
     4. Re-execute any notebooks that have been updated/changed (excluding those set to
-        be skipped) using a custom fork/commit, and build the website:
+        be skipped) using the current master (development) branch that you have
+        installed (WITHOUT checking against the latest master branch on Github), and
+        build the website in your local `dev` directory (creating it if necessary):
+
+        $ python build.py --execution-type=execute-updated-unskipped-notebooks --code-version=master --no-version-validation
+
+    5. Re-execute any notebooks that have been updated/changed (excluding those set to
+        be skipped) using a custom fork/commit, and build the website in your local
+        `dev` directory (creating it if necessary):
 
         $ python build.py --execution-type=execute-updated-unskipped-notebooks --code-version=custom --custom-owner-commit=username:abc123
 
-    5. Re-execute all notebooks, excluding those set to be skipped, using the latest
-        stable release (default), and build the website:
+    6. Re-execute all notebooks, excluding those set to be skipped, using the latest
+        stable release (default), and build the website in your local `content`
+        directory:
 
         $ python build.py --execution-type=execute-all-unskipped-notebooks
 
-    6. Re-execute ALL notebooks, INCLUDING those set to be skipped, using the latest
-        stable release (default), and build the website:
+    7. Re-execute ALL notebooks, INCLUDING those set to be skipped, using the latest
+        stable release (default), and build the website in your local `content`
+        directory:
 
         $ python build.py --execution-type=execute-absolutely-all-notebooks
 
-    7. Do not execute any notebooks, and build the website using whatever version of
-        hnn-core is installed:
+    8. Do not execute any notebooks, and build the website using whatever version of
+        hnn-core is installed in your local `dev` directory (creating it if necessary):
 
         $ python build.py --code-version=no-check
 """),
@@ -245,28 +257,38 @@ Synopsis:
             "stable",
             "master",
             "custom",
+            "no-check",
         ],
         help=textwrap.dedent("""
 Specify which version of HNN-core you want to use for building the textbook. The default
 is 'stable'. This validates whether you have the correct version installed in your local
-environment unless you also pass the '--no-version-validation' argument. The three
-options are below:
+environment unless you also pass the '--no-version-validation' argument, or unless you
+choose 'no-check' which simply uses the installed version without checking anything. The
+four options are below:
 - 'stable': This builds the textbook using the latest stable version of HNN-Core. This
     version is validated based on a request to PyPI, checking if your version is using
-    the latest stable. This produces a 'stable' build, meaning it creates the output
-    HTML files in the '<textbook-root>/content' folder.
+    the latest stable (unless you also pass '--no-version-validation'). This produces a
+    'stable' build, meaning it creates the output HTML files in the
+    '<textbook-root>/content' folder.
 - 'master': This builds the textbook using the latest development version of
     HNN-Core. This version is validated based on a request to Github, checking if your
-    version is using the latest commit on the 'master' branch. This produces a 'dev'
-    build, meaning it creates the output HTML files in the '<textbook-root>/dev' folder
-    (creating all output directories if they don't exist).
+    version is using the latest commit on the 'master' branch (unless you also pass
+    '--no-version-validation'). This produces a 'dev' build, meaning it creates the
+    output HTML files in the '<textbook-root>/dev' folder (creating all output
+    directories if they don't exist).
 - 'custom': This builds the textbook using a custom commit and, optionally, a custom
     repository-owner's version of HNN-Core. If using this option, you must provide the
     repository-owner and/or commit you want using the '--custom-repo-commit'
     argument. This version is validated based on a request to Github, checking for the
-    existence of the commit you have provided. This produces a 'dev' build, meaning it
-    creates the output HTML files in the '<textbook-root>/dev' folder (creating all
-    output directories if they don't exist).
+    existence of the commit you have provided (unless you also pass
+    '--no-version-validation'). This produces a 'dev' build, meaning it creates the
+    output HTML files in the '<textbook-root>/dev' folder (creating all output
+    directories if they don't exist).
+- 'no-check': This builds the textbook using whatever is the current installed commit of
+    HNN-Core. This does not check anything about the version you have currently
+    installed. This produces a 'dev' build, meaning it creates the output HTML files in
+    the '<textbook-root>/dev' folder (creating all output directories if they don't
+    exist).
 """),
     )
     parser.add_argument(
@@ -391,7 +413,7 @@ during the build process. Defaults to False.
 
     # Determine if we're in a "dev" build or not
     is_dev_build = False
-    if args.code_version in ("master", "custom"):
+    if args.code_version in ("master", "custom", "no-check"):
         is_dev_build = True
 
     # Execute appropriate Jupyter notebooks, and save their output for later webpage
