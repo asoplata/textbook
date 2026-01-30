@@ -49,21 +49,21 @@ build:
 	python build.py
 
 force-execute-all-notebooks:
-	@echo "This option has been replaced with '--execution-type execute-all-unskipped-notebooks'"
-	@echo "You can run 'make execute-all-unskipped-notebooks' for the same command."
+	@echo "This option has been replaced with '--execution-type all-unskipped-notebooks'"
+	@echo "You can run 'make all-unskipped-notebooks' for the same command."
 
 execute-notebooks:
-	@echo "This option has been replaced with '--execution-type execute-updated-unskipped-notebooks'"
-	@echo "You can run 'make execute-updated-unskipped-notebooks' for the same command."
+	@echo "This option has been replaced with '--execution-type updated-unskipped-notebooks'"
+	@echo "You can run 'make updated-unskipped-notebooks' for the same command."
 
-execute-absolutely-all-notebooks:
-	python build.py --execution-type execute-absolutely-all-notebooks
+absolutely-all-notebooks:
+	python build.py --execution-type absolutely-all-notebooks
 
-execute-all-unskipped-notebooks:
-	python build.py --execution-type execute-all-unskipped-notebooks
+all-unskipped-notebooks:
+	python build.py --execution-type all-unskipped-notebooks
 
-execute-updated-unskipped-notebooks:
-	python build.py --execution-type execute-updated-unskipped-notebooks
+updated-unskipped-notebooks:
+	python build.py --execution-type updated-unskipped-notebooks
 
 clean:
 	rm -rf content/*.html

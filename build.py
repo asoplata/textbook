@@ -218,13 +218,13 @@ Synopsis:
         be skipped) using the latest stable release (default), and build the website in
         your local `content` directory:
 
-        $ python build.py --execution-type=execute-updated-unskipped-notebooks
+        $ python build.py --execution-type=updated-unskipped-notebooks
 
     3. Re-execute any notebooks that have been updated/changed (excluding those set to
         be skipped) using the latest master (development) branch, and build the website
         in your local `dev` directory (creating it if necessary):
 
-        $ python build.py --execution-type=execute-updated-unskipped-notebooks
+        $ python build.py --execution-type=updated-unskipped-notebooks
         --code-version=master
 
     4. Re-execute any notebooks that have been updated/changed (excluding those set to
@@ -232,41 +232,41 @@ Synopsis:
         installed, and build the website in your local `dev` directory (creating it if
         necessary):
 
-        $ python build.py --execution-type=execute-updated-unskipped-notebooks
+        $ python build.py --execution-type=updated-unskipped-notebooks
         --code-version=master
 
     5. Re-execute any notebooks that have been updated/changed (excluding those set to
         be skipped) using a custom fork/commit, and build the website in your local
         `dev` directory (creating it if necessary):
 
-        $ python build.py --execution-type=execute-updated-unskipped-notebooks
+        $ python build.py --execution-type=updated-unskipped-notebooks
         --code-version=custom --custom-owner-commit=username:abc123
 
     6. Re-execute all notebooks, excluding those set to be skipped, using the latest
         stable release (default), and build the website in your local `content`
         directory:
 
-        $ python build.py --execution-type=execute-all-unskipped-notebooks
+        $ python build.py --execution-type=all-unskipped-notebooks
 
     7. Re-execute all notebooks, excluding those set to be skipped, using whatever
        HNN-Core version is installed locally, and build the website in your local `dev`
        directory:
 
-        $ python build.py --execution-type=execute-all-unskipped-notebooks
+        $ python build.py --execution-type=all-unskipped-notebooks
         --code-version=no-check
 
     8. Re-execute all notebooks, excluding those set to be skipped, using whatever
        HNN-Core version is installed locally, and build the website in your local
        `content` directory:
 
-        $ python build.py --execution-type=execute-all-unskipped-notebooks
+        $ python build.py --execution-type=all-unskipped-notebooks
         --code-version=no-check --build-directory=content
 
     9. Re-execute ALL notebooks, INCLUDING those set to be skipped, using the latest
         stable release (default), and build the website in your local `content`
         directory:
 
-        $ python build.py --execution-type=execute-absolutely-all-notebooks
+        $ python build.py --execution-type=absolutely-all-notebooks
 
     10. Do not execute any notebooks, and build the website using whatever version of
         HNN-Core is installed locally, and build the website in your local `content`
@@ -340,9 +340,9 @@ anything. The four options are:
         default="no-execution",
         choices=[
             "no-execution",
-            "execute-updated-unskipped-notebooks",
-            "execute-all-unskipped-notebooks",
-            "execute-absolutely-all-notebooks",
+            "updated-unskipped-notebooks",
+            "all-unskipped-notebooks",
+            "absolutely-all-notebooks",
         ],
         help=textwrap.dedent("""
 Specify different criteria for which notebooks you want to execute before converting
@@ -351,11 +351,11 @@ more execution:
 
 - 'no-execution': This will not execute any notebooks. You may receive warnings if
     specific notebooks should be executed.
-- 'execute-updated-unskipped-notebooks': Execute only notebooks which have been
+- 'updated-unskipped-notebooks': Execute only notebooks which have been
     updated/changed or are new, excluding notebooks flagged for skipping.
-- 'execute-all-unskipped-notebooks': Execute all notebooks except those flagged for
+- 'all-unskipped-notebooks': Execute all notebooks except those flagged for
     skipping.
-- 'execute-absolutely-all-notebooks': Execute all notebooks.
+- 'absolutely-all-notebooks': Execute all notebooks.
 """),
     )
     parser.add_argument(

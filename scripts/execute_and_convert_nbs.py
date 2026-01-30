@@ -680,7 +680,7 @@ def _load_nbs_to_skip(nb_skips_path, is_dev_build):
     This allows different notebooks to be skipped depending on the build context.
 
     Skipped notebooks will not be executed even if they have changed content, unless
-    '--execution-type' was set to "execute-absolutely-all-notebooks" when calling
+    '--execution-type' was set to "absolutely-all-notebooks" when calling
     'build.py'. Notebooks in the skip list should have been successfully executed
     previously, otherwise warnings will be issued about potentially incomplete outputs.
 
@@ -799,8 +799,8 @@ def _process_nb(
         values:
         - 'no-execution'
         - 'execute-only-updated-or-new-notebooks'
-        - 'execute-all-unskipped-notebooks'
-        - 'execute-absolutely-all-notebooks'
+        - 'all-unskipped-notebooks'
+        - 'absolutely-all-notebooks'
     is_dev_build : bool
         Flag for if we are doing a "dev" build and should use the 'hnn_commit_hash' as
         part of our algorithm to determine whether or not a notebook should be
@@ -949,8 +949,8 @@ def _determine_should_execute_nb(
         values:
         - 'no-execution'
         - 'execute-only-updated-or-new-notebooks'
-        - 'execute-all-unskipped-notebooks'
-        - 'execute-absolutely-all-notebooks'
+        - 'all-unskipped-notebooks'
+        - 'absolutely-all-notebooks'
     prior_commit_if_any : str or bool
         Commit hash from the previous execution, loaded from the notebook's
         corresponding JSON output file. False if not found
@@ -977,7 +977,7 @@ def _determine_should_execute_nb(
     # 1. Handle SUPER-OMEGA-execute-all-notebooks, including skipped
     # ----------------------------------------------------------------------------------
     # AES: This is a brand-new option.
-    if execution_type == "execute-absolutely-all-notebooks":
+    if execution_type == "absolutely-all-notebooks":
         print(
             "Execution set to all notebooks, including skipped! CHARGE PROTON TORPEDOS!"
         )
@@ -1080,7 +1080,7 @@ def _determine_should_execute_nb(
                 #
                 # Please either remove the notebook from the skipped list JSON file, or
                 # re-run the script with
-                # '--execution-type=execute-absolutely-all-notebooks'
+                # '--execution-type=absolutely-all-notebooks'
                 # to ensure that the notebook outputs are correct.
                 # ----------------------------------------------------------------------
             """)
@@ -1096,7 +1096,7 @@ def _determine_should_execute_nb(
                 #
                 # Please either remove the notebook from the skipped list JSON file, or
                 # re-run the script with
-                # '--execution-type=execute-absolutely-all-notebooks'
+                # '--execution-type=absolutely-all-notebooks'
                 # to ensure that the notebook outputs are correct.
                 # ----------------------------------------------------------------------
             """)
@@ -1108,14 +1108,14 @@ def _determine_should_execute_nb(
     # been skipped above.
     # ----------------------------------------------------------------------------------
     # AES: This was formerly called via the "--force-execute-all" CLI arg.
-    if execution_type == "execute-all-unskipped-notebooks":
+    if execution_type == "all-unskipped-notebooks":
         print(f"Executing '{filename}'")
         return True
 
     # 5. Finally, handle "regular" execute
     # ----------------------------------------------------------------------------------
     # AES: This was formerly called via the "--execute-notebooks" CLI arg.
-    if execution_type == "execute-updated-unskipped-notebooks":
+    if execution_type == "updated-unskipped-notebooks":
         # 5.1) if the hash has not changed
         if (filename in nb_hashes) and (nb_hashes[filename] == current_nb_hash):
             if is_dev_build:
@@ -1319,9 +1319,9 @@ def execute_and_convert_nbs_to_json(
         value passed to the '--execution-type' argument of the CLI in `build.py`. See
         'python build.py --help' for more details. Valid values:
         - 'no-execution': Skip all notebook execution
-        - 'execute-updated-unskipped-notebooks': Execute only changed/new unskipped notebooks
-        - 'execute-all-unskipped-notebooks': Execute all notebooks except those in skip list
-        - 'execute-absolutely-all-notebooks': Execute all notebooks including skipped ones
+        - 'updated-unskipped-notebooks': Execute only changed/new unskipped notebooks
+        - 'all-unskipped-notebooks': Execute all notebooks except those in skip list
+        - 'absolutely-all-notebooks': Execute all notebooks including skipped ones
     is_dev_build : bool
         Flag for if we are doing a "dev" build and should place all processed outputs in
         a "<textbook-root>/dev/**" directory, including creating all necessary
