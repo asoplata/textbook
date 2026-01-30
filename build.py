@@ -18,7 +18,8 @@ def main():
         description=textwrap.dedent("""
 Synopsis:
 ---------
-    Build the HNN Textbook website by processing markdown and Jupyter notebooks into HTML.
+    Build the HNN Textbook website by processing markdown and Jupyter notebooks into
+    HTML.
 
     This code orchestrates the complete website construction process for the HNN (Human
     Neocortical Neurosolver) Textbook. It validates the installed hnn-core version,
@@ -56,11 +57,11 @@ Synopsis:
     The numerical prefix in the filename is what is used to decide the ordering of the
     different webpages, both within any sections and across the website overall.
 
-    Jupyter Python notebooks should end in '.ipynb' but otherwise can be named
-    anything. Importantly, notebook content is NOT automatically displayed on the
-    website! Instead, to insert the contents of a notebook (including existing cells and
-    possible future output cells), you must insert the name of the notebook somewhere in
-    a markdown page file. For example, the markdown page file
+    Jupyter Python notebooks should end in '.ipynb' but otherwise can be named anything.
+    Importantly, notebook content is NOT automatically displayed on the website!
+    Instead, to insert the contents of a notebook (including existing cells and possible
+    future output cells), you must insert the name of the notebook somewhere in a
+    markdown page file. For example, the markdown page file
     'textbook/content/05_erps/02_hnn_core.md' includes the following content:
         [[plot_simulate_evoked.ipynb]]
     which determines on which page and where on that page to insert the notebook's
@@ -108,7 +109,8 @@ Synopsis:
     If '--code-version' is set to 'stable' (the default), then each output file (HTML,
     notebook JSON output if executed, and 'output_nb_*' if executed) will go in the same
     directory as the file used to create them under the '<textbook-root>/content/'
-    directory.
+    directory, unless you also pass '--build-directory=dev' which will force all output
+    files to be built in the 'dev' directory.
 
     Else, if '--code-version' is set to anything else ('master', 'custom', or
     'no-check'), then each output file will go into a new directory with the same name
@@ -117,7 +119,12 @@ Synopsis:
     instead of
         '<textbook-root>/content/'
     This "dev" folder will be created if it does not exist, is intended for examination
-    of output and comparison with '<textbook-root>/content/', and can be safely deleted.
+    of output and comparison with '<textbook-root>/content/', and can be safely deleted. 
+
+    You can also override the automatic output directory selection by explicitly
+    choosing to build into either the 'content' directory (by passing
+    '--build-directory=content') or the 'dev' directory (by passing
+    '--build-directory=dev') regardless of the '--code-version' argument.
 
     Scripts Directory: 'textbook/scripts/'
     ======================================
@@ -128,10 +135,11 @@ Synopsis:
     want to indicate that a new or existing notebook should be skipped from execution.
 
     Data:
-    - nb_hashes.json : SHA-256 hashes of notebook content to detect changes
-    - nbs_to_skip.json : List of notebooks to skip during execution
-    - hier_index.json : Hierarchical page index (generated if --save-indices=True)
-    - flat_index.json : Flat page index for navigation (generated if --save-indices=True)
+        - nb_hashes.json : SHA-256 hashes of notebook content to detect changes
+        - nbs_to_skip.json : List of notebooks to skip during execution
+        - hier_index.json : Hierarchical page index (generated if --save-indices=True)
+        - flat_index.json : Flat page index for navigation (generated if
+            --save-indices=True)
 
     Templates Directory: 'textbook/templates/'
     ==========================================
@@ -154,40 +162,41 @@ Synopsis:
     Website Construction Process
     ----------------------------
     1. **Parse command-line arguments** to determine:
-       - Which hnn-core version to validate against (see '--code-version' argument help)
-       - Which notebooks to execute (see '--execution-type' argument help)
-       - Output directory type based on '--code-version'
+        - Which hnn-core version to use and possibly validate against (see
+            '--code-version' argument help)
+        - Which notebooks to execute, if any (see '--execution-type' argument help)
+        - Output directory type based on '--code-version', unless you pass a specific
+            directory type to the '--build-directory' argument
 
     2. **Validate hnn-core installation** (via `get_hnn_commit_hash`):
-       - Retrieve installed hnn-core version/commit from `pip freeze`
-       - Fetch requested version/commit from PyPI or GitHub API (unless
-         '--code-version=no-check')
-       - Verify installed version matches requested version (unless
-         '--code-version=no-check')
-       - Determine commit hash for notebook execution history tracking
+        - Retrieve installed hnn-core version/commit from `pip freeze`
+        - Fetch requested version/commit from PyPI or GitHub API (unless
+            '--code-version=no-check')
+        - Verify installed version matches requested version (unless
+            '--code-version=no-check')
+        - Determine commit hash for notebook execution history tracking
 
     3. **Execute Jupyter notebooks** (via `execute_and_convert_nbs_to_json`):
-       - Scan '<textbook-root>/content' directory for .ipynb files
-       - Check notebook hashes to detect changes (from
-         'textbook/scripts/nb_hashes.json') and update if changes are detected
-       - Execute notebooks based on '--execution-type' argument and skip list (i.e.
-         'textbook/scripts/nbs_to_skip.json')
-       - Extract HTML from executed notebook cells (code, output, and markdown cells)
-       - Save structured notebook outputs as '.json' files alongside '.ipynb' files
-       - Optionally generate standalone HTML files for each notebook (if
-         '--save-standalone-nb-html' is true)
-
+        - Scan '<textbook-root>/content' directory for .ipynb files
+        - Check notebook hashes to detect changes (from
+            'textbook/scripts/nb_hashes.json') and update if changes are detected
+        - Execute notebooks based on '--execution-type' argument and skip list (i.e.
+            'textbook/scripts/nbs_to_skip.json')
+        - Extract HTML from executed notebook cells (code, output, and markdown cells)
+        - Save structured notebook outputs as '.json' files alongside '.ipynb' files
+        - Optionally generate standalone HTML files for each notebook (if
+            '--save-standalone-nb-html' is true)
     4. **Generate HTML pages** (via `generate_page_html`):
-       - Scan '<textbook-root>/content' directory for numbered markdown files (##_*.md)
-       - Customize appopriate HTML templates based on each markdown page
-       - For each markdown file:
-         a. Create hierarchical- and flat-indices of pages for navigation (footer and
-         sidebar)
-         b. Convert markdown page content to HTML using Pandoc with citation support
-         c. Embed notebook outputs using [[<notebook_name>.ipynb]] syntax
-         d. Inject HTML templates (header, navbar, topbar, footer, scripts)
-         e. Adjust relative image asset paths based on page depth
-         f. Save final HTML page
+        - Scan '<textbook-root>/content' directory for numbered markdown files (##_*.md)
+        - Customize appopriate HTML templates based on each markdown page
+        - For each markdown file:
+            a. Create hierarchical- and flat-indices of pages for navigation (footer and
+                 sidebar)
+            b. Convert markdown page content to HTML using Pandoc with citation support
+            c. Embed notebook outputs using [[<notebook_name>.ipynb]] syntax
+            d. Inject HTML templates (header, navbar, topbar, footer, scripts)
+            e. Adjust relative image asset paths based on page depth
+            f. Save final HTML page
 
     Notes
     -----
@@ -195,8 +204,8 @@ Synopsis:
         arguments.
     - The build process requires internet access unless using '--code-version=no-check'.
     - Page navigation order is determined by numerical prefixes (##_) in filenames, in
-      addition to numerical prefixes (##_) in their section subdirectory names if they
-      are inside subdirectories.
+        addition to numerical prefixes (##_) in their section subdirectory names if they
+        are inside subdirectories.
 
     Examples (not comprehensive)
     ----------------------------
@@ -215,20 +224,23 @@ Synopsis:
         be skipped) using the latest master (development) branch, and build the website
         in your local `dev` directory (creating it if necessary):
 
-        $ python build.py --execution-type=execute-updated-unskipped-notebooks --code-version=master
+        $ python build.py --execution-type=execute-updated-unskipped-notebooks
+        --code-version=master
 
     4. Re-execute any notebooks that have been updated/changed (excluding those set to
         be skipped) using the current master (development) branch that you have
-        installed (WITHOUT checking against the latest master branch on Github), and
-        build the website in your local `dev` directory (creating it if necessary):
+        installed, and build the website in your local `dev` directory (creating it if
+        necessary):
 
-        $ python build.py --execution-type=execute-updated-unskipped-notebooks --code-version=master --no-version-validation
+        $ python build.py --execution-type=execute-updated-unskipped-notebooks
+        --code-version=master
 
     5. Re-execute any notebooks that have been updated/changed (excluding those set to
         be skipped) using a custom fork/commit, and build the website in your local
         `dev` directory (creating it if necessary):
 
-        $ python build.py --execution-type=execute-updated-unskipped-notebooks --code-version=custom --custom-owner-commit=username:abc123
+        $ python build.py --execution-type=execute-updated-unskipped-notebooks
+        --code-version=custom --custom-owner-commit=username:abc123
 
     6. Re-execute all notebooks, excluding those set to be skipped, using the latest
         stable release (default), and build the website in your local `content`
@@ -236,18 +248,54 @@ Synopsis:
 
         $ python build.py --execution-type=execute-all-unskipped-notebooks
 
-    7. Re-execute ALL notebooks, INCLUDING those set to be skipped, using the latest
+    7. Re-execute all notebooks, excluding those set to be skipped, using whatever
+       HNN-Core version is installed locally, and build the website in your local `dev`
+       directory:
+
+        $ python build.py --execution-type=execute-all-unskipped-notebooks
+        --code-version=no-check
+
+    8. Re-execute all notebooks, excluding those set to be skipped, using whatever
+       HNN-Core version is installed locally, and build the website in your local
+       `content` directory:
+
+        $ python build.py --execution-type=execute-all-unskipped-notebooks
+        --code-version=no-check --build-directory=content
+
+    9. Re-execute ALL notebooks, INCLUDING those set to be skipped, using the latest
         stable release (default), and build the website in your local `content`
         directory:
 
         $ python build.py --execution-type=execute-absolutely-all-notebooks
 
-    8. Do not execute any notebooks, and build the website using whatever version of
-        hnn-core is installed in your local `dev` directory (creating it if necessary):
+    10. Do not execute any notebooks, and build the website using whatever version of
+        HNN-Core is installed locally, and build the website in your local `content`
+        directory:
 
-        $ python build.py --code-version=no-check
+        $ python build.py --code-version=no-check --build-directory=content
 """),
         formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        "--build-directory",
+        action="store",
+        default="auto",
+        choices=[
+            "auto",
+            "content",
+            "dev",
+        ],
+        help=textwrap.dedent("""
+Specify whether to build the website output files in the 'content' or 'dev' directory
+(creating the 'dev' folder if necessary). The three options are:
+
+- 'auto': (default) Select output directory based on the '--code-version' argument. Code
+    versions of '--code-version=stable' (the default) build in 'content', while all
+    other code versions build in 'dev', creating it if necessary.
+- 'content': Force all output files to be built in the 'content' directory.
+- 'dev': Force all output files to be built in the 'dev' directory, creating it if
+  necessary.
+"""),
     )
     parser.add_argument(
         "--code-version",
@@ -260,43 +308,30 @@ Synopsis:
             "no-check",
         ],
         help=textwrap.dedent("""
-Specify which version of HNN-core you want to use for building the textbook. The default
-is 'stable'. This validates whether you have the correct version installed in your local
-environment unless you also pass the '--no-version-validation' argument, or unless you
-choose 'no-check' which simply uses the installed version without checking anything. The
-four options are below:
+Specify which version of HNN-core you want to use for building the textbook. The default is
+'stable'. This validates whether you have the correct version installed in your local environment
+environment unless you choose 'no-check' which simply uses the installed version without checking
+anything. The four options are:
+
 - 'stable': This builds the textbook using the latest stable version of HNN-Core. This
-    version is validated based on a request to PyPI, checking if your version is using
-    the latest stable (unless you also pass '--no-version-validation'). This produces a
-    'stable' build, meaning it creates the output HTML files in the
-    '<textbook-root>/content' folder.
+    version is validated based on a request to PyPI, checking if your version is using the latest
+    stable. This produces a 'stable' build, meaning it creates the output HTML files in the
+    '<textbook-root>/content' folder (unless you also pass '--build-directory=dev').
 - 'master': This builds the textbook using the latest development version of
-    HNN-Core. This version is validated based on a request to Github, checking if your
-    version is using the latest commit on the 'master' branch (unless you also pass
-    '--no-version-validation'). This produces a 'dev' build, meaning it creates the
-    output HTML files in the '<textbook-root>/dev' folder (creating all output
-    directories if they don't exist).
+    HNN-Core. This version is validated based on a request to Github, checking if your version is
+    using the latest commit on the 'master' branch. This produces a 'dev' build, meaning it creates
+    the output HTML files in the '<textbook-root>/dev' folder (unless you also pass
+    '--build-directory=content').
 - 'custom': This builds the textbook using a custom commit and, optionally, a custom
     repository-owner's version of HNN-Core. If using this option, you must provide the
-    repository-owner and/or commit you want using the '--custom-repo-commit'
-    argument. This version is validated based on a request to Github, checking for the
-    existence of the commit you have provided (unless you also pass
-    '--no-version-validation'). This produces a 'dev' build, meaning it creates the
-    output HTML files in the '<textbook-root>/dev' folder (creating all output
-    directories if they don't exist).
+    repository-owner and/or commit you want using the '--custom-repo-commit' argument. This version
+    is validated based on a request to Github, checking for the existence of the commit you have
+    provided. This produces a 'dev' build, meaning it creates the output HTML files in the
+    '<textbook-root>/dev' folder (unless you also pass '--build-directory=content').
 - 'no-check': This builds the textbook using whatever is the current installed commit of
-    HNN-Core. This does not check anything about the version you have currently
-    installed. This produces a 'dev' build, meaning it creates the output HTML files in
-    the '<textbook-root>/dev' folder (creating all output directories if they don't
-    exist).
-"""),
-    )
-    parser.add_argument(
-        "--no-version-validation",
-        action="store_true",  # Confusingly, this defaults to False
-        help=textwrap.dedent("""
-Optionally indicate that you do NOT want your hnn-core installed version to be
-validated, based on the value of the '--code-version' argument. Defaults to False.
+    HNN-Core. This does not check anything about the version you have currently installed. This
+    produces a 'dev' build, meaning it creates the output HTML files in the '<textbook-root>/dev'
+    folder (unless you also pass '--build-directory=content').
 """),
     )
     parser.add_argument(
@@ -313,6 +348,7 @@ validated, based on the value of the '--code-version' argument. Defaults to Fals
 Specify different criteria for which notebooks you want to execute before converting
 them to HTML. The default is 'no-execution'. The four options are below, in order of
 more execution:
+
 - 'no-execution': This will not execute any notebooks. You may receive warnings if
     specific notebooks should be executed.
 - 'execute-updated-unskipped-notebooks': Execute only notebooks which have been
@@ -408,12 +444,18 @@ during the build process. Defaults to False.
         installed_commit,
         args.code_version,
         custom_owner_commit=args.custom_owner_commit,
-        no_version_validation=args.no_version_validation,
     )
 
     # Determine if we're in a "dev" build or not
-    is_dev_build = False
-    if args.code_version in ("master", "custom", "no-check"):
+    if args.build_directory == "auto":
+        is_dev_build = False
+        if args.code_version in ("master", "custom", "no-check"):
+            is_dev_build = True
+    elif args.build_directory == "content":
+        # Override default behavior and force a "content" build
+        is_dev_build = False
+    elif args.build_directory == "dev":
+        # Override default behavior and force a "dev" build
         is_dev_build = True
 
     # Execute appropriate Jupyter notebooks, and save their output for later webpage
