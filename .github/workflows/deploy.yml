@@ -20,11 +20,11 @@ jobs:
           auto-activate-base: false
 
       - name: Create Conda Environment With MPI and Stable HNN version
-        run: make create-textbook-stable-build
+        run: make create-textbook-stable-env
 
       - name: Test MPI
         run: |
-          conda run -n textbook-stable-build \
+          conda run -n textbook-stable-env \
           mpiexec -np 2 nrniv -mpi -python -c '
           from neuron import h;
           from mpi4py import MPI;
@@ -39,7 +39,7 @@ jobs:
 
       - name: Determine Build Method
         run: |
-          if conda run -n textbook-stable-build python scripts/check_nb_versions.py; then
+          if conda run -n textbook-stable-env python scripts/check_nb_versions.py; then
             echo "BUILD_FLAG=--execution-type updated-unskipped-notebooks" >> $GITHUB_ENV
           else
             echo "BUILD_FLAG=--execution-type updated-unskipped-notebooks" >> $GITHUB_ENV
@@ -47,7 +47,7 @@ jobs:
           fi
 
       - name: Build Website
-        run: conda run -n textbook-stable-build env PYTHONUNBUFFERED=1 python build.py $BUILD_FLAG
+        run: conda run -n textbook-stable-env env PYTHONUNBUFFERED=1 python build.py $BUILD_FLAG
 
       - name: Deploy to GitHub Pages
         if: github.repository == 'jonescompneurolab/textbook' && github.ref == 'refs/heads/main'
