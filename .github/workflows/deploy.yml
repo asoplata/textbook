@@ -32,11 +32,11 @@ jobs:
       - name: Test MPI
         run: |
           conda run -n textbook-stable-env \
-              mpiexec -np 2 nrniv -mpi -python -c '
-              from neuron import h;
-              from mpi4py import MPI;
-              print(f"Hello from proc {MPI.COMM_WORLD.Get_rank()}");
-              h.quit()'
+          mpiexec -np 2 nrniv -mpi -python -c '
+          from neuron import h;
+          from mpi4py import MPI;
+          print(f"Hello from proc {MPI.COMM_WORLD.Get_rank()}");
+          h.quit()'
 
       - name: Modify .gitignore
         run: |

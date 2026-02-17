@@ -43,11 +43,11 @@ jobs:
       - name: Test MPI (Stable)
         run: |
           conda run -n textbook-stable-env \
-              mpiexec -np 2 nrniv -mpi -python -c '
-              from neuron import h;
-              from mpi4py import MPI;
-              print(f"Hello from proc {MPI.COMM_WORLD.Get_rank()}");
-              h.quit()'
+          mpiexec -np 2 nrniv -mpi -python -c '
+          from neuron import h;
+          from mpi4py import MPI;
+          print(f"Hello from proc {MPI.COMM_WORLD.Get_rank()}");
+          h.quit()'
 
       - name: Determine Build Method (Stable)
         run: |
@@ -70,11 +70,11 @@ jobs:
       - name: Test MPI (Master)
         run: |
           conda run -n textbook-dev-env \
-              mpiexec -np 2 nrniv -mpi -python -c '
-              from neuron import h;
-              from mpi4py import MPI;
-              print(f"Hello from proc {MPI.COMM_WORLD.Get_rank()}");
-              h.quit()'
+          mpiexec -np 2 nrniv -mpi -python -c '
+          from neuron import h;
+          from mpi4py import MPI;
+          print(f"Hello from proc {MPI.COMM_WORLD.Get_rank()}");
+          h.quit()'
 
       - name: Build Website (Master, Dev)
         run: |
