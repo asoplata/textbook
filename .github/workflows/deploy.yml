@@ -32,11 +32,11 @@ jobs:
       - name: Test MPI
         run: |
           conda run -n textbook-stable-env \
-          mpiexec -np 2 nrniv -mpi -python -c '
-          from neuron import h;
-          from mpi4py import MPI;
-          print(f"Hello from proc {MPI.COMM_WORLD.Get_rank()}");
-          h.quit()'
+              mpiexec -np 2 nrniv -mpi -python -c '
+              from neuron import h;
+              from mpi4py import MPI;
+              print(f"Hello from proc {MPI.COMM_WORLD.Get_rank()}");
+              h.quit()'
 
       - name: Modify .gitignore
         run: |
@@ -54,7 +54,10 @@ jobs:
           fi
 
       - name: Build Website
-        run: conda run -n textbook-stable-env env PYTHONUNBUFFERED=1 python build.py $BUILD_FLAG
+        run: |
+          conda run -n textbook-stable-env env \
+              PYTHONUNBUFFERED=1 python build.py \
+              $BUILD_FLAG
 
       - name: Deploy to GitHub Pages
         if: github.repository == 'jonescompneurolab/textbook' && github.ref == 'refs/heads/main'
