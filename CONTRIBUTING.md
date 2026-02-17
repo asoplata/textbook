@@ -1,5 +1,7 @@
 ## Table of Contents
 
+Firstly, please see and follow our [Code of Conduct here](./CODE_OF_CONDUCT.md).
+
 1. [Contributing Content to the HNN Textbook](#1-contributing-content-to-the-hnn-textbook)
     - [How the Textbook Is Organized](#how-the-textbook-is-organized)
     - [Markdown Files](#markdown-files)
