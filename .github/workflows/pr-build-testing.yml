@@ -5,7 +5,7 @@ on:
     branches: [ '**' ]
 
 jobs:
-  build:
+  pr-build-testing:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -54,6 +54,9 @@ jobs:
             echo "Not all notebooks were executed on the latest version. Forcing re-execution."
           fi
 
+      - name: Build Website (Stable)
+        run: conda run -n textbook-stable-env env PYTHONUNBUFFERED=1 python build.py $BUILD_FLAG
+
       - name: Create Conda Environment With MPI and Dev (Master) HNN version
         run: make create-textbook-dev-env
 
@@ -67,7 +70,7 @@ jobs:
           h.quit()'
 
       - name: Build Website (Master, Dev)
-        run: | 
+        run: |
             echo "BUILD_FLAG=--execution-type updated-unskipped-notebooks" >> $GITHUB_ENV
             conda run -n textbook-dev-env env PYTHONUNBUFFERED=1 python build.py $BUILD_FLAG
 
