@@ -71,7 +71,7 @@ jobs:
 
       - name: Build Website (Master, Dev)
         run: |
-            echo "BUILD_FLAG=--execution-type updated-unskipped-notebooks" >> $GITHUB_ENV
+            echo "BUILD_FLAG=--execution-type updated-unskipped-notebooks --code-version=master" >> $GITHUB_ENV
             conda run -n textbook-dev-env env PYTHONUNBUFFERED=1 python build.py $BUILD_FLAG
 
       - name: Deploy to GitHub Pages (Fork)
