@@ -1,9 +1,23 @@
+## Table of Contents
+
+1. [Contributing Content to the HNN Textbook](#1-contributing-content-to-the-hnn-textbook)
+    - [How the Textbook Is Organized](#how-the-textbook-is-organized)
+    - [Markdown Files](#markdown-files)
+    - [Jupyter Notebooks](#jupyter-notebooks)
+    - [Local Images](#local-images)
+    - [Quick Reference Checklist](#quick-reference-checklist)
+2. [(Advanced) Maintainer workflow description (v3.1)](#2-advanced-maintainer-workflow-description-v31)
+    - [Definitions](#definitions)
+    - [Author standard-operating-procedures](#author-standard-operating-procedures)
+    - [Deployment flow](#deployment-flow)
+    - [Maintainer Tasks for `hnn-core` upgrades](#maintainer-tasks-for-hnn-core-upgrades)
+
+---
+
 # 1. Contributing Content to the HNN Textbook
 
 This guide explains how to add or edit content in the HNN Textbook. It covers
 three things: Markdown files, Jupyter notebooks, and local images.
-
----
 
 ## How the Textbook Is Organized
 
@@ -133,8 +147,12 @@ Here are the most common things you will use:
 [Installation](../01_getting_started/installation.html)
 ```
 
-Note: When linking to other pages inside your Markdown document, use the `.html` extension (not `.md`) and drop the numeric prefix from the
-filename. `02_template_model.md` is linked as `template_model.html`.
+Note: When linking to other pages inside your Markdown document, use the `.html`
+extension (not `.md`) and drop the numeric prefix from the filename.
+`02_template_model.md` is linked as `template_model.html`.
+
+Pro-tip: You can insert HTML *itself* inside Markdown documents and it will be rendered
+correctly in the final output.
 
 **Citations (BibTeX):**
 
@@ -146,7 +164,7 @@ This was first shown in a prior study [@jones_neural_2007].
 ```
 
 The `[@key]` syntax will be automatically replaced with a formatted citation
-during the build.
+during the build. Feel free to add new references to that bibliography file.
 
 **Embedding a Jupyter notebook's output:**
 
@@ -189,7 +207,7 @@ notebook. A minimal companion page looks like this:
 [[plot_simulate_evoked.ipynb]]
 ```
 
-The `[[...]]` line is all that is needed — the build system will execute the
+The `[[name.ipynb]]` line is all that is needed — the build system will execute the
 notebook and insert its full rendered output into the page.
 
 ### Notebook Tips
@@ -199,9 +217,9 @@ notebook and insert its full rendered output into the page.
 `batch_simulation_notebook.ipynb`.
 - The build system tracks whether notebooks have changed and only re-executes
 them when needed.
-- If your notebook should be skipped during certain builds (e.g. it requires
-special dependencies), talk to a maintainer about adding it to
-`scripts/nbs_to_skip.json`.
+- If your notebook should be skipped during certain builds (e.g. it requires special
+dependencies or depends on code that is still in development), then let the Maintainers
+know. when you make your Pull Request.
 
 ---
 
