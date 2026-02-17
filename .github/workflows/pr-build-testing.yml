@@ -23,7 +23,7 @@ jobs:
 
       - name: Modify .gitignore
         run: |
-          # Remove the line that ignores HTML files in the content directory
+          # Remove the lines that ignore HTML and dev/ files in the content directory
           grep -v '^content/\*\*/\*.html$' .gitignore > .gitignore.tmp && mv .gitignore.tmp .gitignore
           grep -v '^dev/$' .gitignore > .gitignore.tmp && mv .gitignore.tmp .gitignore
           cat .gitignore
@@ -55,7 +55,7 @@ jobs:
           fi
 
       - name: Build Website (Stable)
-        run: | 
+        run: |
           conda run -n textbook-stable-env env \
               PYTHONUNBUFFERED=1 python build.py \
               $BUILD_FLAG
