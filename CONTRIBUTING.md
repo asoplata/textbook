@@ -335,7 +335,7 @@ This is only for active developers or maintainers managing the repository as a w
     - `pr-build-testing.yml` : This is a new Action (similar to `hnn-core` `unix_unit_tests.yml` https://github.com/jonescompneurolab/hnn-core/blob/master/.github/workflows/unix_unit_tests.yml ) which runs on every push to Pull Requests only.
         1. This first creates and uses `textbook-stable-env` to build a `content` build using the same steps as the `deploy.yml` Action (except for excluding the `dev` folder). The Action continues *even if there is an error with this build*.
         2. Then, this Action creates and uses a `textbook-dev-env` to build `dev` build (also using the same `--execution-type updated-unskipped-notebooks` execution strategy). 
-        3. Finally, the output files in both `content` and `dev` are deployed to the user’s fork, using the “Deploy to Github Pages (Fork)” step that was originally in `deploy.yml`.
+        3. Finally, the output files in the Action-created `content` and `dev` directories (NOT user-pushed) are deployed to the user’s fork, using the “Deploy to Github Pages (Fork)” step that was originally in `deploy.yml`.
 
 ## Author standard-operating-procedures:
 
@@ -370,8 +370,9 @@ Ideally, the only way that `main` branch is changed (except in cases of emergenc
         - Version: Just like `deploy.yml`, `--code-version` is always using the default, which is `stable`.
         - Env: `textbook-stable-env`
     - How it affects files/folders:
-        - This only needs the `content` and various asset files. It will produce output HTML pages and notebook-JSON-output files in `content`. From the Fork-PR, this will be deployed to `<username>.github.io/textbook/content/preface.html` (during the final step of `pr-build-testing.yml`).
+        - This only needs the `content` and various asset files. It will change `.gitignore` so that it can track HTML files, enabling future Action-produced HTML output to be added to a future commit in the `gh-pages` branch. It will then produce output HTML pages and notebook-JSON-output files in `content`. It will then create a commit with all the output on the `gh-pages` branch. From the Fork-PR, this will be deployed to `<username>.github.io/textbook/content/preface.html` (during the final step of `pr-build-testing.yml`).
             - Note: *Only the most recent* `stable` build of the fork will be deployed to `<username>.github.io/textbook/content/preface.html`, such as https://asoplata.github.io/textbook/content/preface.html . In other words, if a user has two PRs open, then their fork-specific deployment will *only* reflect the PR that had the most *recent* successful build (this will need to be communicated to Authors).
+            - [ ] TODO: Do users' forks need to ALSO set their pages' publishing to their own `gh-pages` branch manually?
     - Failure modes:
         - *B.1.1*: If a new or updated notebook from the PR breaks this `stable` build, then the Maintainers respond accordingly:
             - *B.1.1.1*: We first assume it’s a bug in the notebook itself. Either we or the Author fix the bug in the PR, and the `stable` build is re-run automatically (thus using the build as a “test”).
@@ -387,7 +388,7 @@ Ideally, the only way that `main` branch is changed (except in cases of emergenc
         - Version: UNLIKE `deploy.yml`, `--code-version` is set to `master`
         - Env: `textbook-dev-env`
     - How it affects files/folders:
-        - This only needs the `content` and various asset files. It will produce output HTML pages and notebook-JSON-output files in `dev`. From the Fork-PR, this will be deployed to `<username>.github.io/textbook/dev/preface.html` (during the final step of `pr-build-testing.yml`).
+        - This only needs the `content` and various asset files. It will change `.gitignore` so that it can track HTML files and all files under `dev/`, enabling future Action-produced HTML output (both `content` and `dev`) to be added to a future commit in the `gh-pages` branch. It will produce output HTML pages and notebook-JSON-output files in `dev`. It will then create a commit with all the output on the `gh-pages` branch. From the Fork-PR, this will be deployed to `<username>.github.io/textbook/dev/preface.html` (during the final step of `pr-build-testing.yml`).
             - Note: *Only the most recent* `master` build of the fork will be deployed to `<username>.github.io/textbook/dev/preface.html`, such as https://asoplata.com/textbook/dev/preface.html . In other words, if a user has two PRs open, then their fork-specific deployment will *only* reflect the PR that had the most *recent* successful build (this will need to be communicated to Authors).
     - Failure modes:
         - *B.2.1*: If a new or updated notebook from the PR breaks this `master` build, then the Maintainers respond accordingly:
@@ -403,13 +404,15 @@ Ideally, the only way that `main` branch is changed (except in cases of emergenc
 
 - *B.3.* If a Fork-PR’s notebook fails BOTH `stable` and `master` builds, then the following Failure Modes apply:
     - *B.3.1.* It’s probably a bug. Fix it! (Hopefully it’s a bug with the notebook, and not our Python build code…)
-    - *B.3.2.* If it’s not a bug, then it’s probably because the notebook depends on a code change that is so new that it’s not yet merged into master. In this case, the Maintainers should do the following:
+    - *B.3.2.* If it’s not a bug, then it’s probably because the notebook depends on a "`custom`" code change that is so new that it’s not yet merged into master. In this case, the Maintainers should do the following:
         1. Include `[no ci]` in all future commit messages in order both not waste computation and to prevent overwriting of existing `dev` build output.
-        2. Run a local `--code-version=custom --custom-owner-commit=<username>:<abc123>` build that builds into `dev` and uses the corresponding owner username/commit.
-        3. Locally inspect the contents of the `dev` folder (if the Author ran `custom`) to inspect the output. 
+        2. Manually remove `dev/` from `.gitignore` in order to be able to push its output files to the PR branch.
+        3. Run a local `--code-version=custom --custom-owner-commit=<username>:<abc123>` build that builds into `dev` and uses the corresponding owner username/commit.
+        4. Locally inspect the contents of the `dev` folder (if the Author ran `custom`) to inspect the output. 
             - Note that because `[no ci]` will exclude the publishing of the fork’s `dev` content, this PR’s `dev` folder will *not* be viewable directly via Github pages.
-        4. Rename the problem notebook to `custom_only_<name>.ipynb`
-        5. Add `custom_only_<name>.ipynb` to both `skip_if_stable` and `skip_if_dev`.
+        5. Rename the problem notebook to `custom_only_<name>.ipynb`
+        6. Add `custom_only_<name>.ipynb` to both `skip_if_stable` and `skip_if_dev`.
+        7. DON'T FORGET to re-add `dev/` to `.gitignore`.
 
 ## Maintainer Tasks for `hnn-core` upgrades
 
