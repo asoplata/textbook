@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy Official Textbook Website
 
 on:
   push:
@@ -13,6 +13,13 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Check for dev/ in .gitignore
+        run: |
+          if ! grep -qx 'dev/' .gitignore; then
+            echo "dev/ not found in .gitignore, exiting."
+            exit 1
+          fi
 
       - name: Set Up Conda
         uses: conda-incubator/setup-miniconda@v3
@@ -51,13 +58,6 @@ jobs:
 
       - name: Deploy to GitHub Pages
         if: github.repository == 'jonescompneurolab/textbook' && github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
-
-      - name: Deploy to GitHub Pages (Fork)
-        if: github.repository != 'jonescompneurolab/textbook'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
