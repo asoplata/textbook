@@ -1,12 +1,15 @@
 ## Table of Contents
 
+Firstly, please see and follow our [Code of Conduct here](./CODE_OF_CONDUCT.md).
+
 1. [Contributing Content to the HNN Textbook](#1-contributing-content-to-the-hnn-textbook)
     - [How the Textbook Is Organized](#how-the-textbook-is-organized)
     - [Markdown Files](#markdown-files)
     - [Jupyter Notebooks](#jupyter-notebooks)
     - [Local Images](#local-images)
     - [Quick Reference Checklist](#quick-reference-checklist)
-2. [(Advanced) Maintainer workflow description (v3.1)](#2-advanced-maintainer-workflow-description-v31)
+2. [Building the website locally](#2-building-the-website-locally)
+3. [(Advanced) Maintainer workflow description (v3.1)](#3-advanced-maintainer-workflow-description-v31)
     - [Definitions](#definitions)
     - [Author standard-operating-procedures](#author-standard-operating-procedures)
     - [Deployment flow](#deployment-flow)
@@ -304,7 +307,32 @@ prefixes
 
 ---
 
-# 2. (Advanced) Maintainer workflow description (v3.1)
+# 2. Building the website locally
+
+This is optional.
+
+If you want to build the final HTML files yourself so that you can inspect the output bor investigate errors, we've made this easy to do. Note that Windows is not supported. You can do this via the following:
+
+1. First, you need to install [Anaconda](https://www.anaconda.com/download) if you haven't already. Restart any Terminal windows that you may have open after this.
+2. Next, ensure that `make` is installed. You can test if `make` is installed by running the command `which make` which should then return a filename. If it returns nothing, then you need to install it.
+    - (MacOS) If you don't have `make`, then you can install it via installing "Xcode Command-Line Tools", which is needed for HNN. To do this, simply run the command `xcode-select --install` and select all the default options. Make sure you restart your computer after installing this!
+    - (Linux) If you don't have `make` on Linux, then you should install whatever the "basic software building tools" package your distribution uses. As an example, on Ubuntu, this is `build-essential`. So, in the case of Ubuntu, you could install this using the following command: `sudo apt install build-essential`.
+3. We provide two different Anaconda environments, and you can install one, the other, or **both**:
+    - You can install an environment that uses the latest "stable" (i.e. officially released) version of HNN-Core by running `make create-textbook-stable-env`. This will create a new Anaconda environment named `textbook-stable-env`.
+    - You can install an environment that uses the latest "master" branch (i.e. development) version of HNN-Core by running `make create-textbook-dev-env`. This will create a new Anaconda environment named `textbook-dev-env`.
+4. Once you have created and activated whichever Anaconda environment you want to use, then the way you are expected to run a build of the website is by using the command `python build.py`, along with any optional arguments you may want.
+    - (Strongly recommended) To view what the optional arguments do, run `python build.py -h` to display the built-in help. Note that there are many arguments with many different values that you can pass, and the documentation is extensive.
+    - A default run of `python build.py` (by itself) will **NOT re-execute any Jupyter notebooks**, and is equivalent to doing a run with the following arguments:
+    ```
+    python build.py \
+        --build-directory=auto \
+        --code-version=stable \
+        --execution-type=no-execution
+    ```
+
+---
+
+# 3. (Advanced) Maintainer workflow description (v3.1)
 
 This is only for active developers or maintainers managing the repository as a whole, and useless to anyone else. This was built from the discussion of proposal v3.0 here https://www.notion.so/jonescompneurolab/Austin-Proposal-v3-0-2a244dbbcce680d3892aed671bf55132 .
 
