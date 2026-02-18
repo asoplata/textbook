@@ -83,7 +83,7 @@ jobs:
             # Should NOT re-use BUILD_FLAG for master build
             conda run -n textbook-dev-env env \
                 PYTHONUNBUFFERED=1 python build.py \
-                --execution-type updated-unskipped-notebooks --code-version=master 
+                --execution-type updated-unskipped-notebooks --code-version=master
 
       - name: Deploy to GitHub Pages (Fork)
         if: github.repository != 'jonescompneurolab/textbook'
