@@ -93,7 +93,7 @@ jobs:
 
       # For Forks only, we additionally want to build a (Master, to Dev) version of the
       # website.
-      # ----------------------------------------------------------------------------
+      # -----------------------------------------------------------------------------
       - name: Remove 'dev/' output from .gitignore
         if: github.repository != 'jonescompneurolab/textbook'
         run: |
