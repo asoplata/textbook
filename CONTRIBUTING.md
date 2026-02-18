@@ -388,14 +388,10 @@ This is only for active developers or maintainers managing the repository as a w
         - On Pull Requests, the website build in `dev` will be generated automatically into the `dev` directory. The build itself *may* (dependency on recency) be directly viewable by all in the browser by accessing the `dev` variant of the HTML files hosted by Github Pages for the corresponding fork.
         - When a Pull Request is merged into `main`, no `dev` folder will be included in the merge commit or rebase, and no `dev` build will be built in the deployment action.
 - Github Actions:
-    - `deploy.yml`: This is the "official" deployment Action. This runs on every push to any upstream branch (i.e. probably only `main`), including those from Pull Requests. This uses the latest `stable` version of `hnn-core`, then executes the notebooks according to `--execution-type updated-unskipped-notebooks` and builds a `content` build using `textbook-stable-env`. This mostly stays as it is.
-        - [ ]  TODO Code Changes required:
-            - Similar to https://github.com/jonescompneurolab/textbook/blob/52ad7e4f80097b828737ab739e412ce7fd4ac04d/.github/workflows/deploy.yml#L37 , we need to add `dev/` to the gitignore each time this runs, so that `dev` builds only stay inside Pull Requests.
-            - The "Deploy to Github Pages (Fork)" is removed, since it will be used in the next Action.
-    - `pr-build-testing.yml` : This is a new Action (similar to `hnn-core` `unix_unit_tests.yml` https://github.com/jonescompneurolab/hnn-core/blob/master/.github/workflows/unix_unit_tests.yml ) which runs on every push to Pull Requests only.
-        1. This first creates and uses `textbook-stable-env` to build a `content` build using the same steps as the `deploy.yml` Action (except for excluding the `dev` folder). The Action continues *even if there is an error with this build*.
-        2. Then, this Action creates and uses a `textbook-dev-env` to build `dev` build (also using the same `--execution-type updated-unskipped-notebooks` execution strategy). 
-        3. Finally, the output files in the Action-created `content` and `dev` directories (NOT user-pushed) are deployed to the user's fork, using the "Deploy to Github Pages (Fork)" step that was originally in `deploy.yml`.
+    - `deploy.yml`: This is the single Action used for all deployment. It runs on every push to any branch in both the upstream repository and forks. It uses conditional steps (based on `github.repository`) to handle the two scenarios:
+        - For **both** upstream and forks: Creates `textbook-stable-env` and performs a `stable` build (into `content`) using `--execution-type updated-unskipped-notebooks`. For the upstream `main` branch this build fails on error; for forks it continues on error.
+        - **Upstream-only** (`jonescompneurolab/textbook` `main` branch): Deploys the built content to the official GitHub Pages website.
+        - **Fork-only**: Additionally creates `textbook-dev-env` and performs a `master` build into `dev/`, then deploys both the stable `content` and `dev` output to the fork's GitHub Pages websites.
 
 ## Author standard-operating-procedures:
 
@@ -424,15 +420,15 @@ Ideally, the only way that `main` branch is changed (except in cases of emergenc
 
 ### B. `<fork>/textbook`'s PR-branch (three possible situations):
 
-- *B.1.* For Fork-PRs, only the `pr-build-testing.yml` Action is run. The first phase of this is the Action performing a `stable`-style build, similar to the `deploy.yml` Action on the `main` branch.
+- *B.1.* For Fork-PRs, the `deploy.yml` Action is run. The first phase of this is the Action performing a `stable`-style build, identical to what `deploy.yml` does on the `main` branch.
     - How it runs:
-        - Execution: Just like `deploy.yml`, always set to `--execution-type updated-unskipped-notebooks`.
-        - Version: Just like `deploy.yml`, `--code-version` is always using the default, which is `stable`.
-        - Env: `textbook-stable-env`
+        - Execution: `--execution-type updated-unskipped-notebooks`, same as before
+        - Version: `--code-version stable`, same as before
+        - Env: `textbook-stable-env`, same as before
     - How it affects files/folders:
-        - This only needs the `content` and various asset files. It will change `.gitignore` so that it can track HTML files, enabling future Action-produced HTML output to be added to a future commit in the `gh-pages` branch. It will then produce output HTML pages and notebook-JSON-output files in `content`. It will then create a commit with all the output on the `gh-pages` branch. From the Fork-PR, this will be deployed to `<username>.github.io/textbook/content/preface.html` (during the final step of `pr-build-testing.yml`).
-            - Note: *Only the most recent* `stable` build of the fork will be deployed to `<username>.github.io/textbook/content/preface.html`, such as https://asoplata.github.io/textbook/content/preface.html . In other words, if a user has two PRs open, then their fork-specific deployment will *only* reflect the PR that had the most *recent* successful build (this will need to be communicated to Authors).
-            - [ ] TODO: Do users' forks need to ALSO set their pages' publishing to their own `gh-pages` branch manually?
+        - This only needs the `content` and various asset files. It will change `.gitignore` so that it can track HTML files, enabling future Action-produced HTML output to be added to a future commit in the `gh-pages` branch. It will then produce output HTML pages and notebook-JSON-output files in `content`. It will then create a commit with all the output on the `gh-pages` branch. From the Fork-PR, this will be deployed to `<username>.github.io/textbook/content/preface.html` (during the final "Deploy to GitHub Pages (Fork)" step of `deploy.yml`).
+            - Note: *Only the most recent* `stable` build of the fork will be deployed to `<username>.github.io/textbook/content/preface.html`, such as https://asoplata.github.io/textbook/content/preface.html . In other words, if a user has two PRs open, then their fork-specific deployment will *only* reflect the PR that had the most *recent* successful build (this will need to be communicated to Authors if they're doing multiple PRs).
+
     - Failure modes:
         - *B.1.1*: If a new or updated notebook from the PR breaks this `stable` build, then the Maintainers respond accordingly:
             - *B.1.1.1*: We first assume it's a bug in the notebook itself. Either we or the Author fix the bug in the PR, and the `stable` build is re-run automatically (thus using the build as a "test").
@@ -442,14 +438,15 @@ Ideally, the only way that `main` branch is changed (except in cases of emergenc
                 2. Rename the version of the *changed* notebook to `master_only_<name>.ipynb`. It will be stored and accessible online, but not "published" and displayed in a webpage.
                 3. Add `master_only_<name>.ipynb` to `skip_if_stable`.
         - *B.1.2*: If the problem comes from a notebook that is *not* changed in the PR, then the Maintainers know that something has broken upstream. This means there is a new bug between an existing notebook and `stable`. (Ideally this should never happen, but it should be fixed in a new, different PR.)
-- *B.2.* For Fork-PRs, next is the second phase of `pr-build-testing.yml` . This is when the Action performs a `master` build into `dev` , independent of the output of the `stable` build in the first phase.
+
+- *B.2.* For Fork-PRs, next is the second phase of `deploy.yml`. This is when the Action performs a `master` build into `dev`, independent of the output of the `stable` build in the first phase.
     - How it runs:
-        - Execution: Just like `deploy.yml`, always set to `--execution-type updated-unskipped-notebooks`.
-        - Version: UNLIKE `deploy.yml`, `--code-version` is set to `master`
-        - Env: `textbook-dev-env`
+        - Execution: `--execution-type updated-unskipped-notebooks`, same as before
+        - Version: UNLIKE before, `--code-version` is set to `master`
+        - Env: UNLIKE before, `textbook-dev-env`
     - How it affects files/folders:
-        - This only needs the `content` and various asset files. It will change `.gitignore` so that it can track HTML files and all files under `dev/`, enabling future Action-produced HTML output (both `content` and `dev`) to be added to a future commit in the `gh-pages` branch. It will produce output HTML pages and notebook-JSON-output files in `dev`. It will then create a commit with all the output on the `gh-pages` branch. From the Fork-PR, this will be deployed to `<username>.github.io/textbook/dev/preface.html` (during the final step of `pr-build-testing.yml`).
-            - Note: *Only the most recent* `master` build of the fork will be deployed to `<username>.github.io/textbook/dev/preface.html`, such as https://asoplata.com/textbook/dev/preface.html . In other words, if a user has two PRs open, then their fork-specific deployment will *only* reflect the PR that had the most *recent* successful build (this will need to be communicated to Authors).
+        - This only needs the `content` and various asset files. It will change `.gitignore` so that it can track HTML files and all files under `dev/`, enabling future Action-produced HTML output (both `content` and `dev`) to be added to a future commit in the `gh-pages` branch. It will produce output HTML pages and notebook-JSON-output files in `dev`. It will then create a commit with all the output on the `gh-pages` branch. From the Fork-PR, this will be deployed to `<username>.github.io/textbook/dev/preface.html` (during the final "Deploy to GitHub Pages (Fork)" step of `deploy.yml`).
+            - Note: *Only the most recent* `master` build of the fork will be deployed to `<username>.github.io/textbook/dev/preface.html`, such as https://asoplata.github.io/textbook/dev/preface.html . In other words, if a user has two PRs open, then their fork-specific deployment will *only* reflect the PR that had the most *recent* successful build (this will need to be communicated to Authors if they're doing multiple PRs).
     - Failure modes:
         - *B.2.1*: If a new or updated notebook from the PR breaks this `master` build, then the Maintainers respond accordingly:
             - *B.2.1.1*: We first assume it's a bug in the notebook itself. Either we or the Author fix the bug in the PR, and the `master` build is re-run automatically (thus using the build as a "test").
@@ -466,7 +463,7 @@ Ideally, the only way that `main` branch is changed (except in cases of emergenc
     - *B.3.1.* It's probably a bug. Fix it! (Hopefully it's a bug with the notebook, and not our Python build code…)
     - *B.3.2.* If it's not a bug, then it's probably because the notebook depends on a "`custom`" code change that is so new that it's not yet merged into master. In this case, the Maintainers should do the following:
         1. Include `[no ci]` in all future commit messages in order both not waste computation and to prevent overwriting of existing `dev` build output.
-        2. Manually remove `dev/` from `.gitignore` in order to be able to push its output files to the PR branch.
+        2. Manually remove `dev/` from `.gitignore` in order to be able to push its output files to the PR branch. This will probably cause all CI runs to fail (which we want, in this case).
         3. Run a local `--code-version=custom --custom-owner-commit=<username>:<abc123>` build that builds into `dev` and uses the corresponding owner username/commit.
         4. Locally inspect the contents of the `dev` folder (if the Author ran `custom`) to inspect the output.
             - Note that because `[no ci]` will exclude the publishing of the fork's `dev` content, this PR's `dev` folder will *not* be viewable directly via Github pages.
