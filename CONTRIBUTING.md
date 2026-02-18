@@ -399,6 +399,16 @@ If an Author wants to add new or change existing MD or NB content, then they mak
 
 - The ONLY exception is if the Author wants to use a NB that requires *very* new code changes to `hnn-core` that are not yet merged into `master`(for example, if their NB relies on code that is currently only present in a Pull Request to `hnn-core`). In this case, the Author should explicitly tell the Maintainers that this is the case.
 
+## Notes for Maintainers:
+
+Due to the way we use Github Actions, for individual PRs, both a `stable` and `master`
+build should be automatically built for each fork-branch that makes a PR. However, these
+builds will NOT appear on the actual page for the Pull Request. Instead, you must go to
+the actual fork's "Actions" tab to view the build progress (example:
+https://github.com/asoplata/textbook/actions ). This is currently required in order to
+run the builds "from" the fork directly, so that they can be published on that same
+fork's Github Pages.
+
 ## Deployment flow:
 
 Maintainers are dealing with up to four possible situations here:
