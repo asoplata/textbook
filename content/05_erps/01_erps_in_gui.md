@@ -70,7 +70,7 @@ Alternatively, if you have not cloned the hnn-data repository, you can download 
 
 ### Figure 2
 
-![](images/erp_fig_02.gif)
+![Animated screenshot showing how to load ERP data file through the GUI Load data button](images/erp_fig_02.gif)
 
 </div>
 
@@ -86,7 +86,7 @@ An initial parameter set that will simulate the evoked drives that generate an e
 
 ### Figure 3
 
-![](images/erp_fig_03.gif)
+![Animated screenshot showing how to load external drives parameter file from the External drives tab](images/erp_fig_03.gif)
 
 </div>
 
@@ -100,7 +100,7 @@ To see the detailed parameter values defining each of these drives click on the 
 
 ### Figure 4
 
-![](images/erp_fig_04.png)
+![Screenshot showing External drives tab with evprox1, evdist1, and evprox2 drives configured with their timing and conductance parameters](images/erp_fig_04.png)
 
 </div>
 
@@ -144,7 +144,7 @@ Hit the `Run` button to run the simulation. A simulation log is shown under the 
 
 ### Figure 5
 
-![](images/erp_fig_05.png)
+![Screenshot of Simulation tab showing configuration for 3 trials with simulation name ERPyes-3trials before running](images/erp_fig_05.png)
 
 </div>
 
@@ -162,7 +162,7 @@ Note you can change what is shown in either of these subplots by selecting `clea
 
 ### Figure 6
 
-![](images/erp_fig_06.gif)
+![Animated screenshot showing how to create custom visualization with input histograms and dipole comparison to data using Visualization tab](images/erp_fig_06.gif)
 
 </div> 
 
@@ -174,7 +174,7 @@ Also note that in the ERP simulation shown, the raw dipole signal was smoothed u
 
 ### Figure 7
 
-![](images/erp_fig_07.png)
+![Plot showing ERP simulation without smoothing displaying higher-frequency content and noise compared to smoothed version](images/erp_fig_07.png)
 
 </div>
 
@@ -193,7 +193,7 @@ From the `Visualization` tab, select "Dipole Layers (3x1)" from the `Layout temp
 
 ### Figure 8
 
-![](images/erp_fig_08.png)
+![Layer-specific dipole visualization showing separate contributions from Layer 2/3, Layer 5, and aggregate dipole signals](images/erp_fig_08.png)
 
 </div>
 
@@ -207,7 +207,7 @@ From the `Visualization` tab, select "Drive-Spikes (2x1)" from the `Layout templ
 
 ### Figure 9
 
-![](images/erp_fig_09.png)
+![Spike rastergram showing drive histograms above and spiking activity across different neuronal populations color-coded by cell type and layer](images/erp_fig_09.png)
 
 </div>
 
@@ -221,7 +221,7 @@ HNN also allows you to generate a time-frequency representation of ERP dipole si
 
 ### Figure 10 spectrogram
 
-![](images/erp_fig_10.png)
+![Time-frequency spectrogram representation of ERP dipole signal showing frequency content evolution over time](images/erp_fig_10.png)
 
 </div>
 
@@ -237,7 +237,7 @@ Notice that when we simulated more trials, the RMSE between the data and the sim
 
 ### Figure 11 
 
-![](images/erp_fig_11.png)
+![Comparison of 10-trial simulation to experimental data showing improved fit with RMSE of 5.59](images/erp_fig_11.png)
 
 </div>
 
@@ -258,7 +258,7 @@ Then, to provide synchronous exogenous drives to all cells in the network, go to
 
 ### Figure 12 
 
-![](images/erp_fig_12.png)
+![Screenshot showing External drives parameters with all Std dev time values set to 0 for synchronous stimulation](images/erp_fig_12.png)
 
 </div>
 
@@ -268,7 +268,7 @@ After the simulation has completed, you’ll see the following output. Although 
 
 ### Figure 13
 
-![](images/erp_fig_13.png)
+![Synchronous stimulation output showing worse fit to data with RMSE of 14.15 and less variable input timing histograms](images/erp_fig_13.png)
 
 </div>
 
@@ -295,7 +295,7 @@ HNN will automatically recalculate the model fit to the data (i.e, the RMSE betw
 
 ### Figure 14  
 
-![](images/erp_fig_14.png)
+![Plot showing threshold-level parameter set applied to non-detected trial data with poor fit and RMSE of 30.83](images/erp_fig_14.png)
 
 </div>
 
@@ -315,7 +315,7 @@ You should see the new values in the dropdowns.
 
 ### Figure 15 
 
-![](images/erp_fig_15.png)
+![Screenshot showing External drives parameters loaded from ERPNo100Trials.json with adjusted timing and conductance values for non-detected trials](images/erp_fig_15.png)
 
 </div>
 
@@ -329,7 +329,7 @@ Also, notice that the mean input times are larger for all inputs, and the varian
 
 ### Figure 16 new param values vs. old param values. Highlight the old para values and compare them side-by-side
 
-![](images/erp_fig_16.png)
+![Side-by-side comparison of parameter values showing decreased pyramidal weights and delayed timing for non-detected trial simulation](images/erp_fig_16.png)
 
 </div>
 
@@ -339,7 +339,7 @@ Let’s reduce the number of trials to 2 for speed, change the simulation name, 
 
 ### Figure 17 simulation result (joyce: the simulation doesn't seem to fit very well?)
 
-![](images/erp_fig_17_no_trials_simulation.png)
+![Simulation output for non-detected trials showing fit to experimental data with adjusted parameters for weaker delayed inputs](images/erp_fig_17_no_trials_simulation.png)
 
 </div>
 
@@ -356,7 +356,7 @@ First, let's load the data from the supra-threshold detected trials `S1_SupraT.t
 
 ### Figure 18 
 
-![](images/erp_fig_18.png)
+![Comparison of threshold-level and supra-threshold experimental data waveforms showing differences in timing, amplitude, and peak sharpness](images/erp_fig_18.png)
 
 </div>
 
@@ -369,7 +369,7 @@ If we also load in the previous simulation of threshold-level detected trials, `
 
 ### Figure 19
 
-![](images/erp_fig_19.png)
+![Plot showing poor fit of threshold-level simulation to supra-threshold data with RMSE of 30.31](images/erp_fig_19.png)
 
 </div>
 
@@ -389,7 +389,7 @@ Next, let's run the simulation using the `Run` button.
 
 ### Figure 20 
 
-![](images/erp_fig_20.png)
+![Supra-threshold simulation output showing improved fit to supra-threshold data with RMSE of 24.39 and stronger earlier inputs](images/erp_fig_20.png)
 
 </div>
 
