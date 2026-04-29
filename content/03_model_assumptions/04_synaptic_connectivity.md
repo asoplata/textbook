@@ -16,7 +16,7 @@
     ![ Schematic of cortical pyramidal neurons showing intracellular current flow and the primary current dipole (Jp) indicated by red arrows.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/synaptic-connectivity.png)
     </td>
     <td style="border:none; vertical-align:middle;">
-    ![3D model of a cortical column with layer 2/3 above layer 5, showing arrays of pyramidal neurons and interspersed interneurons.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/3d-column-model.png)
+    ![3D representation of our cortical column model with the aggregate current dipole indicated by a red arrow parallel to the dendrite.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/3d-column-model.png)
     </td>
   </tr>
   <tr>
