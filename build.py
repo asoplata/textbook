@@ -273,6 +273,13 @@ Synopsis:
         directory:
 
         $ python build.py --code-version=no-check --build-directory=content
+
+    11. Do not execute any notebooks, do not convert any existing notebooks to JSON, and
+        only use *existing* JSON and MD files to regenerate the final HTML files. Only
+        HTML files will be changed with this option.
+
+        $ python build.py --code-version=no-check --build-directory=content
+        --regenerate-html-only
 """),
         formatter_class=argparse.RawTextHelpFormatter,
     )
@@ -308,30 +315,33 @@ Specify whether to build the website output files in the 'content' or 'dev' dire
             "no-check",
         ],
         help=textwrap.dedent("""
-Specify which version of HNN-core you want to use for building the textbook. The default is
-'stable'. This validates whether you have the correct version installed in your local environment
-environment unless you choose 'no-check' which simply uses the installed version without checking
-anything. The four options are:
+Specify which version of HNN-core you want to use for building the textbook.
 
-- 'stable': This builds the textbook using the latest stable version of HNN-Core. This
-    version is validated based on a request to PyPI, checking if your version is using the latest
-    stable. This produces a 'content' build, meaning it creates the output HTML files in the
-    '<textbook-root>/content' folder (unless you also pass '--build-directory=dev').
+This validates whether you have the correct version installed in your local environment
+environment unless you choose 'no-check' which simply uses the installed version without
+checking anything. The four options are:
+
+- 'stable' (default): This builds the textbook using the latest stable version of
+    HNN-Core. This version is validated based on a request to PyPI, checking if your
+    version is using the latest stable. This produces a 'content' build, meaning it
+    creates the output HTML files in the '<textbook-root>/content' folder (unless you
+    also pass '--build-directory=dev').
 - 'master': This builds the textbook using the latest development version of
-    HNN-Core. This version is validated based on a request to Github, checking if your version is
-    using the latest commit on the 'master' branch. This produces a 'dev' build, meaning it creates
-    the output HTML files in the '<textbook-root>/dev' folder (unless you also pass
-    '--build-directory=content').
+    HNN-Core. This version is validated based on a request to Github, checking if your
+    version is using the latest commit on the 'master' branch. This produces a 'dev'
+    build, meaning it creates the output HTML files in the '<textbook-root>/dev' folder
+    (unless you also pass '--build-directory=content').
 - 'custom': This builds the textbook using a custom commit and, optionally, a custom
     repository-owner's version of HNN-Core. If using this option, you must provide the
-    repository-owner and/or commit you want using the '--custom-repo-commit' argument. This version
-    is validated based on a request to Github, checking for the existence of the commit you have
-    provided. This produces a 'dev' build, meaning it creates the output HTML files in the
-    '<textbook-root>/dev' folder (unless you also pass '--build-directory=content').
+    repository-owner and/or commit you want using the '--custom-repo-commit' argument.
+    This version is validated based on a request to Github, checking for the existence
+    of the commit you have provided. This produces a 'dev' build, meaning it creates the
+    output HTML files in the '<textbook-root>/dev' folder (unless you also pass
+    '--build-directory=content').
 - 'no-check': This builds the textbook using whatever is the current installed commit of
-    HNN-Core. This does not check anything about the version you have currently installed. This
-    produces a 'dev' build, meaning it creates the output HTML files in the '<textbook-root>/dev'
-    folder (unless you also pass '--build-directory=content').
+    HNN-Core. This does not check anything about the version you have currently
+    installed. This produces a 'dev' build, meaning it creates the output HTML files in
+    the '<textbook-root>/dev' folder (unless you also pass '--build-directory=content').
 """),
     )
     parser.add_argument(
@@ -346,11 +356,12 @@ anything. The four options are:
         ],
         help=textwrap.dedent("""
 Specify different criteria for which notebooks you want to execute before converting
-them to HTML. The default is 'no-execution'. The four options are below, in order of
-more execution:
+them to HTML.
 
-- 'no-execution': This will not execute any notebooks. You may receive warnings if
-    specific notebooks should be executed.
+The four options are below, in order of more execution:
+
+- 'no-execution' (default): This will not execute any notebooks. You may receive
+    warnings if specific notebooks should be executed.
 - 'updated-unskipped-notebooks': Execute only notebooks which have been
     updated/changed or are new, excluding notebooks flagged for skipping.
 - 'all-unskipped-notebooks': Execute all notebooks except those flagged for
@@ -396,6 +407,14 @@ Optionally provide whether or not to save each Jupyter Python notebook's raw HTM
 during the build process. Defaults to False.
 """),
     )
+    parser.add_argument(
+        "--regenerate-html-only",
+        action="store_true",  # Confusingly, this defaults to False
+        help=textwrap.dedent("""
+Optionally skip all execution and conversion of Notebooks and JSON files, and instead
+ONLY rebuild the HTML output from existing JSON and MD files. Defaults to False.
+"""),
+    )
 
     # Process CLI arguments, and set paths
     # ----------------------------------------------------------------------------------
@@ -438,8 +457,8 @@ during the build process. Defaults to False.
     # ----------------------------------------------------------------------------------
     installed_commit = get_hnn_commit_hash()
 
-    # We can't pre-empt this function in the no-validation case, since the value of the
-    # hash varies between "content" and "dev" builds
+    # We can't pre-empt this function in the no-validation case, since the value of
+    # the hash varies between "content" and "dev" builds
     hnn_commit_hash = validate_hnn_versions(
         installed_commit,
         args.code_version,
@@ -458,18 +477,19 @@ during the build process. Defaults to False.
         # Override default behavior and force a "dev" build
         is_dev_build = True
 
-    # Execute appropriate Jupyter notebooks, and save their output for later webpage
-    # assembly:
-    # ----------------------------------------------------------------------------------
-    execute_and_convert_nbs_to_json(
-        content_path,
-        nb_hashes_path,
-        nb_skips_path,
-        args.execution_type,
-        is_dev_build,
-        hnn_commit_hash,
-        args.save_standalone_nb_html,
-    )
+    if not args.regenerate_html_only:
+        # Execute appropriate Jupyter notebooks, and save their output for later webpage
+        # assembly:
+        # --------------------------------------------------------------------------------
+        execute_and_convert_nbs_to_json(
+            content_path,
+            nb_hashes_path,
+            nb_skips_path,
+            args.execution_type,
+            is_dev_build,
+            hnn_commit_hash,
+            args.save_standalone_nb_html,
+        )
 
     # Finally, use the Markdown files and Jupyter notebook output to assemble the
     # webpages and website as a whole:
