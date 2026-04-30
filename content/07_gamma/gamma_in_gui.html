@@ -367,17 +367,20 @@ constant of decay of inhibition, which is mediated by strong GABA-A
 currents, as well as the excitability of the E cells (if the E cells are
 very excitable, they can fire before the inhibition has completely worn
 off, and the oscillation will be faster).</p>
-<div class="stylefig">
-###Figure 1
+<section class="stylefig">
+<h3>Figure 1</h3>
 <!-- was originally at ![](https://raw.githubusercontent.com/jonescompneurolab/hnn-tutorials/master/gamma/images/image19.png) -->
+<figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_01.png"
-alt="Schematic illustration showing PING rhythm mechanism with excitatory pyramidal neurons firing first, followed by inhibitory interneurons, with timing controlled by GABA-A decay" />
-<p align="justify">
-Schematic illustration of the circuit mechanisms underlying PING
-rhythms.
-</p>
-</div>
+alt="Schematic illustration showing the PING rhythm mechanism with excitatory pyramidal neurons firing first, followed by inhibitory interneurons, with timing controlled by GABA-A decay, adapted from several figures in the papers of the Background section" />
+<figcaption aria-hidden="true">Schematic illustration showing the PING
+rhythm mechanism with excitatory pyramidal neurons firing first,
+followed by inhibitory interneurons, with timing controlled by GABA-A
+decay, adapted from several figures in the papers of the Background
+section</figcaption>
+</figure>
+</section>
 <p>In this tutorial, we will explore the generation of PING rhythms in
 the HNN model. We will provide example parameter files and walk through
 simulations that generate gamma activity in both Layers 2/3 and Layer 5,
@@ -495,9 +498,9 @@ href="#figure-2">Figure 2</a> below.</p>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_02.png"
 alt="Screenshot of HNN GUI Network tab showing connectivity parameters with various synaptic weights between different neuron types" />
-<figcaption aria-hidden="true">Screenshot of HNN GUI Network tab showing
-connectivity parameters with various synaptic weights between different
-neuron types</figcaption>
+<figcaption aria-hidden="true">Screenshot of HNN GUI
+<code>Network</code> tab showing connectivity parameters with various
+synaptic weights between different neuron types</figcaption>
 </figure>
 </section>
 <p>In our loaded configuration file, the strengths of synaptic
@@ -562,10 +565,10 @@ will initiate the PING rhythm.</p>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_03.gif"
-alt="Animated screenshot showing External drives tab with extpois proximal Poisson drive parameters being revealed and adjusted" />
-<figcaption aria-hidden="true">Animated screenshot showing External
-drives tab with extpois proximal Poisson drive parameters being revealed
-and adjusted</figcaption>
+alt="Animated GUI screenshot showing External Drives tab with extpois proximal Poisson drive parameters being revealed and adjusted" />
+<figcaption aria-hidden="true">Animated GUI screenshot showing
+<code>External Drives</code> tab with <code>extpois</code> proximal
+Poisson drive parameters being revealed and adjusted</figcaption>
 </figure>
 </section>
 <p><a id="toc-6"></a></p>
@@ -604,10 +607,10 @@ href="#figure-4">Figure 4</a> below.</p>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_04.png"
-alt="Simulation output showing Poisson drive histogram without rhythmicity in top panel and resulting rhythmic dipole signal in bottom panel" />
-<figcaption aria-hidden="true">Simulation output showing Poisson drive
-histogram without rhythmicity in top panel and resulting rhythmic dipole
-signal in bottom panel</figcaption>
+alt="GUI screenshot of simulation output showing Poisson drive histogram without rhythmicity in top panel and resulting rhythmic dipole signal in bottom panel" />
+<figcaption aria-hidden="true">GUI screenshot of simulation output
+showing Poisson drive histogram without rhythmicity in top panel and
+resulting rhythmic dipole signal in bottom panel</figcaption>
 </figure>
 </section>
 <p>A histogram displaying the Poisson drive to the excitatory cells is
@@ -668,10 +671,11 @@ rastergram like in <a href="#figure-6">Figure 6</a> below.</li>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_06.png"
-alt="Spike rastergram showing pyramidal neurons in orange and red firing before inhibitory basket cells in blue and green, demonstrating PING rhythm dynamics" />
-<figcaption aria-hidden="true">Spike rastergram showing pyramidal
-neurons in orange and red firing before inhibitory basket cells in blue
-and green, demonstrating PING rhythm dynamics</figcaption>
+alt="GUI screenshot of spike rastergram showing pyramidal neurons in orange and red firing before inhibitory basket cells in blue and green, demonstrating the essential PING rhythm dynamics" />
+<figcaption aria-hidden="true">GUI screenshot of spike rastergram
+showing pyramidal neurons in orange and red firing before inhibitory
+basket cells in blue and green, demonstrating the essential PING rhythm
+dynamics</figcaption>
 </figure>
 </section>
 <p>Notice that the excitatory pyramidal neurons in each layer (orange
@@ -704,10 +708,10 @@ like in <a href="#figure-7">Figure 7</a> below.</li>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_07.png"
-alt="Power spectral density plots for Layer 2/3, Layer 5, and net signal showing gamma peak around 55 Hz with larger amplitude in Layer 5" />
-<figcaption aria-hidden="true">Power spectral density plots for Layer
-2/3, Layer 5, and net signal showing gamma peak around 55 Hz with larger
-amplitude in Layer 5</figcaption>
+alt="GUI screenshot of power spectral density plots for Layer 2/3, Layer 5, and aggregate signal, showing gamma peak around 55 Hz with larger amplitude in Layer 5" />
+<figcaption aria-hidden="true">GUI screenshot of power spectral density
+plots for Layer 2/3, Layer 5, and aggregate signal, showing gamma peak
+around 55 Hz with larger amplitude in Layer 5</figcaption>
 </figure>
 </section>
 <p>Notice that the power in the gamma band is much smaller in Layer 2/3
@@ -757,10 +761,10 @@ below.</p>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_08.png"
-alt="Simulation output for Layer 5 only configuration showing Poisson drive input and resulting dipole with weak PING gamma rhythm" />
-<figcaption aria-hidden="true">Simulation output for Layer 5 only
-configuration showing Poisson drive input and resulting dipole with weak
-PING gamma rhythm</figcaption>
+alt="GUI screenshot of simulation output for Layer-5-only configuration showing Poisson drive input and resulting dipole with weak PING gamma rhythm" />
+<figcaption aria-hidden="true">GUI screenshot of simulation output for
+Layer-5-only configuration showing Poisson drive input and resulting
+dipole with weak PING gamma rhythm</figcaption>
 </figure>
 </section>
 <p>However, if you create new <code>Drive-Spikes (2x1)</code> and
@@ -777,10 +781,11 @@ href="#figure-9-b">Figure 9.B</a>.</p>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_09_A.png"
-alt="Spike rastergram for Layer 5 only showing weakly synchronous pyramidal firing followed by synchronous inhibitory firing in weak PING pattern" />
-<figcaption aria-hidden="true">Spike rastergram for Layer 5 only showing
-weakly synchronous pyramidal firing followed by synchronous inhibitory
-firing in weak PING pattern</figcaption>
+alt="GUI screenshot of spike rastergram for Layer-5-only simulation showing weakly synchronous pyramidal firing followed by synchronous inhibitory firing in weak PING pattern" />
+<figcaption aria-hidden="true">GUI screenshot of spike rastergram for
+Layer-5-only simulation showing weakly synchronous pyramidal firing
+followed by synchronous inhibitory firing in weak PING
+pattern</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -788,9 +793,10 @@ firing in weak PING pattern</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_09_B.png"
-alt="Power spectral density plot for Layer 5 only showing gamma peak at approximately 55 Hz" />
-<figcaption aria-hidden="true">Power spectral density plot for Layer 5
-only showing gamma peak at approximately 55 Hz</figcaption>
+alt="GUI screenshot of power spectral density plot for Layer-5-only simulation showing gamma peak at approximately 55 Hz" />
+<figcaption aria-hidden="true">GUI screenshot of power spectral density
+plot for Layer-5-only simulation showing gamma peak at approximately 55
+Hz</figcaption>
 </figure>
 </section>
 <p>Notice the weak PING rhythm in Layer 5 consisting of weakly
@@ -823,9 +829,10 @@ href="#figure-10">Figure 10</a> below.</p>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_10.png"
-alt="Screenshot of External drives tab showing Tonic1 drive with 2 nA amplitude set for L5_pyramidal cells" />
-<figcaption aria-hidden="true">Screenshot of External drives tab showing
-Tonic1 drive with 2 nA amplitude set for L5_pyramidal cells</figcaption>
+alt="GUI screenshot of External Drives tab showing Tonic1 drive with 2 nA amplitude set for L5_pyramidal cells" />
+<figcaption aria-hidden="true">GUI screenshot of
+<code>External Drives</code> tab showing <code>Tonic1</code> drive with
+2 nA amplitude set for L5_pyramidal cells</figcaption>
 </figure>
 </section>
 <p>After adding the tonic drive, we will run a new simulation. Do the
@@ -845,10 +852,10 @@ href="#toc-7">Section 7</a> to also make <a href="#figure-11-b">Figure
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_11_A.png"
-alt="Simulation output with weak tonic input showing stabilization after 50 ms with more synchronized gamma rhythm compared to pure Poisson drive" />
-<figcaption aria-hidden="true">Simulation output with weak tonic input
-showing stabilization after 50 ms with more synchronized gamma rhythm
-compared to pure Poisson drive</figcaption>
+alt="GUI screenshot of simulation output with weak tonic input showing stabilization after 50 ms with more synchronized gamma rhythm compared to pure Poisson drive" />
+<figcaption aria-hidden="true">GUI screenshot of simulation output with
+weak tonic input showing stabilization after 50 ms with more
+synchronized gamma rhythm compared to pure Poisson drive</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -856,10 +863,10 @@ compared to pure Poisson drive</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_11_B.png"
-alt="Spike rastergram with weak tonic input showing increased pyramidal neuron synchrony while maintaining some noise from Poisson drive" />
-<figcaption aria-hidden="true">Spike rastergram with weak tonic input
-showing increased pyramidal neuron synchrony while maintaining some
-noise from Poisson drive</figcaption>
+alt="GUI screenshot of spike rastergram with weak tonic input showing increased pyramidal neuron synchrony while maintaining some noise from Poisson drive" />
+<figcaption aria-hidden="true">GUI screenshot of spike rastergram with
+weak tonic input showing increased pyramidal neuron synchrony while
+maintaining some noise from Poisson drive</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -867,10 +874,10 @@ noise from Poisson drive</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_11_C.png"
-alt="Power spectral density with weak tonic input showing gamma frequency decreased slightly to approximately 48 Hz" />
-<figcaption aria-hidden="true">Power spectral density with weak tonic
-input showing gamma frequency decreased slightly to approximately 48
-Hz</figcaption>
+alt="GUI screenshot of power spectral density with weak tonic input showing gamma frequency decreased slightly to approximately 48 Hz" />
+<figcaption aria-hidden="true">GUI screenshot of power spectral density
+with weak tonic input showing gamma frequency decreased slightly to
+approximately 48 Hz</figcaption>
 </figure>
 </section>
 <p>Note that network takes longer to stabilize due to the initial impact
@@ -928,10 +935,10 @@ href="#figure-12-c">Figure 12-C</a>, respectively.</p>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_12_A.png"
-alt="Simulation output with higher tonic input showing significantly more synchronized gamma rhythm with strong periodic deflections" />
-<figcaption aria-hidden="true">Simulation output with higher tonic input
-showing significantly more synchronized gamma rhythm with strong
-periodic deflections</figcaption>
+alt="GUI screenshot of simulation output with higher tonic input showing significantly more synchronized gamma rhythm with strong periodic deflections" />
+<figcaption aria-hidden="true">GUI screenshot of simulation output with
+higher tonic input showing significantly more synchronized gamma rhythm
+with strong periodic deflections</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -939,10 +946,10 @@ periodic deflections</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_12_B.png"
-alt="Spike rastergram with higher tonic input showing highly synchronous pyramidal and inhibitory neuron firing patterns" />
-<figcaption aria-hidden="true">Spike rastergram with higher tonic input
-showing highly synchronous pyramidal and inhibitory neuron firing
-patterns</figcaption>
+alt="GUI screenshot of spike rastergram with higher tonic input showing highly synchronous pyramidal and inhibitory neuron firing patterns" />
+<figcaption aria-hidden="true">GUI screenshot of spike rastergram with
+higher tonic input showing highly synchronous pyramidal and inhibitory
+neuron firing patterns</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -950,10 +957,10 @@ patterns</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_12_C.png"
-alt="Power spectral density with higher tonic input showing gamma frequency further decreased to approximately 44 Hz due to stronger inhibitory recruitment" />
-<figcaption aria-hidden="true">Power spectral density with higher tonic
-input showing gamma frequency further decreased to approximately 44 Hz
-due to stronger inhibitory recruitment</figcaption>
+alt="GUI screenshot of power spectral density with higher tonic input showing gamma frequency further decreased to approximately 44 Hz due to stronger inhibitory recruitment" />
+<figcaption aria-hidden="true">GUI screenshot of power spectral density
+with higher tonic input showing gamma frequency further decreased to
+approximately 44 Hz due to stronger inhibitory recruitment</figcaption>
 </figure>
 </section>
 <p>Compared to the prior <code>gamma_L5weak_tonic_01</code> simulation,
@@ -989,10 +996,10 @@ The three typical figures we’ve been using are shown below.</p>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_13_A.png"
-alt="Simulation output with weakened excitatory-to-inhibitory connections showing continued gamma rhythm with modified dynamics" />
-<figcaption aria-hidden="true">Simulation output with weakened
-excitatory-to-inhibitory connections showing continued gamma rhythm with
-modified dynamics</figcaption>
+alt="GUI screenshot of simulation output with weakened excitatory-to-inhibitory connections showing continued gamma rhythm with modified dynamics" />
+<figcaption aria-hidden="true">GUI screenshot of simulation output with
+weakened excitatory-to-inhibitory connections showing continued gamma
+rhythm with modified dynamics</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1000,10 +1007,10 @@ modified dynamics</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_13_B.png"
-alt="Spike rastergram with weakened E-to-I connections showing increased lag in inhibitory cell response to excitation" />
-<figcaption aria-hidden="true">Spike rastergram with weakened E-to-I
-connections showing increased lag in inhibitory cell response to
-excitation</figcaption>
+alt="GUI screenshot of spike rastergram with weakened E-to-I connections showing increased lag in inhibitory cell response to excitation" />
+<figcaption aria-hidden="true">GUI screenshot of spike rastergram with
+weakened E-to-I connections showing increased lag in inhibitory cell
+response to excitation</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1011,10 +1018,11 @@ excitation</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_13_C.png"
-alt="Power spectral density with weakened E-to-I connections paradoxically showing gamma frequency decreased to approximately 40 Hz due to delayed basket cell response" />
-<figcaption aria-hidden="true">Power spectral density with weakened
-E-to-I connections paradoxically showing gamma frequency decreased to
-approximately 40 Hz due to delayed basket cell response</figcaption>
+alt="GUI screenshot of power spectral density with weakened E-to-I connections paradoxically showing gamma frequency decreased to approximately 40 Hz due to delayed basket cell response" />
+<figcaption aria-hidden="true">GUI screenshot of power spectral density
+with weakened E-to-I connections paradoxically showing gamma frequency
+decreased to approximately 40 Hz due to delayed basket cell
+response</figcaption>
 </figure>
 </section>
 <p>You may be thinking something like <em>“The last several simulations
@@ -1071,10 +1079,10 @@ decreasing its
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_14_A.png"
-alt="Simulation output without inhibitory-to-inhibitory connections showing irregular and noisy gamma rhythm compared to baseline" />
-<figcaption aria-hidden="true">Simulation output without
-inhibitory-to-inhibitory connections showing irregular and noisy gamma
-rhythm compared to baseline</figcaption>
+alt="GUI screenshot of simulation output without inhibitory-to-inhibitory connections showing irregular and noisy gamma rhythm compared to baseline" />
+<figcaption aria-hidden="true">GUI screenshot of simulation output
+without inhibitory-to-inhibitory connections showing irregular and noisy
+gamma rhythm compared to baseline</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1082,10 +1090,10 @@ rhythm compared to baseline</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_14_B.png"
-alt="Spike rastergram without inhibitory-to-inhibitory connections showing desynchronized and noisy inhibitory neuron firing patterns" />
-<figcaption aria-hidden="true">Spike rastergram without
-inhibitory-to-inhibitory connections showing desynchronized and noisy
-inhibitory neuron firing patterns</figcaption>
+alt="GUI screenshot of spike rastergram without inhibitory-to-inhibitory connections showing desynchronized and noisy inhibitory neuron firing patterns" />
+<figcaption aria-hidden="true">GUI screenshot of spike rastergram
+without inhibitory-to-inhibitory connections showing desynchronized and
+noisy inhibitory neuron firing patterns</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1093,10 +1101,10 @@ inhibitory neuron firing patterns</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_14_C.png"
-alt="Power spectral density without inhibitory-to-inhibitory connections showing broader, less distinct gamma peak due to rhythm irregularity" />
-<figcaption aria-hidden="true">Power spectral density without
-inhibitory-to-inhibitory connections showing broader, less distinct
-gamma peak due to rhythm irregularity</figcaption>
+alt="GUI screenshot of power spectral density without inhibitory-to-inhibitory connections showing broader, less distinct gamma peak due to rhythm irregularity" />
+<figcaption aria-hidden="true">GUI screenshot of power spectral density
+without inhibitory-to-inhibitory connections showing broader, less
+distinct gamma peak due to rhythm irregularity</figcaption>
 </figure>
 </section>
 <p>Notice that the rhythm is still present but is much less regular and
@@ -1116,8 +1124,8 @@ frequency:</p>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_15.png"
-alt="Spectrogram without inhibitory-to-inhibitory connections showing unstable gamma oscillation that gradually changes frequency over time" />
-<figcaption aria-hidden="true">Spectrogram without
+alt="GUI screenshot of spectrogram without inhibitory-to-inhibitory connections showing unstable gamma oscillation that gradually changes frequency over time" />
+<figcaption aria-hidden="true">GUI screenshot of spectrogram without
 inhibitory-to-inhibitory connections showing unstable gamma oscillation
 that gradually changes frequency over time</figcaption>
 </figure>
@@ -1152,10 +1160,10 @@ below.</li>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_16.png"
-alt="Screenshot of Network tab Cell parameters showing L5 Pyramidal synapses with GABAA decay time reduced from 5 to 2 ms" />
-<figcaption aria-hidden="true">Screenshot of Network tab Cell parameters
-showing L5 Pyramidal synapses with GABAA decay time reduced from 5 to 2
-ms</figcaption>
+alt="GUI Screenshot of Network tab Cell parameters showing L5 Pyramidal synapses with GABAA decay time reduced from 5 to 2 ms" />
+<figcaption aria-hidden="true">GUI Screenshot of <code>Network</code>
+tab Cell parameters showing L5 Pyramidal synapses with GABAA decay time
+reduced from 5 to 2 ms</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1163,10 +1171,10 @@ ms</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_17_A.png"
-alt="Simulation output with faster GABAA decay showing increased gamma frequency as pyramidal neurons recover more quickly from inhibition" />
-<figcaption aria-hidden="true">Simulation output with faster GABAA decay
-showing increased gamma frequency as pyramidal neurons recover more
-quickly from inhibition</figcaption>
+alt="GUI screenshot of simulation output with faster GABAA decay showing increased gamma frequency as pyramidal neurons recover more quickly from inhibition" />
+<figcaption aria-hidden="true">GUI screenshot of simulation output with
+faster GABAA decay showing increased gamma frequency as pyramidal
+neurons recover more quickly from inhibition</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1174,10 +1182,10 @@ quickly from inhibition</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_17_B.png"
-alt="Spike rastergram with faster GABAA decay showing pyramidal neurons firing more rapidly after inhibitory events" />
-<figcaption aria-hidden="true">Spike rastergram with faster GABAA decay
-showing pyramidal neurons firing more rapidly after inhibitory
-events</figcaption>
+alt="GUI screenshot of spike rastergram with faster GABAA decay showing pyramidal neurons firing more rapidly after inhibitory events" />
+<figcaption aria-hidden="true">GUI screenshot of spike rastergram with
+faster GABAA decay showing pyramidal neurons firing more rapidly after
+inhibitory events</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1185,9 +1193,10 @@ events</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_17_C.png"
-alt="Power spectral density with faster GABAA decay showing gamma peak increased to approximately 60 Hz" />
-<figcaption aria-hidden="true">Power spectral density with faster GABAA
-decay showing gamma peak increased to approximately 60 Hz</figcaption>
+alt="GUI screenshot of power spectral density with faster GABAA decay showing gamma peak increased to approximately 60 Hz" />
+<figcaption aria-hidden="true">GUI screenshot of power spectral density
+with faster GABAA decay showing gamma peak increased to approximately 60
+Hz</figcaption>
 </figure>
 </section>
 <p>Notice that the rhythm is now faster at ~60 Hz (compare <a
@@ -1273,9 +1282,9 @@ href="#figure-18">Figure 18</a> below.</p>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_18.png"
 alt="Screenshot of External drives tab showing Tonic0 drive with 4 nA to L2_pyramidal and 6 nA to L5_pyramidal cells for strong PING setup" />
-<figcaption aria-hidden="true">Screenshot of External drives tab showing
-Tonic0 drive with 4 nA to L2_pyramidal and 6 nA to L5_pyramidal cells
-for strong PING setup</figcaption>
+<figcaption aria-hidden="true">Screenshot of <code>External</code>
+drives tab showing <code>Tonic0</code> drive with 4 nA to L2_pyramidal
+and 6 nA to L5_pyramidal cells for strong PING setup</figcaption>
 </figure>
 </section>
 <p>Finally, let’s run the simulation:</p>
@@ -1292,10 +1301,10 @@ including generating the spectrogram.</li>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_19_A.png"
-alt="Simulation output for strong PING showing sharp downward dipole deflections from highly synchronous pyramidal and inhibitory firing in both layers" />
-<figcaption aria-hidden="true">Simulation output for strong PING showing
-sharp downward dipole deflections from highly synchronous pyramidal and
-inhibitory firing in both layers</figcaption>
+alt="GUI screenshot of simulation output for strong PING showing sharp downward dipole deflections from highly synchronous pyramidal and inhibitory firing in both layers" />
+<figcaption aria-hidden="true">GUI screenshot of simulation output for
+strong PING showing sharp downward dipole deflections from highly
+synchronous pyramidal and inhibitory firing in both layers</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1303,12 +1312,10 @@ inhibitory firing in both layers</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_19_B.png"
-alt="Spike rastergram for strong PING showing highly synchronous firing in both Layer 2/3 and Layer 5 with distinct E-I firing patternsSpike rastergram for strong PING showing highly synchronous firing in both Layer 2/3 and Layer 5 with distinct E-I firing patterns" />
-<figcaption aria-hidden="true">Spike rastergram for strong PING showing
-highly synchronous firing in both Layer 2/3 and Layer 5 with distinct
-E-I firing patternsSpike rastergram for strong PING showing highly
-synchronous firing in both Layer 2/3 and Layer 5 with distinct E-I
-firing patterns</figcaption>
+alt="GUI screenshot of spike rastergram for strong PING showing highly synchronous firing in both Layer 2/3 and Layer 5 with distinct E-I firing patterns" />
+<figcaption aria-hidden="true">GUI screenshot of spike rastergram for
+strong PING showing highly synchronous firing in both Layer 2/3 and
+Layer 5 with distinct E-I firing patterns</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1316,11 +1323,10 @@ firing patterns</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_19_C.png"
-alt="Power spectral density for strong PING showing distinct peaks at approximately 45 Hz in Layer 5 and 85 Hz in both layersPower spectral density for strong PING showing distinct peaks at approximately 45 Hz in Layer 5 and 85 Hz in both layers" />
-<figcaption aria-hidden="true">Power spectral density for strong PING
-showing distinct peaks at approximately 45 Hz in Layer 5 and 85 Hz in
-both layersPower spectral density for strong PING showing distinct peaks
-at approximately 45 Hz in Layer 5 and 85 Hz in both layers</figcaption>
+alt="GUI screenshot of power spectral density for strong PING showing distinct peaks at approximately 45 Hz in Layer 5 and 85 Hz in both layers" />
+<figcaption aria-hidden="true">GUI screenshot of power spectral density
+for strong PING showing distinct peaks at approximately 45 Hz in Layer 5
+and 85 Hz in both layers</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1328,12 +1334,10 @@ at approximately 45 Hz in Layer 5 and 85 Hz in both layers</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_19_D.png"
-alt="Spectrogram for strong PING showing sustained gamma oscillations at approximately 45 Hz throughout the simulation periodSpectrogram for strong PING showing sustained gamma oscillations at approximately 45 Hz throughout the simulation period" />
-<figcaption aria-hidden="true">Spectrogram for strong PING showing
-sustained gamma oscillations at approximately 45 Hz throughout the
-simulation periodSpectrogram for strong PING showing sustained gamma
-oscillations at approximately 45 Hz throughout the simulation
-period</figcaption>
+alt="GUI screenshot of spectrogram for strong PING showing sustained gamma oscillations at approximately 45 Hz throughout the simulation period" />
+<figcaption aria-hidden="true">GUI screenshot of spectrogram for strong
+PING showing sustained gamma oscillations at approximately 45 Hz
+throughout the simulation period</figcaption>
 </figure>
 </section>
 <p>In this simulation, there are no spiking inputs provided to the
@@ -1456,12 +1460,10 @@ interactions that underlie the PING mechanism.</p>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_20_A.png"
-alt="Simulation output with 50 Hz rhythmic subthreshold drive showing clear gamma rhythm produced without any spiking activitySimulation output with 50 Hz rhythmic subthreshold drive showing clear gamma rhythm produced without any spiking activity" />
-<figcaption aria-hidden="true">Simulation output with 50 Hz rhythmic
-subthreshold drive showing clear gamma rhythm produced without any
-spiking activitySimulation output with 50 Hz rhythmic subthreshold drive
-showing clear gamma rhythm produced without any spiking
-activity</figcaption>
+alt="GUI screenshot of simulation output with 50 Hz rhythmic subthreshold drive showing clear gamma rhythm produced without any spiking activity" />
+<figcaption aria-hidden="true">GUI screenshot of simulation output with
+50 Hz rhythmic subthreshold drive showing clear gamma rhythm produced
+without any spiking activity</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1469,12 +1471,10 @@ activity</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_20_B.png"
-alt="Empty spike rastergram demonstrating that rhythmic drive simulation generates subthreshold gamma oscillations without neuronal firingEmpty spike rastergram demonstrating that rhythmic drive simulation generates subthreshold gamma oscillations without neuronal firing" />
-<figcaption aria-hidden="true">Empty spike rastergram demonstrating that
-rhythmic drive simulation generates subthreshold gamma oscillations
-without neuronal firingEmpty spike rastergram demonstrating that
-rhythmic drive simulation generates subthreshold gamma oscillations
-without neuronal firing</figcaption>
+alt="GUI screenshot of empty spike rastergram demonstrating that rhythmic drive simulation generates subthreshold gamma oscillations without neuronal firing" />
+<figcaption aria-hidden="true">GUI screenshot of empty spike rastergram
+demonstrating that rhythmic drive simulation generates subthreshold
+gamma oscillations without neuronal firing</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1482,11 +1482,10 @@ without neuronal firing</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_20_C.png"
-alt="Power spectral density for rhythmic drive showing dominant 50 Hz peak generated solely by Layer 5 pyramidal neuronsPower spectral density for rhythmic drive showing dominant 50 Hz peak generated solely by Layer 5 pyramidal neurons" />
-<figcaption aria-hidden="true">Power spectral density for rhythmic drive
-showing dominant 50 Hz peak generated solely by Layer 5 pyramidal
-neuronsPower spectral density for rhythmic drive showing dominant 50 Hz
-peak generated solely by Layer 5 pyramidal neurons</figcaption>
+alt="GUI screenshot of power spectral density for rhythmic drive showing dominant 50 Hz peak generated solely by Layer 5 pyramidal neurons" />
+<figcaption aria-hidden="true">GUI screenshot of power spectral density
+for rhythmic drive showing dominant 50 Hz peak generated solely by Layer
+5 pyramidal neurons</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1494,12 +1493,10 @@ peak generated solely by Layer 5 pyramidal neurons</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_20_D.png"
-alt="Spectrogram for rhythmic drive showing consistent 50 Hz gamma activity throughout the simulation with minimal frequency variationSpectrogram for rhythmic drive showing consistent 50 Hz gamma activity throughout the simulation with minimal frequency variation" />
-<figcaption aria-hidden="true">Spectrogram for rhythmic drive showing
-consistent 50 Hz gamma activity throughout the simulation with minimal
-frequency variationSpectrogram for rhythmic drive showing consistent 50
-Hz gamma activity throughout the simulation with minimal frequency
-variation</figcaption>
+alt="GUI screenshot of spectrogram for rhythmic drive showing consistent 50 Hz gamma activity throughout the simulation with minimal frequency variation" />
+<figcaption aria-hidden="true">GUI screenshot of spectrogram for
+rhythmic drive showing consistent 50 Hz gamma activity throughout the
+simulation with minimal frequency variation</figcaption>
 </figure>
 </section>
 <p>The net dipole signal in this simulation, shown in <a
@@ -1540,12 +1537,10 @@ network.</li>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_21_A.png"
-alt="Simulation output with noisy rhythmic drive showing gamma rhythm with increased temporal variability compared to low-noise conditionSimulation output with noisy rhythmic drive showing gamma rhythm with increased temporal variability compared to low-noise condition" />
-<figcaption aria-hidden="true">Simulation output with noisy rhythmic
-drive showing gamma rhythm with increased temporal variability compared
-to low-noise conditionSimulation output with noisy rhythmic drive
-showing gamma rhythm with increased temporal variability compared to
-low-noise condition</figcaption>
+alt="GUI screenshot of simulation output with noisy rhythmic drive showing gamma rhythm with increased temporal variability compared to low-noise condition" />
+<figcaption aria-hidden="true">GUI screenshot of simulation output with
+noisy rhythmic drive showing gamma rhythm with increased temporal
+variability compared to low-noise condition</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1553,12 +1548,10 @@ low-noise condition</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_21_B.png"
-alt="Power spectral density with noisy rhythmic drive showing broader 50 Hz gamma peak plus lower-frequency components due to increased variabilityPower spectral density with noisy rhythmic drive showing broader 50 Hz gamma peak plus lower-frequency components due to increased variability" />
-<figcaption aria-hidden="true">Power spectral density with noisy
-rhythmic drive showing broader 50 Hz gamma peak plus lower-frequency
-components due to increased variabilityPower spectral density with noisy
-rhythmic drive showing broader 50 Hz gamma peak plus lower-frequency
-components due to increased variability</figcaption>
+alt="GUI screenshot of power spectral density with noisy rhythmic drive showing broader 50 Hz gamma peak plus lower-frequency components due to increased variability" />
+<figcaption aria-hidden="true">GUI screenshot of power spectral density
+with noisy rhythmic drive showing broader 50 Hz gamma peak plus
+lower-frequency components due to increased variability</figcaption>
 </figure>
 </section>
 <section class="stylefig">
@@ -1566,12 +1559,10 @@ components due to increased variability</figcaption>
 <figure>
 <img
 src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/07_gamma/gamma_fig_21_C.png"
-alt="Spectrogram with noisy rhythmic drive showing intermittent and less consistent gamma events at 50 Hz compared to low-noise conditionSpectrogram with noisy rhythmic drive showing intermittent and less consistent gamma events at 50 Hz compared to low-noise condition" />
-<figcaption aria-hidden="true">Spectrogram with noisy rhythmic drive
-showing intermittent and less consistent gamma events at 50 Hz compared
-to low-noise conditionSpectrogram with noisy rhythmic drive showing
-intermittent and less consistent gamma events at 50 Hz compared to
-low-noise condition</figcaption>
+alt="GUI screenshot of spectrogram with noisy rhythmic drive showing intermittent and less consistent gamma events at 50 Hz compared to low-noise condition" />
+<figcaption aria-hidden="true">GUI screenshot of spectrogram with noisy
+rhythmic drive showing intermittent and less consistent gamma events at
+50 Hz compared to low-noise condition</figcaption>
 </figure>
 </section>
 <p>Due to the higher variability in synaptic input timing, there is now
