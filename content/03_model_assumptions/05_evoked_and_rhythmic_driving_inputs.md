@@ -17,10 +17,10 @@ At rest, the default model does not generate activity. Instead, we use exogenous
 <table style="border:none">
   <tr>
     <td style="border:none; width=50%">
-    ![Schematic showing proximal inputs targeting basal dendrites of layer 2/3 and layer 5 pyramidal neurons, with red arrows indicating upward current flow towards supragranular layers ](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/prox-drive.png)
+    ![Schematic with red lines as proximal inputs targeting basal dendrites of layer 2/3 and layer 5 pyramidal neurons. Red arrows run up through the vertical apical dendrites, indicating upward current flow towards supragranular layers ](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/prox-drive.png)
     </td>
     <td style="border:none; width=50%; vertical-align:middle;">
-    ![Schematic showing distal inputs targeting distal apical dendrites of layer 5 and layer 2/3 pyramidal neurons, with green arrows indicating downward current flow towards infragranular layers ](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/dist-drive.png)
+    ![Schematic with green lines as distal inputs targeting distal apical dendrites of layer 5 and layer 2/3 pyramidal neurons. Green arrows run down through the vertical apical dendrites, indicating downward current flow towards infragranular layers ](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/dist-drive.png)
     </td>
   </tr>
 </table>
