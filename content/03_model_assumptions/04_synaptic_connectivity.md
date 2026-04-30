@@ -13,7 +13,7 @@
 <table style="border:none">
   <tr>
     <td style="border:none" width=>
-    ![ Schematic of cortical pyramidal neurons showing intracellular current flow and the primary current dipole (Jp) indicated by red arrows.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/synaptic-connectivity.png)
+    ![ Schematic of our cortical column model with red arrows down the vertical dendrites, indicating intracellular electrical currents. Neurons are connected to eachother and external inputs.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/synaptic-connectivity.png)
     </td>
     <td style="border:none; vertical-align:middle;">
     ![3D representation of our cortical column model with the aggregate current dipole indicated by a red arrow parallel to the dendrite.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/3d-column-model.png)
@@ -37,7 +37,7 @@ Neurons in the model are arranged in three dimensions. The XY plane is used to a
 
 
 <div style="display:block; width:100%; margin: 0 auto;">
-![3D visualization of the default cortical column model showing red layer 5 pyramidal neurons, green layer 2/3 pyramidal neurons, white layer 2/3 interneurons, and blue layer 5 interneurons.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/colored-column-model.png)
+![3D visualization of the default cortical column model. Green layer 2/3 pyramidal neurons are shorter and closer to the cortical surface than red layer 5 pyramidal neurons](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/03_assumptions/images/colored-column-model.png)
 </div>
 
 The illustration below shows a schematic of local network connectivity. The blue cells are pyramidal cells, while the orange circles represent the interneurons. The lines between neurons represent local synaptic connections. Lines ending with a circle are excitatory (AMPA/NMDA) synapses, while lines ending with a line are inhibitory (GABAA/GABAB) synapses. Note that within a cortical layer there is recurrent connectivity between neurons of a given type (Pyramidal neuron to Pyramidal neuron, interneuron to interneuron), Pyramidal neuron to interneuron connectivity, and synaptic inhibition from interneurons onto pyramidal neurons. The following synaptic connections are present across cortical layers: layer 2/3 pyramidal neurons to layer 5 pyramidal neurons, layer 2/3 interneurons to layer 5 pyramidal neurons, layer 2/3 pyramidal neurons to layer 5 interneurons. Note that although not shown in the figure, there are also inhibitory synaptic connections between interneurons within a layer. The connectivity details are based on the neocortical microcircuit wiring patterns determined in experiments.
