@@ -274,19 +274,15 @@
     <div id="content">
 
 <!--
-# Title: 4.2 API Tutorial of ERPs Simulation
-# Updated: 2025-01-29
+# Title: 7.12 Replaying Spike Data as Input
+# Updated: 2025-02-04
 #
 # Contributors:
-    # Dylan Daniels
-    # Mainak Jas <mmjas@mgh.harvard.edu>
-    # Sam Neymotin <samnemo@gmail.com>
-    # Blake Caldwell <blake_caldwell@brown.edu>
-    # Christopher Bailey <cjb@cfin.au.dk>
+    # Maira Usman
 -->
 
 		<div class="notebook-download-wrapper">
-		    <a href='plot_simulate_evoked.ipynb' download>
+		    <a href='replaying_spike_data_as_input_notebook.ipynb' download>
 		        <button class="notebook-download">
 		            <svg xmlns="http://www.w3.org/2000/svg"
 		                width="20"
@@ -308,514 +304,14 @@
 		</div>
 
 
-<div class='markdown-cell'>
-    <h1>4.2 API Tutorial of Event Related Potentials (ERPs) Simulation</h1>
-
-</div>
-
-
-                <!-- markdown cell -->
                 <div class='markdown-cell'>
-                    <p>This example demonstrates how to simulate a threshold level tactile
-evoked response, as detailed in the <a href="">HNN GUI ERP tutorial</a>,
-using HNN-core. We recommend you first review the GUI tutorial.</p>
-<p>The workflow below recreates an example of the threshold level
-tactile evoked response, as observed in Jones et al. J. Neuroscience
-2007 [1], albeit without a direct comparison to the recorded data.</p>
-
-                </div>
-
-
-                <!-- code cell -->
-                <div class='code-cell'>
-                    <code class='language-python'>
-                        # Authors: Mainak Jas <mmjas@mgh.harvard.edu>
-#          Sam Neymotin <samnemo@gmail.com>
-#          Blake Caldwell <blake_caldwell@brown.edu>
-#          Christopher Bailey <cjb@cfin.au.dk>
-
-import os.path as op
-import tempfile
-
-import matplotlib.pyplot as plt 
-                    </code>
-                </div>
-
-
-<!-- markdown cell -->
-<div class='markdown-cell'>
-    <p>Let us import hnn_core</p>
-
-</div>
-
-
-                <!-- code cell -->
-                <div class='code-cell'>
-                    <code class='language-python'>
-                        import hnn_core
-from hnn_core import simulate_dipole, jones_2009_model
-from hnn_core.viz import plot_dipole
-                    </code>
-                </div>
-
-
-                <!-- markdown cell -->
-                <div class='markdown-cell'>
-                    <p>Let us first create our default network and visualize the cells
-inside it.</p>
-
-                </div>
-
-
-                <!-- code cell -->
-                <div class='code-cell'>
-                    <code class='language-python'>
-                        net = jones_2009_model()
-net.plot_cells()
-net.cell_types['L5_pyramidal']['cell_object'].plot_morphology();
-                    </code>
-                </div>
-
-
-                <!-- code cell output -->
-                <div class='output-cell'>
-                    <div class='output-label'>
-                        Out:
-                    </div>
-                    <div class='output-code'>
-
-        &lt;Figure size 640x480 with 1 Axes&gt;
-                    </div>
-                </div>
-
-
-<!-- code cell image -->
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_01.png'/>
-</div>
-
-
-                <!-- code cell output -->
-                <div class='output-cell'>
-                    <div class='output-label'>
-                        Out:
-                    </div>
-                    <div class='output-code'>
-
-        &lt;Figure size 640x480 with 1 Axes&gt;
-                    </div>
-                </div>
-
-
-<!-- code cell image -->
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_02.png'/>
-</div>
-
-
-                <!-- markdown cell -->
-                <div class='markdown-cell'>
-                    <p>The network of cells is now defined, to which we add external drives
-as required. Weights are prescribed separately for AMPA and NMDA
-receptors (receptors that are not used can be omitted or set to zero).
-The possible drive types include the following:</p>
-<ul>
-<li><code>hnn_core.Network.add_evoked_drive</code></li>
-<li><code>hnn_core.Network.add_poisson_drive</code></li>
-<li><code>hnn_core.Network.add_bursty_drive</code></li>
-</ul>
-
-                </div>
-
-
-<!-- markdown cell -->
-<div class='markdown-cell'>
-    <p>First, we add a distal evoked drive</p>
-
-</div>
-
-
-                <!-- code cell -->
-                <div class='code-cell'>
-                    <code class='language-python'>
-                        weights_ampa_d1 = {
-    'L2_basket': 0.006562,
-    'L2_pyramidal': .000007,
-    'L5_pyramidal': 0.142300
-}
-weights_nmda_d1 = {
-    'L2_basket': 0.019482,
-    'L2_pyramidal': 0.004317,
-    'L5_pyramidal': 0.080074
-}
-synaptic_delays_d1 = {
-    'L2_basket': 0.1,
-    'L2_pyramidal': 0.1,
-    'L5_pyramidal': 0.1
-}
-
-net.add_evoked_drive(
-    'evdist1',
-    mu=63.53,
-    sigma=3.85,
-    numspikes=1,
-    weights_ampa=weights_ampa_d1,
-    weights_nmda=weights_nmda_d1,
-    location='distal',
-    synaptic_delays=synaptic_delays_d1,
-    event_seed=274
-)
-                    </code>
-                </div>
-
-
-<!-- markdown cell -->
-<div class='markdown-cell'>
-    <p>Then, we add two proximal drives</p>
-
-</div>
-
-
-                <!-- code cell -->
-                <div class='code-cell'>
-                    <code class='language-python'>
-                        weights_ampa_p1 = {
-    'L2_basket': 0.08831,
-    'L2_pyramidal': 0.01525,
-    'L5_basket': 0.19934,
-    'L5_pyramidal': 0.00865
-    }
-synaptic_delays_prox = {
-    'L2_basket': 0.1,
-    'L2_pyramidal': 0.1,
-    'L5_basket': 1.,
-    'L5_pyramidal': 1.
-    }
-
-# all NMDA weights are zero; pass None explicitly
-net.add_evoked_drive(
-    'evprox1',
-    mu=26.61,
-    sigma=2.47,
-    numspikes=1,
-    weights_ampa=weights_ampa_p1,
-    weights_nmda=None,
-    location='proximal',
-    synaptic_delays=synaptic_delays_prox,
-    event_seed=544
-)
-
-# Second proximal evoked drive. NB: only AMPA weights differ from first
-weights_ampa_p2 = {
-    'L2_basket': 0.000003,
-    'L2_pyramidal': 1.438840,
-    'L5_basket': 0.008958,
-    'L5_pyramidal': 0.684013
-    }
-
-# all NMDA weights are zero; omit weights_nmda (defaults to None)
-net.add_evoked_drive(
-    'evprox2',
-    mu=137.12,
-    sigma=8.33,
-    numspikes=1,
-    weights_ampa=weights_ampa_p2,
-    location='proximal',
-    synaptic_delays=synaptic_delays_prox,
-    event_seed=814
-)
-                    </code>
-                </div>
-
-
-                <!-- markdown cell -->
-                <div class='markdown-cell'>
-                    <p>Now let's simulate the dipole, running 2 trials with the
-<code>hnn_core.parallel_backends.Joblib</code> backend. To run them in
-parallel we could set <code>n_jobs</code> to equal the number of trials.
-The <code>Joblib</code> backend allows running the simulations in
-parallel across trials.</p>
-
-                </div>
-
-
-                <!-- code cell -->
-                <div class='code-cell'>
-                    <code class='language-python'>
-                        from hnn_core import JoblibBackend
-
-with JoblibBackend(n_jobs=2):
-    dpls = simulate_dipole(net, tstop=170., n_trials=2)
-                    </code>
-                </div>
-
-
-                <!-- code cell output -->
-                <div class='output-cell'>
-                    <div class='output-label'>
-                        Out:
-                    </div>
-                    <div class='output-code'>
-
-        Joblib will run 2 trial(s) in parallel by distributing trials over 2 jobs.
-
-        Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
-Building the NEURON model
-Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
-Building the NEURON model
-
-        [Done]
-Trial 1: 0.03 ms...
-[Done]
-Trial 2: 0.03 ms...
-
-        Trial 1: 10.0 ms...
-Trial 2: 10.0 ms...
-
-        Trial 1: 20.0 ms...
-Trial 2: 20.0 ms...
-
-        Trial 1: 30.0 ms...
-Trial 2: 30.0 ms...
-
-        Trial 1: 40.0 ms...
-
-        Trial 2: 40.0 ms...
-
-        Trial 1: 50.0 ms...
-
-        Trial 2: 50.0 ms...
-
-        Trial 1: 60.0 ms...
-
-        Trial 2: 60.0 ms...
-
-        Trial 1: 70.0 ms...
-
-        Trial 2: 70.0 ms...
-
-        Trial 1: 80.0 ms...
-
-        Trial 2: 80.0 ms...
-
-        Trial 1: 90.0 ms...
-
-        Trial 2: 90.0 ms...
-
-        Trial 1: 100.0 ms...
-
-        Trial 2: 100.0 ms...
-
-        Trial 1: 110.0 ms...
-
-        Trial 2: 110.0 ms...
-
-        Trial 1: 120.0 ms...
-
-        Trial 2: 120.0 ms...
-
-        Trial 1: 130.0 ms...
-
-        Trial 2: 130.0 ms...
-
-        Trial 1: 140.0 ms...
-
-        Trial 2: 140.0 ms...
-
-        Trial 1: 150.0 ms...
-
-        Trial 2: 150.0 ms...
-
-        Trial 1: 160.0 ms...
-
-        Trial 2: 160.0 ms...
-
-                    </div>
-                </div>
-
-
-                <!-- markdown cell -->
-                <div class='markdown-cell'>
-                    <p>Rather than reading smoothing and scaling parameters from file, we
-recommend explicit use of the
-<code>~hnn_core.dipole.Dipole.smooth</code> and
-<code>~hnn_core.dipole.Dipole.scale</code> methods instead. Note that
-both methods operate in-place, i.e., the objects are modified.</p>
-
-                </div>
-
-
-                <!-- code cell -->
-                <div class='code-cell'>
-                    <code class='language-python'>
-                        window_len, scaling_factor = 30, 3000
-for dpl in dpls:
-    dpl.smooth(window_len).scale(scaling_factor)
-                    </code>
-                </div>
-
-
-                <!-- markdown cell -->
-                <div class='markdown-cell'>
-                    <p>Plot the amplitudes of the simulated aggregate dipole moments over
-time</p>
-
-                </div>
-
-
-                <!-- code cell -->
-                <div class='code-cell'>
-                    <code class='language-python'>
-                        import matplotlib.pyplot as plt
-fig, axes = plt.subplots(
-    2,
-    1, 
-    sharex=True,
-    figsize=(6, 6),
-    constrained_layout=True
-)
-
-plot_dipole(
-    dpls,
-    ax=axes[0],
-    layer='agg',
-    show=False
-)
-
-net.cell_response.plot_spikes_hist(
-    ax=axes[1],
-    spike_types=['evprox', 'evdist']
-);
-                    </code>
-                </div>
-
-
-                <!-- code cell output -->
-                <div class='output-cell'>
-                    <div class='output-label'>
-                        Out:
-                    </div>
-                    <div class='output-code'>
-
-        &lt;Figure size 600x600 with 2 Axes&gt;
-                    </div>
-                </div>
-
-
-<!-- code cell image -->
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_03.png'/>
-</div>
-
-
-                <!-- markdown cell -->
-                <div class='markdown-cell'>
-                    <p>If you want to analyze how the different cortical layers contribute
-to different net waveform features, then instead of passing
-<code>agg</code> to <code>layer</code>, you can provide a list of layers
-to be visualized and optionally a list of axes to <code>ax</code> to
-visualize the dipole moments separately.</p>
-
-                </div>
-
-
-                <!-- code cell -->
-                <div class='code-cell'>
-                    <code class='language-python'>
-                        plot_dipole(
-    dpls,
-    average=False,
-    layer=['L2', 'L5', 'agg'],
-    show=False
-);
-                    </code>
-                </div>
-
-
-                <!-- code cell output -->
-                <div class='output-cell'>
-                    <div class='output-label'>
-                        Out:
-                    </div>
-                    <div class='output-code'>
-
-        &lt;Figure size 640x480 with 3 Axes&gt;
-                    </div>
-                </div>
-
-
-<!-- code cell image -->
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_04.png'/>
-</div>
-
-
-                <!-- markdown cell -->
-                <div class='markdown-cell'>
-                    <p>Now, let us try to make the exogenous driving inputs to the cells
-synchronous and see what happens. This is achieved by setting
-<code>n_drive_cells=1</code> and <code>cell_specific=False</code> when
-adding each drive.</p>
-
-                </div>
-
-
-                <!-- code cell -->
-                <div class='code-cell'>
-                    <code class='language-python'>
-                        net_sync = jones_2009_model()
-
-n_drive_cells=1
-cell_specific=False
-
-net_sync.add_evoked_drive(
-    'evdist1',
-    mu=63.53,
-    sigma=3.85,
-    numspikes=1,
-    weights_ampa=weights_ampa_d1,
-    weights_nmda=weights_nmda_d1,
-    location='distal',
-    n_drive_cells=n_drive_cells,
-    cell_specific=cell_specific,
-    synaptic_delays=synaptic_delays_d1,
-    event_seed=274
-)
-
-net_sync.add_evoked_drive(
-    'evprox1',
-    mu=26.61,
-    sigma=2.47,
-    numspikes=1,
-    weights_ampa=weights_ampa_p1,
-    weights_nmda=None,
-    location='proximal',
-    n_drive_cells=n_drive_cells,
-    cell_specific=cell_specific,
-    synaptic_delays=synaptic_delays_prox,
-    event_seed=544
-)
-
-net_sync.add_evoked_drive(
-    'evprox2',
-    mu=137.12,
-    sigma=8.33,
-    numspikes=1,
-    weights_ampa=weights_ampa_p2,
-    location='proximal',
-    n_drive_cells=n_drive_cells,
-    cell_specific=cell_specific,
-    synaptic_delays=synaptic_delays_prox,
-    event_seed=814
-)
-                    </code>
-                </div>
-
-
-                <!-- markdown cell -->
-                <div class='markdown-cell'>
-                    <p>You may interrogate current values defining the spike event time
-dynamics by</p>
+                    <h1>7.12 Replaying Spike Data as Input</h1>
+<p>Welcome to this hands-on tutorial on simulating communication between
+two neocortical networks using HNN-Core! This notebook guides you
+through creating a source network (Network A), extracting its spike
+data, feeding it into a target network (Network B) using the
+<code>add_spike_train_drive</code> method, simulating both, and
+visualizing the results. Let's dive in!</p>
 
                 </div>
 
@@ -823,29 +319,20 @@ dynamics by</p>
 <!-- code cell -->
 <div class='code-cell'>
     <code class='language-python'>
-        print(net_sync.external_drives['evdist1']['dynamics'])
+        # Authors: Maira Usman <maira.usman5703@gmail.com>
     </code>
 </div>
 
 
-                <!-- code cell output -->
-                <div class='output-cell'>
-                    <div class='output-label'>
-                        Out:
-                    </div>
-                    <div class='output-code'>
-
-        {&#x27;mu&#x27;: 63.53, &#x27;sigma&#x27;: 3.85, &#x27;numspikes&#x27;: 1}
-
-                    </div>
-                </div>
-
-
-                <!-- markdown cell -->
-                <div class='markdown-cell'>
-                    <p>Finally, let's simulate this network. Rather than modifying the
-dipole object, this time we make a copy of it before smoothing and
-scaling.</p>
+                <!-- markdown cell -->                <div class='markdown-cell'>
+                    <h2>Step 1: Setting Up the Source Network (Network A)</h2>
+<p>Our journey begins with Network A, the source of neural activity.
+We'll use the <code>neymotin_2020_model</code> to create a realistic
+neocortical network and simulate it with an evoked drive to generate
+spike data. This step mimics how a network might produce activity in a
+real brain region, which we'll later transmit to another network.</p>
+<p>The simulation runs for 170 ms, and we'll save the spike data to a
+temporary file for efficient handling.</p>
 
                 </div>
 
@@ -853,16 +340,41 @@ scaling.</p>
                 <!-- code cell -->
                 <div class='code-cell'>
                     <code class='language-python'>
-                        dpls_sync = simulate_dipole(
-    net_sync,
-    tstop=170.,
-    n_trials=1
+                        import numpy as np
+import matplotlib.pyplot as plt
+from hnn_core import neymotin_2020_model, simulate_dipole, read_spikes
+import os.path as op
+import tempfile
+
+# Create and simulate Network A
+print("Creating and simulating Network A...")
+net_A = neymotin_2020_model()
+net_A._params.update({'tstop': 170.0})
+
+# Add a drive to generate activity
+print("Adding drive to Network A...")
+drive_params = {
+    'name': 'evdist1', 'mu': 63.5, 'sigma': 3.8, 'numspikes': 1,
+    'location': 'distal', 'event_seed': 274
+}
+weights = {
+    'ampa': {'L2_basket': 0.006, 'L2_pyramidal': 0.0005, 'L5_pyramidal': 0.14},
+    'nmda': {'L2_basket': 0.019, 'L2_pyramidal': 0.004, 'L5_pyramidal': 0.08}
+}
+delays = {'L2_basket': 0.1, 'L2_pyramidal': 0.1, 'L5_pyramidal': 0.1}
+net_A.add_evoked_drive(
+    **drive_params, weights_ampa=weights['ampa'], weights_nmda=weights['nmda'],
+    synaptic_delays=delays
 )
 
-trial_idx = 0
-
-dpls_sync[trial_idx].copy().smooth(window_len).scale(scaling_factor).plot()
-net_sync.cell_response.plot_spikes_hist();
+# Simulate and save spike data
+print("Simulating Network A and saving spikes...")
+dpls_A = simulate_dipole(net_A, tstop=170.0, n_trials=1)
+with tempfile.TemporaryDirectory() as tmp_dir:
+    spike_file = op.join(tmp_dir, 'spk_%d.txt')
+    net_A.cell_response.write(spike_file)
+    cell_response = read_spikes(op.join(tmp_dir, 'spk_*.txt'))
+    print(f"Extracted {sum(len(t) for t in cell_response.spike_times)} spikes from Network A")
                     </code>
                 </div>
 
@@ -874,44 +386,110 @@ net_sync.cell_response.plot_spikes_hist();
                     </div>
                     <div class='output-code'>
 
-        Joblib will run 1 trial(s) in parallel by distributing trials over 1 jobs.
+        Creating and simulating Network A...
+Adding drive to Network A...
+Simulating Network A and saving spikes...
+Joblib will run 1 trial(s) in parallel by distributing trials over 1 jobs.
 Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
 Building the NEURON model
 
         [Done]
 Trial 1: 0.03 ms...
+Trial 1: 10.0 ms...
 
-        Trial 1: 10.0 ms...
-Trial 1: 20.0 ms...
+        Trial 1: 20.0 ms...
 Trial 1: 30.0 ms...
 Trial 1: 40.0 ms...
 Trial 1: 50.0 ms...
-
-        Trial 1: 60.0 ms...
+Trial 1: 60.0 ms...
 Trial 1: 70.0 ms...
-
-        Trial 1: 80.0 ms...
+Trial 1: 80.0 ms...
 
         Trial 1: 90.0 ms...
 Trial 1: 100.0 ms...
-
-        Trial 1: 110.0 ms...
+Trial 1: 110.0 ms...
 Trial 1: 120.0 ms...
-Trial 1: 130.0 ms...
+
+        Trial 1: 130.0 ms...
 Trial 1: 140.0 ms...
 Trial 1: 150.0 ms...
 
         Trial 1: 160.0 ms...
+Writing file /tmp/tmpy_xpkyg3/spk_0.txt
+Extracted 616 spikes from Network A
 
-        &lt;Figure size 640x480 with 1 Axes&gt;
                     </div>
                 </div>
 
 
-<!-- code cell image -->
-<div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_05.png'/>
-</div>
+                <!-- markdown cell -->                <div class='markdown-cell'>
+                    <h2>Step 2: Configuring the Target Network (Network B)</h2>
+<p>Now, let's set up Network B, the target network that will receive
+spike data from Network A. We'll extract spikes from the first trial of
+Network A, filter for pyramidal cells, and format them into a dictionary
+compatible with <code>add_spike_train_drive</code>. This process is akin
+to distributing computed data across nodes in an MPI setup, where each
+node (here, Network B) processes a subset of the input.</p>
+<p>We'll also define connection properties to map Network A's pyramidal
+cells to Network B's layers, ensuring a realistic interaction.</p>
+
+                </div>
+
+
+                <!-- code cell -->
+                <div class='code-cell'>
+                    <code class='language-python'>
+                        print("Creating and configuring Network B...")
+net_B = neymotin_2020_model()
+net_B._params.update({'tstop': 225.0})
+
+# Extract spike data from first trial and filter for pyramidal cells
+trial_idx = 0
+spike_times = cell_response.spike_times[trial_idx]
+spike_gids = cell_response.spike_gids[trial_idx]
+spike_types = cell_response.spike_types[trial_idx]
+pyramidal_mask = np.array([t in ['L2_pyramidal', 'L5_pyramidal'] for t in spike_types])
+filtered_times = np.array(spike_times)[pyramidal_mask]
+filtered_gids = np.array(spike_gids)[pyramidal_mask]
+filtered_types = np.array(spike_types)[pyramidal_mask]
+spike_data = {f"NetA_{t}_GID{g}": [] for t, g in zip(filtered_types, filtered_gids)}
+for t, g, time in zip(filtered_types, filtered_gids, filtered_times):
+    src_id = f"NetA_{t}_GID{g}"
+    spike_data[src_id].append(time)
+
+print(f"Number of valid pyramidal cells with spikes to be used for input: {len(spike_data)}")
+
+# Define target configuration
+conn_properties = {
+    'L5_pyramidal': {'location': 'distal', 'weights_ampa': 0.005, 'synaptic_delays': 1.5},
+    'L2_pyramidal': {'location': 'proximal', 'weights_ampa': 0.003, 'synaptic_delays': 1.0}
+}
+target_config = {}
+source_ids = list(spike_data.keys())
+for i, src_id in enumerate(source_ids):
+    target_type = 'L5_pyramidal' if i % 2 == 0 else 'L2_pyramidal'
+    props = conn_properties[target_type]
+    target_config[src_id] = {
+        'target_cell_types': [target_type],
+        'location': props['location'],
+        'weights_ampa': {target_type: props['weights_ampa']},
+        'synaptic_delays': {target_type: props['synaptic_delays']},
+        'probability': 0.7
+    }
+all_weights_ampa = {k: cfg['weights_ampa'][k] for cfg in target_config.values() for k in cfg['weights_ampa']}
+
+# Add spike train drive to Network B
+net_B.add_spike_train_drive(
+    name='drive_from_NetA',
+    spike_data=spike_data,
+    location='distal',
+    weights_ampa=all_weights_ampa,
+    weights_nmda=None,
+    synaptic_delays=0.1,
+    conn_seed=42
+)
+                    </code>
+                </div>
 
 
                 <!-- code cell output -->
@@ -921,41 +499,154 @@ Trial 1: 150.0 ms...
                     </div>
                     <div class='output-code'>
 
-        &lt;Figure size 640x480 with 1 Axes&gt;
+        Creating and configuring Network B...
+Number of valid pyramidal cells with spikes to be used for input: 139
+
+                    </div>
+                </div>
+
+
+                <!-- markdown cell -->                <div class='markdown-cell'>
+                    <h2>Step 3: Simulating and Visualizing the Networks</h2>
+<p>With Network B configured, we'll simulate it for 225 ms to observe
+the effect of Network A's spikes. Visualization is key in neuroscience,
+so we'll create raster plots for both networks. This step lets you see
+how the input from Network A influences Network B's activity.</p>
+
+                </div>
+
+
+                <!-- code cell -->
+                <div class='code-cell'>
+                    <code class='language-python'>
+                        print("Simulating Network B...")
+dpls_b = simulate_dipole(net_B, tstop=225.0, n_trials=1)
+
+# Visualize results
+fig, axes = plt.subplots(2, 1, figsize=(10, 12), sharex=True, constrained_layout=True)
+# 1. Network A: Spike raster
+net_A.cell_response.plot_spikes_raster(ax=axes[0], show=False)
+axes[0].set_title('Network A: Spike Raster')
+axes[0].set_ylabel('Cell ID')
+# 2. Network B: Spike raster
+net_B.cell_response.plot_spikes_raster(ax=axes[1], show=False)
+axes[1].set_title('Network B: Spike Raster')
+axes[1].set_ylabel('Cell ID')
+axes[1].set_xlabel('Time (ms)')
+plt.show()
+                    </code>
+                </div>
+
+
+                <!-- code cell output -->
+                <div class='output-cell'>
+                    <div class='output-label'>
+                        Out:
+                    </div>
+                    <div class='output-code'>
+
+        Simulating Network B...
+Joblib will run 1 trial(s) in parallel by distributing trials over 1 jobs.
+Building the NEURON model
+
+        [Done]
+Trial 1: 0.03 ms...
+Trial 1: 10.0 ms...
+
+        Trial 1: 20.0 ms...
+Trial 1: 30.0 ms...
+Trial 1: 40.0 ms...
+Trial 1: 50.0 ms...
+Trial 1: 60.0 ms...
+
+        Trial 1: 70.0 ms...
+Trial 1: 80.0 ms...
+Trial 1: 90.0 ms...
+Trial 1: 100.0 ms...
+Trial 1: 110.0 ms...
+Trial 1: 120.0 ms...
+Trial 1: 130.0 ms...
+Trial 1: 140.0 ms...
+Trial 1: 150.0 ms...
+Trial 1: 160.0 ms...
+Trial 1: 170.0 ms...
+Trial 1: 180.0 ms...
+Trial 1: 190.0 ms...
+
+        Trial 1: 200.0 ms...
+Trial 1: 210.0 ms...
+Trial 1: 220.0 ms...
+
+        &lt;Figure size 1000x1200 with 2 Axes&gt;
                     </div>
                 </div>
 
 
 <!-- code cell image -->
 <div class='output-cell'>
-    <img src='output_nb_plot_simulate_evoked/fig_06.png'/>
+    <img src='output_nb_replaying_spike_data_as_input_notebook/fig_01.png'/>
 </div>
 
 
-                <!-- markdown cell -->                <div class='markdown-cell'>
-                    <h4>Warning</h4>
-<ul>
-<li><p>Always look at dipoles in conjunction with raster plots and spike
-histogram to avoid misinterpretation.</p></li>
-<li><p>Run multiple trials of your simulation to get an average of
-different drives seeds before drawing conclusions.</p></li>
-</ul>
+                <!-- markdown cell -->
+                <div class='markdown-cell'>
+                    <p>Now that the simulation is finished, let's verify the drive setup and
+ensure the connection was established correctly.</p>
 
                 </div>
 
 
+                <!-- code cell -->
+                <div class='code-cell'>
+                    <code class='language-python'>
+                        print("\nVerifying configuration:")
+drive_name = 'drive_from_NetA'
+if drive_name in net_B.external_drives:
+    drive = net_B.external_drives[drive_name]
+    print(f"  Drive '{drive_name}' created with {drive['n_drive_cells']} cells")
+    if drive_name in net_B.gid_ranges:
+        print(f"  GIDs assigned: {net_B.gid_ranges[drive_name]}")
+    drive_connections = sum(1 for conn in net_B.connectivity if conn['src_type'] == drive_name)
+    print(f"  Number of connections from drive: {drive_connections}")
+else:
+    print(f"  ERROR: Drive '{drive_name}' not found")
+                    </code>
+                </div>
+
+
+                <!-- code cell output -->
+                <div class='output-cell'>
+                    <div class='output-label'>
+                        Out:
+                    </div>
+                    <div class='output-code'>
+
+
+Verifying configuration:
+  Drive &#x27;drive_from_NetA&#x27; created with 139 cells
+  GIDs assigned: range(270, 409)
+  Number of connections from drive: 2
+
+                    </div>
+                </div>
+
+
                 <!-- markdown cell -->                <div class='markdown-cell'>
-                    <h2>References</h2>
-<p>[1] Jones, Stephanie R., et al. "Neural correlates of tactile
-detection: a combined magnetoencephalography and biophysically based
-computational modeling study." Journal of Neuroscience 27.40 (2007):
-10751-10764.</p>
+                    <h2>Conclusion</h2>
+<p>You've now successfully replayed spikes from one network into another
+network! The raster plots show how Network A's activity influences
+Network B, while the verification confirms the drive setup. This
+approach is scalable—similar to MPI's distributed computing—allowing you
+to experiment with multiple networks or adjust parameters like weights
+and delays to explore different dynamics. Try modifying the
+<code>weights_ampa</code> or <code>synaptic_delays</code> values in Step
+2 to see how they affect the results!</p>
 
                 </div>
         <!-- footer area -->
         <!----------------->
         <div class="footer-area">
-            <div class="previous-area" data-link="/textbook/content/05_erps/erps_in_gui.html">
+            <div class="previous-area" data-link="/textbook/content/08_using_hnn_api/metadata_tutorial.html">
                 <div class="previous-icon">
                     <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path class="arrow-path" d="M15 5L9 12L15 19" />
@@ -963,13 +654,13 @@ computational modeling study." Journal of Neuroscience 27.40 (2007):
                 </div>
                 <div class="previous-text">
                     <p>Previous</p>
-                    <a>4.1 GUI Tutorial of ERPs Simulation</a>
+                    <a>7.11 Cell Metadata Tutorial</a>
                 </div>
             </div>
-            <div class="next-area" data-link="/textbook/content/06_alpha_beta/gui.html">
+            <div class="next-area" data-link="/textbook/content/09_data_to_simulation/from_meg_to_hnn.html">
                 <div class="next-text">
                     <p>Next</p>
-                    <a>5.1 GUI Tutorial of Alpha/Beta Rhythms</a>
+                    <a>8.1 From MEG sensor-space data to HNN simulation</a>
                 </div>
                 <div class="next-icon">
                     <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
