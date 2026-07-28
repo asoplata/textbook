@@ -401,7 +401,6 @@ import matplotlib.pyplot as plt
 import hnn_core
 from hnn_core import read_network_configuration, simulate_dipole
 from hnn_core.network import pick_connection
-from hnn_core.parallel_backends import JoblibBackend, MPIBackend
 from hnn_core.viz import plot_dipole
                     </code>
                 </div>
@@ -501,10 +500,12 @@ try:
     n_procs = psutil.cpu_count(logical=False) - 1
     use_mpi = True
     print('Using MPIBackend with %d processes' % n_procs)
+    from hnn_core.parallel_backends import MPIBackend
 except ImportError:
     n_procs = 1
     use_mpi = False
     print('MPI is not available; using JoblibBackend instead')
+    from hnn_core.parallel_backends import JoblibBackend
                     </code>
                 </div>
 
