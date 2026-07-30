@@ -22,7 +22,7 @@ First, let's load some representative example data that we to compare a simulati
 
 <div class="stylefig">
 ### Figure 1
-![Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png)
+![Screenshot of the HNN GUI interface after loading the experimental data file .](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/4-2-optimization/images/fig_01.png)
 </div>
 
 3. Next to `Cores` (under `Simulation Parameters`), increase the number until it increases no further.
@@ -30,14 +30,20 @@ First, let's load some representative example data that we to compare a simulati
 5. Once the simulation has completed, you should see its results on the right, similar to the figure below:
 
 <div class="stylefig">
-### Figure 1
-![Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png)
+### Figure 2
+![Screenshot of the HNN GUI interface after running the default simulation .](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/4-2-optimization/images/fig_02.png)
 </div>
 
 6. Click the `Visualization` tab.
 7. We want to display the simulation versus the experimental data. Click on the entry for `Data to Compare`, and select the name of the file that you loaded, `experimental_S1_Threshold`.
 8. Next, click the `Clear axis` button at the bottom (you may have to scroll), and then click `Add plot`.
-9. You should now see a plot on the right that displays both the simulation (`default`) and the experimental loaded data, in addition to their root-mean-square-error (around `6.9827`) and correlation measures (around `0.9918`).
+9. You should now see a plot on the right that displays both the simulation (`default`) and the experimental loaded data, in addition to their root-mean-square-error (around `6.9827`) and correlation measures (around `0.9918`), similar to this figure:
+
+<div class="stylefig">
+### Figure 3
+![Screenshot of the HNN GUI interface after visualizing both the experimental data and default simulation .](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/4-2-optimization/images/fig_03.png)
+</div>
+
 
 ## 2. Hand-tuning
 
@@ -48,8 +54,8 @@ Let's try "hand-tuning" a parameter of one of our drive inputs to see if we can 
 12. Let's try changing the mean time of when the distal drive spikes, in the hopes that it will improve how our simulation matches the experiment. Edit the value in the `Mean time` box to be `64.00`. Scientifically, this is analogous to us hypothesizing "What if, in our experiment, the distal input arriving from cortico-cortical and non-lemniscal thalamic sources is arriving slightly later?" Your screen should resemble the following:
 
 <div class="stylefig">
-### Figure 1
-![Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png)
+### Figure 4
+![Screenshot of the HNN GUI interface after hand-tuning a drive parameter .](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/4-2-optimization/images/fig_04.png)
 </div>
 
 13. Click back to the `Simulation` tab. We are going to run a new simulation.
@@ -58,8 +64,8 @@ Let's try "hand-tuning" a parameter of one of our drive inputs to see if we can 
 16. Similar to before, click the `Visualization` tab, then under `Data to Compare`, select `experimental_S1_Threshold`. Next, click the `Clear axis` button (you may have to scroll down) then the `Add plot` button. You should see something like the following:
 
 <div class="stylefig">
-### Figure 1
-![Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png)
+### Figure 5
+![Screenshot of the HNN GUI interface after simulating and visualizing the hand-tuned simulation .](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/4-2-optimization/images/fig_05.png)
 </div>
 
 As it turns out, our change made things **worse**, since now the RMSE has increased to around `7.8567`, and our corrrelation has decreased.
@@ -78,16 +84,16 @@ Instead of using manual "hand-tuning" to try to see how changing parameters affe
     F. Your GUI should now resemble the following:
 
 <div class="stylefig">
-### Figure 1
-![Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png)
+### Figure 6
+![Screenshot of the HNN GUI interface after setting up the configuration for optimization .](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/4-2-optimization/images/fig_06.png)
 </div>
 
 19. Click the `Run Optimization` tab. Note that depending on your computer speed, this could **take up to several minutes**.
 20. Finally, depending on randomness, you will probably see that the optimization has resulted in an **improved fit** to your experimental data, in which case the screen will resemble the following:
 
 <div class="stylefig">
-### Figure 1
-![Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png)
+### Figure 7
+![Screenshot of the HNN GUI interface after running the optimization .](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/4-2-optimization/images/fig_07.png)
 </div>
 
 21. Before we look at the results, click the `Save Optimization History` button. This will prompt you for where to save a raw text file that includes the history of all the parameters you optimized against, so that you can see what the parameters were both before and after optimization, including their final (optimized) values, and how much they changed.
