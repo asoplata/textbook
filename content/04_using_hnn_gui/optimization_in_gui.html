@@ -282,201 +282,98 @@
     # Austin E. Soplata
 -->
 <h1>3.2 Optimization in the GUI</h1>
-<h2>Tutorial Table of Contents</h2>
+<p>This tutorial walks through how to use the Optimization feature of HNN through the GUI. Make sure you have at least gone through <a href="../08_using_hnn_api/gui_quickstart.html">3.1 HNN GUI Quickstart</a> first, so that you understand how to start and use the GUI in general.</p>
+<p>For a more in-depth approach that covers similar functionality (and much more), see <a href="https://doi.org/10.3791/70618">(Tolley et al., 2026)</a>. For tutorials on how to use optimization via the API, see <a href="../08_using_hnn_api/optimize_simulated_evoked_response_parameters.html">here</a> and [here](<a href="../08_using_hnn_api/optimize_simulated_rhythmic_response_parameters.html">here</a>.</p>
+<h2>1. First simulation</h2>
+<p>First, let’s load some representative example data that we to compare a simulation agains. Go to our data repository here and <a href="https://github.com/jonescompneurolab/hnn-data/blob/main/workshops/2025-04-09-HNN-online_workshop/erp_gui_walkthrough/experimental_S1_Threshold.txt">download this file</a>; on the right side of the page, near where it says <code>Raw</code>, you should see a download symbol. Click that, or feel free to <code>git clone</code> the <code>hnn-data</code> repository as a whole.</p>
 <ol type="1">
-<li><p><a href="#toc-1">Background</a></p></li>
-<li><p><a href="#toc-2">Section 1: Identify a Treatment-Induced EEG ERP Biomarker and Define Model Hypotheses</a></p></li>
-<li><p><a href="#toc-3">Section 2: Initialize the Default HNN Model — Install Modeling Software and Set Up the Project Folder</a></p></li>
-<li><p><a href="#toc-4">Section 3: Establish Pre-Treatment Model Fit with Manual Tuning</a></p></li>
-<li><p><a href="#toc-5">Section 4: Establish Pre-Treatment Model Fit with Parameter Optimization</a></p></li>
-<li><p><a href="#toc-6">Section 5: Establish Post-Treatment Model Fit</a></p></li>
-<li><p><a href="#toc-7">Where to Go From Here</a></p></li>
+<li>Next, start the GUI (see <a href="../08_using_hnn_api/gui_quickstart.html">3.1 HNN GUI Quickstart</a> if you do not know how to do that).</li>
+<li>Click the <code>Load data</code> button (in the <code>Simulation</code> tab) and load the <code>experimental_S1_Threshold.txt</code> file you just downloaded. A plot showing the data should appear on the right, similar to the figure below:</li>
 </ol>
-<p><a id="toc-1"></a></p>
-<h2>1. Background</h2>
-<p>This tutorial walks through Sections 1 through 5 of the Protocol described in <span class="citation" data-cites="tolley_protocol_2026">(<a href="#ref-tolley_protocol_2026" role="doc-biblioref"><strong>tolley_protocol_2026?</strong></a>)</span>, published in the <em>Journal of Visualized Experiments</em> (JoVE). That paper demonstrates a hypothesis-driven workflow for using the Human Neocortical Neurosolver (HNN) to uncover the putative neural mechanisms underlying a neurotherapeutic’s effect on an EEG biomarker.</p>
-<p>The core idea is that many EEG/MEG biomarkers used in central nervous system (CNS) drug development — such as event-related potential (ERP) components — are only correlationally linked to the underlying disease state or drug effect. Statistical analyses of a biomarker can tell you <em>that</em> a treatment changed a signal, but not <em>which</em> cellular or circuit properties changed to produce that effect. Because HNN’s neocortical column model directly links simulated current dipoles to specific cell- and circuit-level parameters (local connectivity, synaptic conductances, exogenous drive timing and strength, and dendritic ion channel conductances), fitting the model to pre-treatment and post-treatment EEG data lets you generate concrete, testable hypotheses about the treatment’s mechanism of action.</p>
-<p>The published protocol demonstrates this workflow using a hypothetical neurotherapeutic that reduces the P1, N1, and P2 components of an auditory evoked response. The pre-treatment ERP is real, source-localized MEG data from a previously published study <span class="citation" data-cites="kohl_neural_2022">(<a href="#ref-kohl_neural_2022" role="doc-biblioref">Kohl, Parviainen, and Jones 2022</a>)</span>, and the “post-treatment” ERP is generated computationally for illustrative purposes by scaling the pre-treatment waveform.</p>
-<p>The full protocol has seven sections. This tutorial covers the first five, which take you from identifying a biomarker all the way through fitting both a pre-treatment and a post-treatment model:</p>
-<ol type="1">
-<li>Identify a treatment-induced EEG ERP biomarker and define model hypotheses.</li>
-<li>Initialize the default HNN model: install the modeling software and set up a project folder.</li>
-<li>Establish a pre-treatment model fit using manual tuning.</li>
-<li>Establish a pre-treatment model fit using automated parameter optimization.</li>
-<li>Establish a post-treatment model fit.</li>
+<section class="stylefig">
+<h3>Figure 1</h3>
+<figure>
+<img src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png" alt="Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization." />
+<figcaption aria-hidden="true">Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.</figcaption>
+</figure>
+</section>
+<ol start="3" type="1">
+<li>Next to <code>Cores</code> (under <code>Simulation Parameters</code>), increase the number until it increases no further.</li>
+<li>Click the <code>Run Simulation</code> button to run the default simulation.</li>
+<li>Once the simulation has completed, you should see its results on the right, similar to the figure below:</li>
 </ol>
-<p>Sections 6 (uncertainty quantification with simulation-based inference, SBI) and 7 (multiscale examination and validation) are not covered here; see the original paper for details on those steps.</p>
-<div class="callout callout-warning">
-<table class="callout-table">
-<tr>
-<td class="emoji-cell">
-<svg class="exclamation-icon" viewBox="0 0 16 16" width="20" height="20">
-<path d="M15.35 12.81 9 2.08a1.22 1.22 0 0 0-2 0L.65 12.81a1.14 1.14 0 0 0 1 1.69h12.66a1.14 1.14 0 0 0 1.04-1.69zm-13.66.55L8 2.64l6.31 10.72z"/> <path d="M7.32 5.45h1.25V10H7.32z"/> <ellipse cx="7.95" cy="11.9" rx=".67" ry=".7"/>
-</svg>
-</td>
-<td class="text-cell">
-This tutorial closely follows the wording and step numbering of the original published Protocol so that you can cross-reference the two easily. All data files, code, and configuration files referenced below are hosted in the paper’s associated code repository at <a href="https://github.com/ntolley/hnn_jove">github.com/ntolley/hnn_jove</a>.
-</td>
-<td class="emoji-cell">
-</td>
-</tr>
-</table>
-</div>
-<p><a id="toc-2"></a></p>
-<h2>2. Section 1: Identify a Treatment-Induced EEG ERP Biomarker and Define Model Hypotheses</h2>
-<p>This first section does not involve HNN directly. Instead, it establishes the empirical biomarker and the biological hypotheses you will later translate into HNN model parameters.</p>
-<ol type="1">
-<li><p>Collect or identify a dataset containing experimentally recorded EEG signals from subjects of interest (e.g., pre-treatment and post-treatment in the context of neurotherapeutics). Record EEG measurements during presentation of a sensory stimulus, and record timestamps of the sensory stimulus simultaneously with the EEG data to enable segmentation into trials. Ensure that EEG data are stored in a format compatible with preprocessing software (e.g., <code>.fif</code>, <code>.set</code>, or <code>.edf</code>).</p></li>
-<li><p>Identify a set of candidate ERP biomarker features that are hypothesized to distinguish treatment-related effects (e.g., ERP peak timings and magnitudes).</p></li>
-<li><p>Preprocess the EEG data and extract the biomarker features of interest.</p>
-<ol type="1">
-<li>Perform source localization using sensor-level signals from all channels, or select EEG sensors to be analyzed. Use source-localized data for direct comparison with model output, since sensor-level data will not have unit correspondence.</li>
-<li>Segment the recorded EEG data into trials using the timestamps of the sensory stimulus.</li>
-<li>Compute trial-averaged ERP waveforms for the pre-treatment and post-treatment conditions.</li>
-<li>Extract candidate ERP biomarkers from the trial-averaged waveforms (e.g., compute N1 peak magnitudes). Define peak detection criteria (e.g., time window and polarity) prior to extraction.</li>
-</ol></li>
-<li><p>Conduct statistical tests to determine which ERP features are significantly different across conditions (e.g., pre-treatment versus post-treatment). Select appropriate statistical tests based on study design, and apply multiple-comparison correction where necessary (e.g., repeated-measures ANOVA followed by Tukey HSD post-hoc testing).</p></li>
-<li><p>Output specific statistically significant distinguishing EEG biomarker features (e.g., differences in N1 magnitudes). Save outputs for use in subsequent steps.</p></li>
-<li><p>Define literature-based hypotheses on drug mechanisms and associated model parameters of interest. Consult prior literature and experimental data to identify biophysical properties altered by the neurotherapeutic that may account for the feature differences identified in Step 4.</p></li>
-<li><p>Identify which parameters of the biophysical neural model (HNN) are directly represented or indirectly related to the biological properties identified in Step 6. Map biological mechanisms to model parameters using prior literature and HNN documentation.</p></li>
-<li><p>Output an identified set of model parameters of interest corresponding to biophysical properties hypothesized to generate the identified EEG feature differences. Use the default HNN model (initialized in <a href="#toc-3">Section 2</a>) as the starting point for all parameter values, and save outputs for use in subsequent steps.</p></li>
+<section class="stylefig">
+<h3>Figure 1</h3>
+<figure>
+<img src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png" alt="Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization." />
+<figcaption aria-hidden="true">Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.</figcaption>
+</figure>
+</section>
+<ol start="6" type="1">
+<li>Click the <code>Visualization</code> tab.</li>
+<li>We want to display the simulation versus the experimental data. Click on the entry for <code>Data to Compare</code>, and select the name of the file that you loaded, <code>experimental_S1_Threshold</code>.</li>
+<li>Next, click the <code>Clear axis</code> button at the bottom (you may have to scroll), and then click <code>Add plot</code>.</li>
+<li>You should now see a plot on the right that displays both the simulation (<code>default</code>) and the experimental loaded data, in addition to their root-mean-square-error (around <code>6.9827</code>) and correlation measures (around <code>0.9918</code>).</li>
 </ol>
-<p>The associated code repository provides the pre-treatment and post-treatment data files used to generate this tutorial’s representative results. The pre-treatment ERP is a preprocessed auditory MEG ERP from Kohl et al. (2022) <span class="citation" data-cites="kohl_neural_2022">(<a href="#ref-kohl_neural_2022" role="doc-biblioref">Kohl, Parviainen, and Jones 2022</a>)</span> (original data available at <a href="https://github.com/kohl-carmen/HNN-AEF">github.com/kohl-carmen/HNN-AEF</a>). The hypothetical post-treatment ERP is generated by scaling the pre-treatment waveform using a Gaussian-tapered window. Both files are located in the repository at <code>data/pre-treatment.txt</code> and <code>data/post-treatment.txt</code>.</p>
-<p><a id="toc-3"></a></p>
-<h2>3. Section 2: Initialize the Default HNN Model — Install Modeling Software and Set Up the Project Folder</h2>
-<ol type="1">
-<li><p>Download and install a functioning version of Anaconda Python. Create and activate a new Python environment for the installation of required software packages.</p></li>
-<li><p>Install the biophysical neural modeling <code>hnn-core</code> software using the operating-system-specific installation instructions available on the <a href="../01_getting_started/installation.html">Installation page</a>. To efficiently install the software dependencies used in the original study, the associated code repository (<a href="https://github.com/ntolley/hnn_jove">github.com/ntolley/hnn_jove</a>) uses <a href="https://pixi.prefix.dev/latest/">pixi</a>; follow the instructions in the repository’s <code>README</code> file to install pixi and set up a local version of the code repository.</p></li>
-<li><p>Verify that the installed version of the biophysical neural modeling software is <code>0.6.0</code> or greater by typing the following command into the terminal:</p>
-<pre><code>pip show hnn_core</code></pre></li>
-<li><p>Ensure that the Python environment is activated and that installation completed successfully. Launch the graphical user interface (GUI) by typing <code>hnn-gui</code> in the terminal and pressing Enter.</p></li>
-<li><p>Create a new project folder on the computer file system to store all data files generated in this protocol. Create the folder in an accessible directory (e.g., home directory or working project directory).</p></li>
+<h2>2. Hand-tuning</h2>
+<p>Let’s try “hand-tuning” a parameter of one of our drive inputs to see if we can get the simulation to match the experimental data better.</p>
+<ol start="10" type="1">
+<li>Click on the <code>External drives</code> tab.</li>
+<li>Click the box for the first and only distal drive, <code>evdist1</code>.</li>
+<li>Let’s try changing the mean time of when the distal drive spikes, in the hopes that it will improve how our simulation matches the experiment. Edit the value in the <code>Mean time</code> box to be <code>64.00</code>. Scientifically, this is analogous to us hypothesizing “What if, in our experiment, the distal input arriving from cortico-cortical and non-lemniscal thalamic sources is arriving slightly later?” Your screen should resemble the following:</li>
 </ol>
-<p><a id="toc-4"></a></p>
-<h2>4. Section 3: Establish Pre-Treatment Model Fit with Manual Tuning</h2>
-<ol type="1">
-<li><p>Start with the canonical HNN ERP simulation and its default parameters. Manually tune the scaling factor and exogenous drive parameters to fit the pre-treatment ERP identified in <a href="#toc-2">Section 1</a>. The HNN GUI automatically loads model parameters fit to a somatosensory ERP, which through numerous studies has been shown to be a good “canonical ERP” starting point; this tutorial focuses on modifying the scaling factor and exogenous input parameters from that starting point.</p></li>
-<li><p>Load the pre-treatment empirical ERP waveform into the HNN GUI.</p>
-<ol type="1">
-<li>Click the <code>Load data</code> button on the menu bar located on the lower left portion of the GUI window.</li>
-<li>In the file browser window, select a <code>.csv</code> or <code>.txt</code> file containing the ERP waveform to be modeled (i.e., the target waveform, <code>pre-treatment.txt</code> in the associated code repository). Ensure that the file is comma-delimited and formatted with two columns: the first contains time (ms), and the second contains the source-localized empirical dipole waveform (nAm). The first row is treated as a header and should not contain data values. Informative column labels (e.g., “Time (ms)” and “Dipole (nAm)”) may optionally be included.</li>
-<li>Inspect the waveform that is automatically plotted in the figure panel.</li>
-</ol></li>
-<li><p>Run the default simulation of a canonical ERP.</p>
-<ol type="1">
-<li>Set the parameter values of <code>tstop</code>, <code>dt</code>, <code>Trials</code>, <code>Backend</code>, and <code>Cores</code> in the Simulation Parameters panel to the desired values. Use <code>tstop</code> to control the simulation length, <code>dt</code> to control the integration time-step, and <code>Trials</code> to control the number of repeated simulations run with the same model parameter values. Select <code>Backend</code> as either serial (Joblib) or parallel (MPI), and specify the number of computer <code>Cores</code>. Variability across trials comes from the standard deviation of the exogenous evoked drive timing described in Step 6 below.</li>
-<li>Click the <code>Run</code> button to start the default simulation of a canonical ERP.</li>
-</ol></li>
-<li><p>Create a plot that compares the simulated ERP to the empirical ERP.</p>
-<ol type="1">
-<li>Click the <code>Visualization</code> tab on the top left of the GUI window.</li>
-<li>Click the dropdown menu labeled <code>Data to compare</code> and select the loaded target waveform from Step 2.2.</li>
-<li>Click <code>Clear axis</code> to reset the plot.</li>
-<li>Click <code>Add plot</code> to generate a new plot with the simulated initial ERP waveform (blue) and target waveform (orange) overlaid, along with text indicating the automatically calculated correlation coefficient (Corr) and root mean squared error (RMSE) between the two waveforms. The HNN GUI provides the option to calculate these two goodness-of-fit measures, which are used for manual hand tuning and for optimization in <a href="#toc-5">Section 4</a>.</li>
-</ol></li>
-<li><p>Modify the scaling factor. Modify the scaling factor by manual hand tuning to approximately match the magnitudes of the simulated and empirical dipole waveforms. Set the default <code>Dipole scaling</code> parameter in the Simulation tab to <code>3000</code>. The scaling factor corresponds to a prediction of the estimated number of neurons underlying the generation of the EEG signal: the default value of 3000 indicates that 200 pyramidal neurons (the size of the HNN model) × 3000 = 600,000 neurons are necessary to generate an evoked response with the magnitude in nAm indicated on the y-axis.</p></li>
-<li><p>Modify timing of exogenous drives. Modify the mean and standard deviation of exogenous drives by manual hand tuning to obtain a closer fit to the timing of the empirically recorded pre-treatment ERP peaks (i.e., P1/N1/P2). The default local connectivity and cell parameters distributed with HNN were tuned to reproduce healthy single-cell and network-level activity patterns; it is recommended to leave the pre-tuned local HNN neocortical template model parameters fixed initially and test whether a reliable fit can be achieved by adjusting only the exogenous drives.</p>
-<ol type="1">
-<li>Identify which simulated ERP peaks are misaligned in time with the empirical ERP waveform. This example assumes three early peaks in the empirical ERP, as in the default canonical ERP simulation; to add peaks, simulate additional external drives.</li>
-<li>Click the <code>External drives</code> tab on the top left of the GUI window. The parameters for three predefined exogenous drives are visible, representing the feedforward proximal (<code>evprox1</code>), feedback distal (<code>evdist1</code>), and re-emergent feedforward proximal (<code>evprox2</code>) drives that generate the default canonical ERP simulations, along with spike histograms depicting their timing and counts.</li>
-<li>Click on the dropdown of the exogenous drive whose <code>Mean time</code> is closest to the misaligned peak.</li>
-<li>Modify the values in the text boxes for <code>Mean time</code> and <code>Std dev time</code> to better match the timing and width of peaks in the target waveform. Adjust <code>Mean time</code> to shift peak timing and <code>Std dev time</code> to change peak width. These parameters control the mean and variance of the exogenous spikes that activate the local network in proximal or distal projection patterns, but do not fully determine ERP peak timing or width — the exact timing and width also depend on intrinsic network activity.
-<ol type="1">
-<li>Set the <code>Mean time</code> for the <code>evprox1</code> external drive to <code>60 ms</code>.</li>
-<li>Set the <code>Mean time</code> for the <code>evdist1</code> external drive to <code>100 ms</code>.</li>
-<li>Set the <code>Mean time</code> for the <code>evprox2</code> external drive to <code>150 ms</code>.</li>
-</ol></li>
-</ol></li>
-<li><p>Modify magnitude of exogenous drives. Modify synaptic weights (post-synaptic conductance) of exogenous drives by manual hand tuning to obtain a closer fit to the magnitude of the empirically recorded ERP peaks (i.e., P1/N1/P2).</p>
-<ol type="1">
-<li>Identify which simulated ERP peaks are misaligned in magnitude with the empirical ERP waveform.</li>
-<li>Click the <code>External drives</code> tab on the top left of the GUI window.</li>
-<li>Click on the dropdown of the exogenous drive whose <code>Mean time</code> is closest to the misaligned peak.</li>
-<li>Modify the values in the text boxes under <code>AMPA weights</code> and <code>NMDA weights</code> to adjust synaptic conductances. Increasing proximal drive strength to L5 and L2/3 pyramidal neurons generally produces more positive peaks, while increasing distal drive strength generally produces more negative peaks. As with drive timing, ERP peak magnitude is not fully determined by drive strength — spiking dynamics can produce non-intuitive effects, so test changes over one order of magnitude (e.g., AMPA L5_pyramidal from 0.014 to 0.14) and refine iteratively.
-<ol type="1">
-<li>Set the <code>AMPA weights</code> of the <code>evdist1</code> drive to <code>L5_pyramidal</code> = <code>0.014243</code> and <code>L2_pyramidal</code> = <code>0.0000007</code>.</li>
-<li>Set the <code>NMDA weights</code> of the <code>evdist1</code> drive to <code>L5_pyramidal</code> = <code>0.0080074</code> and <code>L2_pyramidal</code> = <code>0.0004317</code>.</li>
-<li>Set the <code>AMPA weights</code> of the <code>evprox2</code> drive to <code>L5_pyramidal</code> = <code>0.0684013</code> and <code>L2_pyramidal</code> = <code>0.143884</code>.</li>
-</ol></li>
+<section class="stylefig">
+<h3>Figure 1</h3>
+<figure>
+<img src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png" alt="Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization." />
+<figcaption aria-hidden="true">Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.</figcaption>
+</figure>
+</section>
+<ol start="13" type="1">
+<li>Click back to the <code>Simulation</code> tab. We are going to run a new simulation.</li>
+<li>In the <code>Name</code> box, change the simulation name to be something like <code>default-handtune-evdist1</code> (or whatever you prefer).</li>
+<li>Click <code>Run Simulation</code> again, after which a new figure will appear on the right.</li>
+<li>Similar to before, click the <code>Visualization</code> tab, then under <code>Data to Compare</code>, select <code>experimental_S1_Threshold</code>. Next, click the <code>Clear axis</code> button (you may have to scroll down) then the <code>Add plot</code> button. You should see something like the following:</li>
 </ol>
-<p>A complete set of parameters used to generate the representative results in the original paper is available in the associated code repository at <code>data/opt_baseline_config_correlation_best.json</code>. You are encouraged to load this configuration file along with the provided data files (<code>data/pre-treatment.txt</code> and <code>data/post-treatment.txt</code>) and refer to the example workflows in the <code>notebooks/</code> directory to reproduce the reported simulations.</p></li>
-<li><p>Save modified simulation setup. After completing modifications in Steps 5–7, click the <code>Simulation</code> tab and enter <code>pre-treatment_handtuned</code> in the <code>Name</code> text box.</p></li>
-<li><p>Run modified simulation.</p>
-<ol type="1">
-<li>Click the <code>Run</code> button to simulate the modified parameter set.</li>
-<li>Inspect the generated plot in the figure panel. Access previous plots using the corresponding figure tabs (e.g., “Figure 1” and “Figure 2”).</li>
-</ol></li>
-<li><p>Iterate manual tuning. Continue iterative manual tuning to improve the correlation coefficient by repeating Step 4 to replot the simulation with the target waveform and recalculate the correlation coefficient.</p></li>
-<li><p>Save final model outputs.</p>
-<ol type="1">
-<li>Click the <code>Save Network</code> button to save the best-fit parameter set as a <code>.json</code> file named <code>pre-treatment_handtuned.json</code>.</li>
-<li>Click the <code>Save simulation</code> button to save a <code>.txt</code> file named <code>pre-treatment_handtuned.txt</code>, which contains the simulated dipole waveform.</li>
-<li>Move both files to the project folder created in Step 5 of <a href="#toc-3">Section 2</a>, and ensure that file names match the simulation name in the dropdown menu. Files are saved to the default download directory of the web browser used to run the GUI; move files manually or temporarily change the browser download directory.</li>
-</ol></li>
+<section class="stylefig">
+<h3>Figure 1</h3>
+<figure>
+<img src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png" alt="Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization." />
+<figcaption aria-hidden="true">Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.</figcaption>
+</figure>
+</section>
+<p>As it turns out, our change made things <strong>worse</strong>, since now the RMSE has increased to around <code>7.8567</code>, and our corrrelation has decreased.</p>
+<h2>3. Optimization</h2>
+<p>Instead of using manual “hand-tuning” to try to see how changing parameters affects our simulation in relation to some experimental data, we can also use “optimization”. This will run <em>several</em> simulations where one or more parameters have their values changed automatically, and at each step, the computer will run try to get the simulation closer to the “objective” of being similar to the experimental data values. Again, see <a href="https://doi.org/10.3791/70618">(Tolley et al., 2026)</a> for more details.</p>
+<ol start="17" type="1">
+<li>Let’s hop over to the <code>Optimization</code> tab.</li>
+<li>We need to make several changes in this tab: A. Decrease <code>Max Iterations</code> to 3. B. Change <code>Solver</code> to <code>cma</code>. C. For <code>Target Data</code>, select your loaded experimental data (<code>experimental_S1_Threshold</code>) D. Click the box for <code>evdist1</code> to expand it. E. Inside the <code>evdist1</code> box, in the <code>Optimize against?</code> column of checkboxes, check the checkbox for <code>Mean time</code>. F. Your GUI should now resemble the following:</li>
 </ol>
-<p>The protocol can be paused after saving the simulation outputs. Resume by loading the saved configuration files into the software.</p>
-<p><a id="toc-5"></a></p>
-<h2>5. Section 4: Establish Pre-Treatment Model Fit with Parameter Optimization</h2>
-<p>Control of random seeding for optimization is not currently available in the GUI. For reproducible optimization runs, use the Python API — the associated code repository contains an example implementation (see <code>code/baseline_optimization.py</code>), where a fixed random seed can be set by passing a seed parameter to the optimization function (e.g., <code>optim.fit(..., seed=123)</code>). This example shows how to optimize targeted parameters to estimate single values that produce a close fit to the waveform using CMA-ES. This is not to be confused with SBI (Section 6 of the original protocol): both approaches fit model parameters, but the primary output of SBI is a distribution of plausible values rather than a single point estimate.</p>
-<p>For pre-treatment ERPs, start by optimizing exogenous drive parameters under the assumption that cell and local network connection parameters in the default HNN neocortical model are fixed. The multiscale prediction provided by HNN (Section 7 of the original protocol) provides targets for validation of this assumption. As new information becomes available to constrain model predictions, the HNN framework allows estimation of any set of parameters.</p>
-<ol type="1">
-<li><p>Open optimization settings.</p>
-<ol type="1">
-<li>Click the <code>Optimization</code> tab on the top left corner of the GUI.</li>
-<li>Configure the settings of the optimization run, including the number of iterations, solver, and objective function. The default optimization settings (Objective function = “dipole_corr”; Solver = “cma”) are appropriate for ERP waveforms, and this objective function maximizes the correlation coefficient between simulated and empirical waveforms. Because the correlation coefficient is a scale-free measure, when using “dipole_corr” you should adjust the scaling factor after optimization (Step 6.1 below); alternatively, use “dipole_rmse” to minimize RMSE, in which case the scaling factor remains fixed.</li>
-<li>Click on the Max iterations textbox and enter <code>100</code>.</li>
-</ol></li>
-<li><p>Select parameters for optimization.</p>
-<ol type="1">
-<li>Click on the dropdown menu of an exogenous drive whose parameters will be optimized.</li>
-<li>Select the drive parameters to be optimized by clicking the checkbox under <code>Optimized against?</code>.</li>
-</ol></li>
-<li><p>Define parameter constraints. Specify the range of parameter values explored by the optimizer by entering values into the <code>Min</code> and <code>Max</code> textboxes under <code>Constraints (%)</code>. Default values of 20% are suitable for simulations that already have a high correlation coefficient (Corr &gt; 0.9); for example, applying a 20% range to a Mean time of 65.53 ms produces bounds of 52.42–78.64 ms. For poor initial fits, increase the Min and Max percentages, though the number of simulations required may increase significantly.</p></li>
-<li><p>Run optimization. Click the <code>Run Optimization</code> button to execute the optimization routine.</p></li>
-<li><p>Save optimization results.</p>
-<ol type="1">
-<li>Click the <code>Save Optimization History</code> button.</li>
-<li>Move the saved file to the project folder created in Step 5 of <a href="#toc-3">Section 2</a>. Optimization results can be stored and reused — the protocol may be paused at this stage and resumed by loading the saved optimization history.</li>
-</ol></li>
-<li><p>Assess optimization quality. Evaluate the quality of the optimization run. When using correlation coefficient as the goodness-of-fit measure, a stopping criterion of Corr &gt; 0.95 is recommended, as this generally reflects a simulated waveform that reproduces the prominent peaks and troughs of the target ERP. Early stopping is not currently supported but is under development; increase the number of iterations if the stopping criterion is not met but the loss continues to decrease every 10 iterations. As noted above, when “dipole_corr” is used as the objective function, re-adjust the scaling factor after optimization — in the original paper’s example, the scaling factor was reduced from the default of 3000× to 1000×.</p>
-<ol type="1">
-<li>If optimization fails to achieve a good fit to the pre-treatment ERP, return to Step 2 and perform troubleshooting by increasing the maximum iterations, improving the manually tuned starting point, or selecting alternative parameters to adjust.</li>
-</ol></li>
-<li><p>Determine next steps based on optimization outcome. If a good fit to the pre-treatment ERP is achieved (i.e., Corr &gt; 0.95), re-adjust the scaling factor to minimize RMSE and proceed to <a href="#toc-6">Section 5</a>.</p></li>
+<section class="stylefig">
+<h3>Figure 1</h3>
+<figure>
+<img src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png" alt="Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization." />
+<figcaption aria-hidden="true">Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.</figcaption>
+</figure>
+</section>
+<ol start="19" type="1">
+<li>Click the <code>Run Optimization</code> tab. Note that depending on your computer speed, this could <strong>take up to several minutes</strong>.</li>
+<li>Finally, depending on randomness, you will probably see that the optimization has resulted in an <strong>improved fit</strong> to your experimental data, in which case the screen will resemble the following:</li>
 </ol>
-<p><a id="toc-6"></a></p>
-<h2>6. Section 5: Establish Post-Treatment Model Fit</h2>
-<ol type="1">
-<li><p>Start with the optimized pre-treatment ERP simulation. Manually tune and optimize the parameters of interest to fit the post-treatment ERP.</p></li>
-<li><p>Load the post-treatment empirical ERP waveform from <a href="#toc-2">Section 1</a> into the GUI, using the same procedure as Step 2 of <a href="#toc-4">Section 3</a>.</p></li>
-<li><p>Load the optimized pre-treatment ERP parameters from <a href="#toc-4">Section 3</a> and <a href="#toc-5">Section 4</a> as a starting point.</p></li>
-<li><p>Perform manual tuning and optimization. Perform manual hand tuning and parameter optimization (the same procedures as Steps 2–11 of <a href="#toc-4">Section 3</a> and all of <a href="#toc-5">Section 4</a>) on the parameters of interest identified in Step 7 of <a href="#toc-2">Section 1</a>. Continue tuning and optimization until a high correlation (Corr &gt; 0.95) between the simulated and post-treatment ERP is achieved.</p>
-<p>In the original paper, hand tuning was applied to a single signal-targeted parameter (decreased local network GABA<sub>B</sub> maximal conductance), which produced a closer fit to the post-treatment data. Optimization was not performed to evaluate how well this one parameter change accounts for the data. Simulation-based inference (SBI, Section 6 of the original protocol) is recommended for rigorous investigations because it estimates distributions of parameters that account for an ERP waveform, enabling more robust comparisons across parameter fits than a single point-estimate fit.</p></li>
-<li><p>Save model configuration and compare parameters.</p>
-<ol type="1">
-<li>Save the model configuration and compare optimized values for parameters of interest between the pre-treatment and post-treatment conditions.</li>
-<li>Repeat Step 11 of <a href="#toc-4">Section 3</a> to export a <code>.json</code> file of model parameters, and move the file to the project folder created in Step 5 of <a href="#toc-3">Section 2</a>.</li>
-<li>View exogenous drive parameters by clicking <code>Load external drives</code> and selecting either the pre-treatment or post-treatment network configuration file.</li>
-<li>View local network parameters by clicking <code>Load local network connectivity</code> and selecting either the pre-treatment or post-treatment network configuration file.</li>
-<li>Identify changes in parameter values across the pre-treatment and post-treatment network configurations, and interpret these changes as model-based predictions of post-treatment biomarker mechanisms.</li>
-</ol></li>
+<section class="stylefig">
+<h3>Figure 1</h3>
+<figure>
+<img src="https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/images/fig_01_blank_gui.png" alt="Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization." />
+<figcaption aria-hidden="true">Screenshot of the HNN GUI interface after launching, showing the default empty state with tabs for Simulation, Network, External drives, and Visualization.</figcaption>
+</figure>
+</section>
+<ol start="21" type="1">
+<li><p>Before we look at the results, click the <code>Save Optimization History</code> button. This will prompt you for where to save a raw text file that includes the history of all the parameters you optimized against, so that you can see what the parameters were both before and after optimization, including their final (optimized) values, and how much they changed.</p></li>
+<li><p>Since we used the default <code>dipole_rmse</code> object, the RMSE value was used during the optimization, and in the example shown above, it has decreased to <code>6.8615</code>. This is not just a better RMSE value than what we found by hand-tuning (<code>7.8567</code>, viewable by selecting <code>Figure 3</code> on the right), but in fact slightly better than the default simulation’s as well (<code>6.9827</code>, viewable by selecting <code>Figure 2</code> on the right).</p></li>
+<li><p>However, note that in our optimized simulation (<code>Figure 4</code> in the GUI on the right), while some portions of the dipole time series are closer to the experimental data, other portions are farther away from it. This is an important point: a better quantitative fit does not necessarily mean that the scientific validity is better! You must always use your scientific judgment to evaluate if such a parameter change <em>makes sense</em> in the biological system you’re investigating.</p></li>
+<li><p>In HNN, you can optimize against multiple parameters and as many parameters as you want. However, be aware that increasing the number of parameters you optimize against greatly increases the computational cost of the simulations that it needs to run. Additionally, if you want to run many simulations or iterations of the optimization, we <strong>strongly</strong> recommend that you switch to the API, since the GUI consumes much more memory to run simulations than the API.</p></li>
 </ol>
-<p><a id="toc-7"></a></p>
-<h2>7. Where to Go From Here</h2>
-<p>At this point you have a pre-treatment model fit (Sections 3–4) and a post-treatment model fit (Section 5) built from the same default HNN network, differing only in the parameters you identified as hypothesized mechanisms of the neurotherapeutic. Comparing the fitted parameter values between the two conditions constitutes your first model-based prediction of how the treatment altered the underlying neural circuit.</p>
-<p>The original protocol continues in two further sections not covered by this tutorial:</p>
-<ul>
-<li><strong>Section 6</strong> uses simulation-based inference (SBI) to estimate full <em>distributions</em> of plausible parameter values for both conditions, rather than single best-fit point estimates, and quantifies how separable the pre- and post-treatment distributions are using an overlap index (OVL).</li>
-<li><strong>Section 7</strong> demonstrates how to examine multiscale model predictions (e.g., cell-level spiking underlying the fitted dipole) that can subsequently be validated or further constrained by new empirical data, such as invasive electrophysiology or laminar MEG/EEG.</li>
-</ul>
-<p>If you want to reproduce the exact representative results shown in the paper, or adapt the SBI and validation workflow to your own pre-/post-treatment data, see the associated code repository at <a href="https://github.com/ntolley/hnn_jove">github.com/ntolley/hnn_jove</a>, which includes the <code>code/</code>, <code>data/</code>, and <code>notebooks/</code> directories referenced throughout this tutorial.</p>
-<p>For background on manually tuning and optimizing a somatosensory or auditory canonical ERP simulation outside of the neurotherapeutic-effects context of this protocol, see the <a href="../05_erps/erps_in_gui.html">ERP Tutorial</a> and the <a href="09_optimize_simulated_evoked_response_parameters.html">Optimize simulated evoked response parameters</a> tutorial.</p>
-<h2 class="unnumbered">References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-kohl_neural_2022" class="csl-entry" role="listitem">
-Kohl, Carmen, Tiina Parviainen, and Stephanie R. Jones. 2022. <span>“Neural <span>Mechanisms</span> <span>Underlying</span> <span>Human</span> <span>Auditory</span> <span>Evoked</span> <span>Responses</span> <span>Revealed</span> <span>By</span> <span>Human</span> <span>Neocortical</span> <span>Neurosolver</span>.”</span> <em>Brain Topography</em> 35 (1): 19–35. <a href="https://doi.org/10.1007/s10548-021-00838-0">https://doi.org/10.1007/s10548-021-00838-0</a>.
-</div>
-</div>
+<p>For tutorials on how to use optimization via the API, see <a href="../08_using_hnn_api/optimize_simulated_evoked_response_parameters.html">here</a> and [here](<a href="../08_using_hnn_api/optimize_simulated_rhythmic_response_parameters.html">here</a>.</p>
         <!-- footer area -->
         <!----------------->
         <div class="footer-area">
