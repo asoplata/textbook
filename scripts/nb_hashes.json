@@ -7,7 +7,7 @@
     "record_and_plot_extracellular_potentials_notebook.ipynb": "b1d223f330b531b8c391c99f660c25316b4e5b044dc3eedd8b0510d5805bd490",
     "optimize_simulated_rhythmic_response_parameters_notebook.ipynb": "6444d8f6def1a67773dcb6ee4ee70aa18bfe8f060e6bad2e91100cf463b812af",
     "animating_hnn_simulations_notebook.ipynb": "1935b9f96215c339e641153e43ad2425d6834c1a7a822f65683a62c6fcd1ce44",
-    "simulate_beta_modulated_erp_notebook.ipynb": "4f7d7c6431a72ff626f876fbeb3e8e1b0028c882ce117ca306838ad082f13be0",
+    "simulate_beta_modulated_erp_notebook.ipynb": "6ae550efa71178d84a0c5e0d312a42ec3099bc395d83da839b25b1af3e61baad",
     "batch_simulation_notebook.ipynb": "c14e4adfdc1332454e44dc4986fb205c17b8f1206752f25b657e9194e07d689a",
     "optimize_simulated_evoked_response_parameters_notebook.ipynb": "347a34048425484c682a226ff551f2f346b60707ca8664018405f98148a670d4",
     "modifying_local_connectivity_notebook.ipynb": "2802f4c98a1a7732e175bdd037fe17a0b5a507efbdc17e32adc0e730b1503e52",
@@ -16,5 +16,6 @@
     "parallelism_joblib_notebook.ipynb": "4e86e243c028c26cc84aa3b41d7ee3bc7ab0a4025a4095dff13d68007ec904b3",
     "replaying_spike_data_as_input.ipynb": "4936280185b23701e20204c30d8f6637d0a7c0dfbda6c8638bfc2cc9cbe94cfe",
     "erp_api_walkthrough.ipynb": "3cf35391474d7b0f25390a1e208ea4b60af4b5b09fcce38ead857c1656ca2ae7",
-    "meta_data_tutorial_documented.ipynb": "07c3c2c6dfd8b5fb52bc3c997d353c49925eb383eddc3e48ac170bd00bd14411"
+    "meta_data_tutorial_documented.ipynb": "07c3c2c6dfd8b5fb52bc3c997d353c49925eb383eddc3e48ac170bd00bd14411",
+    "replaying_spike_data_as_input_notebook.ipynb": "0dfaa73316b06e8cdad4095a553e088b27459bc80c580085a550253d67e50495"
 }
