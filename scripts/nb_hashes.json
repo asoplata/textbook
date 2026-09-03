@@ -5,7 +5,7 @@
     "from_meg_to_hnn_notebook.ipynb": "719c05b7fdaa570338011e90ecbbc3a01f2a727a700c46055f79c1abb5e53f83",
     "record_and_plot_extracellular_potentials_notebook.ipynb": "b1d223f330b531b8c391c99f660c25316b4e5b044dc3eedd8b0510d5805bd490",
     "optimize_simulated_rhythmic_response_parameters_notebook.ipynb": "1c899fff086cd6daf4fe7d15deafe08acda12d85f38e312f06de6f554d0c22a6",
-    "animating_hnn_simulations_notebook.ipynb": "1935b9f96215c339e641153e43ad2425d6834c1a7a822f65683a62c6fcd1ce44",
+    "animating_hnn_simulations_notebook.ipynb": "01115da52fcb9228b7e56061b3b7e6ef454121246b386ed6031da478fc4879f6",
     "simulate_beta_modulated_erp_notebook.ipynb": "6ae550efa71178d84a0c5e0d312a42ec3099bc395d83da839b25b1af3e61baad",
     "batch_simulation_notebook.ipynb": "72691a504bd01367be8c5df2c536b503af79fa79c2448db0719907cfb6d509d6",
     "optimize_simulated_evoked_response_parameters_notebook.ipynb": "34d224cea4f3a66c21e8fc6276693996a07a27600695cfbcc33982c5350cae91",
