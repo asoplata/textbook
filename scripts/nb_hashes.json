@@ -10,7 +10,7 @@
     "batch_simulation_notebook.ipynb": "72691a504bd01367be8c5df2c536b503af79fa79c2448db0719907cfb6d509d6",
     "optimize_simulated_evoked_response_parameters_notebook.ipynb": "34d224cea4f3a66c21e8fc6276693996a07a27600695cfbcc33982c5350cae91",
     "modifying_local_connectivity_notebook.ipynb": "30ede47895edce16680bd6366f13c999333bb18ef330e2d8f404ddeee50b8b4a",
-    "plot_firing_pattern_notebook.ipynb": "c8edfc717abc433c6d6738d6040cc0a70df8e683e18617d19e4c48e049d18b74",
+    "plot_firing_pattern_notebook.ipynb": "f126ec8d8ffc5de3b2c9e0eca5f69750ac282c801164a13d8ceedd4bd113fca9",
     "parallelism_mpi_notebook.ipynb": "26acf3b588a26f62f09cdc66f06f960fa46e82a67e056bdcc52f8c7fe7f1e379",
     "parallelism_joblib_notebook.ipynb": "4e86e243c028c26cc84aa3b41d7ee3bc7ab0a4025a4095dff13d68007ec904b3",
     "replaying_spike_data_as_input.ipynb": "4936280185b23701e20204c30d8f6637d0a7c0dfbda6c8638bfc2cc9cbe94cfe",
