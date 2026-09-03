@@ -1,8 +1,8 @@
 {
-    "api_alpha_beta.ipynb": "92ed7d2480b0994bada7b8b4b976d9d104d1f4f08a60d2aac314e044a9f013f8",
+    "api_alpha_beta.ipynb": "05e9a94b86a8cbec1da1bf2e230b69789181c83a26307774b75c4e95b68c27f7",
     "plot_simulate_gamma.ipynb": "e9a7cef2191421493ccbd20e0ec19058ed9831dff9556c733cbfe8ca213a3b6a",
     "api_alpha_beta_short.ipynb": "c953a87acc42bcf9e1a099d1395be14fd94741e3f19b02e9a11c3dbd0d485cf4",
-    "from_meg_to_hnn_notebook.ipynb": "cfdea19e13021d9b9e5e50def8dae0d87d6b4067fd09d205cceaf27e6029b0ec",
+    "from_meg_to_hnn_notebook.ipynb": "719c05b7fdaa570338011e90ecbbc3a01f2a727a700c46055f79c1abb5e53f83",
     "record_and_plot_extracellular_potentials_notebook.ipynb": "b1d223f330b531b8c391c99f660c25316b4e5b044dc3eedd8b0510d5805bd490",
     "optimize_simulated_rhythmic_response_parameters_notebook.ipynb": "1c899fff086cd6daf4fe7d15deafe08acda12d85f38e312f06de6f554d0c22a6",
     "animating_hnn_simulations_notebook.ipynb": "1935b9f96215c339e641153e43ad2425d6834c1a7a822f65683a62c6fcd1ce44",
