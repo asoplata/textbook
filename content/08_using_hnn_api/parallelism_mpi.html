@@ -170,6 +170,7 @@
 				<a href="/textbook/content/08_using_hnn_api/optimize_simulated_rhythmic_response_parameters.html">7.10 Optimize simulated rhythmic response parameters</a>
 				<a href="/textbook/content/08_using_hnn_api/metadata_tutorial.html">7.11 Cell Metadata Tutorial</a>
 				<a href="/textbook/content/08_using_hnn_api/replaying_spike_data_as_input.html">7.12 Replaying Spike Data as Input</a>
+				<a href="/textbook/content/08_using_hnn_api/full_api_howto.html">7.13 Changing Every Parameter Using the API</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -477,12 +478,20 @@ dpls = simulate_dipole(net, tstop=210., n_trials=1)
 
         MPI will run 1 trial(s) sequentially by distributing network neurons over 4 processes.
 
-        numprocs=4
+        [1790801778.482737] [runnervm8df0l:13773:0]      ucp_worker.c:1492 UCX  ERROR uct_iface_open(ud_verbs/mana_0:1) failed: Address not valid
+[1790801778.485412] [runnervm8df0l:13771:0]      ucp_worker.c:1492 UCX  ERROR uct_iface_open(ud_verbs/mana_0:1) failed: Address not valid
+[1790801778.487306] [runnervm8df0l:13772:0]      ucp_worker.c:1492 UCX  ERROR uct_iface_open(ud_verbs/mana_0:1) failed: Address not valid
+[1790801778.487595] [runnervm8df0l:13774:0]      ucp_worker.c:1492 UCX  ERROR uct_iface_open(ud_verbs/mana_0:1) failed: Address not valid
+numprocs=4
+[runnervm8df0l:13773] pml_ucx.c:319  Error: Failed to create UCP worker
+[runnervm8df0l:13771] pml_ucx.c:319  Error: Failed to create UCP worker
+[runnervm8df0l:13772] pml_ucx.c:319  Error: Failed to create UCP worker
+[runnervm8df0l:13774] pml_ucx.c:319  Error: Failed to create UCP worker
 
         Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
-Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
-Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
 Building the NEURON model
+Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
+Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
 Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
 
         [Done]
