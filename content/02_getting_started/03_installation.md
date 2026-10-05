@@ -1,5 +1,5 @@
 <!--
-# Title: 1.3 Installation
+# Title: 2.3 Installation
 # Updated: 2025-03-06
 #
 # Contributors:
@@ -8,7 +8,7 @@
     # Dylan Daniels
 -->
 
-# 1.3 Installation
+# 2.3 Installation
 
 ## Running HNN in the cloud
 
@@ -27,7 +27,7 @@ HNN is available for free, public use on the [Neuroscience Gateway Portal (NSG)]
 
 ## Local Installation - Simple
 
-If you want to install HNN-Core on your local computer, follow these steps. This will install both the API and the GUI; if you don't know what those terms mean, then please see this page before proceeding AES TODO
+If you want to install HNN-Core on your local computer, follow these steps. This will install both the API and the GUI; if you don't know what those terms mean, then please [see this page before proceeding](../read_this_first.html).
 
 (For more complex installation questions, such as installing on Brown's OSCAR environment, installing with MPI speedup, installing for development, etc., see the **Local Installation - Detailed** section later).
 
