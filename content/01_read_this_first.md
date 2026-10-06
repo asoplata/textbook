@@ -4,6 +4,7 @@
 #
 # Contributors:
     # Austin E. Soplata
+    # Dylan Daniels
 -->
 
 ## 1. Read This First!
