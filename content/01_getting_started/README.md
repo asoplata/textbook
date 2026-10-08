@@ -1,5 +1,5 @@
 <!--
-# Title: 2. Getting Started
+# Title: 1. Getting Started
 # Updated: 2024-01-16
 #
 # Contributors:

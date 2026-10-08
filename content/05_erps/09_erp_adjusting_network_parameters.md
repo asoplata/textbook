@@ -1,12 +1,12 @@
 <!--
-# Title: 5.9 Adjusting Network Parameters And Testing Hypotheses
+# Title: 4.9 Adjusting Network Parameters And Testing Hypotheses
 # Updated: 2026-07-26
 #
 # Contributors:
     # Dylan Daniels <dylan_s_daniels@alumni.brown.edu>
 -->
 
-# 5.9 Adjusting Network Parameters And Testing Hypotheses
+# 4.9 Adjusting Network Parameters And Testing Hypotheses
 
 <div
   id="video-container"
