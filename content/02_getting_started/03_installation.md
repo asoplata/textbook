@@ -37,10 +37,15 @@ If you want to install HNN-Core on your local computer, follow these steps. This
 
 3. AFTER you have done the above, open the "Terminal" app (if on Mac or Linux) or the "Command Prompt" app (if on Windows).
 
-4. Copy and paste the following commands into your Terminal/Command Prompt:
+4. Copy and paste the following command into your Terminal/Anaconda Prompt, then hit Enter to "run" the command:
 
 ```
 conda create -y -q -n hnn-core-env python=3.12
+```
+
+5. Activate your new environment by copying, pasting, and running the following command into the same window:
+
+```
 conda activate hnn-core-env
 ```
 
