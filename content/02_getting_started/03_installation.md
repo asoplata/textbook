@@ -37,13 +37,13 @@ If you want to install HNN-Core on your local computer, follow these steps. This
 
 3. AFTER you have done the above, open the "Terminal" app (if on Mac or Linux) or the "Anaconda Prompt" app (if on Windows).
 
-4. Copy and paste the following command into your Terminal/Anaconda Prompt:
+4. Copy and paste the following command into your Terminal/Anaconda Prompt, then hit Enter to "run" the command:
 
 ```
 conda create -y -q -n hnn-core-env python=3.12
 ```
 
-5. Activate your new environment by copying and pasting the following command into the same window:
+5. Activate your new environment by copying, pasting, and running the following command into the same window:
 
 ```
 conda activate hnn-core-env
@@ -55,7 +55,7 @@ conda activate hnn-core-env
 pip install "hnn_core[all]"
 ```
 
-7. Test that everything installed correctly by copying and pasting the following command into the same window:
+7. Test that everything installed correctly using the following command in the same window:
 
 ```
 python -c "from hnn_core import neymotin_2020_model, simulate_dipole; simulate_dipole(neymotin_2020_model(), tstop=20); print('--> SUCCESS: The test worked')"
