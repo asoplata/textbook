@@ -35,34 +35,35 @@ If you want to install HNN-Core on your local computer, follow these steps. This
 
 2. If you are on Windows, then you must **download** and **install** the program at this link, which is the NEURON cell simulator: [https://github.com/neuronsimulator/nrn/releases/download/8.2.7/nrn-8.2.7.w64-mingw-py-39-310-311-312-313-setup.exe](https://github.com/neuronsimulator/nrn/releases/download/8.2.7/nrn-8.2.7.w64-mingw-py-39-310-311-312-313-setup.exe)
 
-3. AFTER you have done the above, open the "Terminal" app (if on Mac or Linux) or the "Command Prompt" app (if on Windows).
+3. AFTER you have done the above, open the "Terminal" app (if on Mac or Linux) or the "Anaconda Prompt" app (if on Windows).
 
-4. Copy and paste the following commands into your Terminal/Command Prompt:
+4. Copy and paste the following command into your Terminal/Anaconda Prompt:
 
 ```
 conda create -y -q -n hnn-core-env python=3.12
+```
+
+5. Activate your new environment by copying and pasting the following command into the same window:
+
+```
 conda activate hnn-core-env
 ```
 
-5. Install HNN-Core using the following command:
+6. Install HNN-Core using the following command into the same window:
 
 ```
 pip install "hnn_core[all]"
 ```
 
-6. Test that everything installed correctly by copying and pasting the following command into the same window:
+7. Test that everything installed correctly by copying and pasting the following command into the same window:
 
 ```
-python -c "
-from hnn_core import neymotin_2020_model, simulate_dipole
-simulate_dipole(neymotin_2020_model(), tstop=20)
-print('--> SUCCESS: The test worked')
-"
+python -c "from hnn_core import neymotin_2020_model, simulate_dipole; simulate_dipole(neymotin_2020_model(), tstop=20); print('--> SUCCESS: The test worked')"
 ```
 
-7. That's it! HNN should now be installed. Proceed to the rest of [our HNN Textbook][] to get started.
+8. That's it! HNN should now be installed. Proceed to the rest of [our HNN Textbook][] to get started.
 
-8. To quickly start the GUI from inside your environment, just run the command:
+9. To quickly start the GUI from inside your environment, just run the command:
 
 ```
 hnn-gui
@@ -70,7 +71,7 @@ hnn-gui
 
 You can find more details about the GUI at [HNN GUI Quickstart](https://jonescompneurolab.github.io/textbook/content/04_using_hnn_gui/gui_quickstart.html).
 
-9. Note: The next time you need to re-enter the Conda Environment (such as after you restart your computer), all you need to do is run
+10. Note: The next time you need to re-enter the Conda Environment (such as after you restart your computer), all you need to do is run
 
 ```
 conda activate hnn-core-env
