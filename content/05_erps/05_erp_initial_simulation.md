@@ -1,12 +1,12 @@
 <!--
-# Title: 5.5 Simulate the Default Network
+# Title: 4.5 Simulate the Default Network
 # Updated: 2026-07-15
 #
 # Contributors:
     # Dylan Daniels <dylan_s_daniels@alumni.brown.edu>
 -->
 
-# 5.5 Simulate the Default Network
+# 4.5 Simulate the Default Network
 
 <div
   id="video-container"

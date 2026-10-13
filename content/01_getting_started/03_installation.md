@@ -1,5 +1,5 @@
 <!--
-# Title: 2.3 Installation
+# Title: 1.3 Installation
 # Updated: 2025-03-06
 #
 # Contributors:
@@ -8,9 +8,11 @@
     # Dylan Daniels
 -->
 
-# 2.3 Installation
+# 1.3 Installation
 
-## Running HNN in the cloud
+-----------------------------------
+
+## Running HNN in the cloud (no installation)
 
 ### Google CoLab
 
@@ -25,11 +27,11 @@ This is the quickest way to get up and running with HNN, though it does require 
 
 HNN is available for free, public use on the [Neuroscience Gateway Portal (NSG)](https://www.nsgportal.org/). You can find instructions for using HNN on NSG [at this page here](https://users.sdsc.edu/~kenneth/hnn/index.html).
 
+-----------------------------------
+
 ## Local Installation - Simple
 
-If you want to install HNN-Core on your local computer, follow these steps. This will install both the API and the GUI; if you don't know what those terms mean, then please [see this page before proceeding](../read_this_first.html).
-
-(For more complex installation questions, such as installing on Brown's OSCAR environment, installing with MPI speedup, installing for development, etc., see the **Local Installation - Detailed** section later).
+If you want to install HNN-Core on your local computer, follow these steps. This will install both the API and the GUI. (For more complex installation questions, such as installing on Brown's OSCAR environment, installing with MPI speedup, installing for development, etc., see the **Local Installation - Detailed** section later).
 
 1. Install the [Anaconda Python Distribution](https://www.anaconda.com/download/success) (also known as "Conda"). If you are unsure which version to install, download the Graphical Installer for the Anaconda Distribution, though any option works. If you are unfamiliar with using Anaconda/Conda virtual environments, [you can find guidance about them here](https://www.anaconda.com/docs/getting-started/working-with-conda/conda-intro-tutorial).
 
@@ -37,33 +39,32 @@ If you want to install HNN-Core on your local computer, follow these steps. This
 
 3. AFTER you have done the above, open the "Terminal" app (if on Mac or Linux) or the "Anaconda Prompt" app (if on Windows).
 
-4. Copy and paste the following command into your Terminal/Anaconda Prompt, then hit Enter to "run" the command:
+4. Copy and paste the following commands into your Terminal/Anaconda Prompt:
 
 ```
 conda create -y -q -n hnn-core-env python=3.12
-```
-
-5. Activate your new environment by copying, pasting, and running the following command into the same window:
-
-```
 conda activate hnn-core-env
 ```
 
-6. Install HNN-Core using the following command into the same window:
+5. Install HNN-Core using the following command:
 
 ```
 pip install "hnn_core[all]"
 ```
 
-7. Test that everything installed correctly using the following command in the same window:
+6. Test that everything installed correctly by copying and pasting the following command into the same window:
 
 ```
-python -c "from hnn_core import neymotin_2020_model, simulate_dipole; simulate_dipole(neymotin_2020_model(), tstop=20); print('--> SUCCESS: The test worked')"
+python -c "
+from hnn_core import neymotin_2020_model, simulate_dipole
+simulate_dipole(neymotin_2020_model(), tstop=20)
+print('--> SUCCESS: The test worked')
+"
 ```
 
-8. That's it! HNN should now be installed. Proceed to the rest of [our HNN Textbook][] to get started.
+7. That's it! HNN should now be installed. Proceed to the rest of [our HNN Textbook][] to get started.
 
-9. To quickly start the GUI from inside your environment, just run the command:
+8. To quickly start the GUI from inside your environment, just run the command:
 
 ```
 hnn-gui
@@ -71,7 +72,7 @@ hnn-gui
 
 You can find more details about the GUI at [HNN GUI Quickstart](https://jonescompneurolab.github.io/textbook/content/04_using_hnn_gui/gui_quickstart.html).
 
-10. Note: The next time you need to re-enter the Conda Environment (such as after you restart your computer), all you need to do is run
+9. Note: The next time you need to re-enter the Conda Environment (such as after you restart your computer), all you need to do is run
 
 ```
 conda activate hnn-core-env
@@ -79,6 +80,7 @@ conda activate hnn-core-env
 
 **If you have any questions or problems** while installing HNN, feel free to ask for help on [our GitHub Discussions page][]!
 
+-----------------------------------
 
 ## Local Installation - Detailed
 
