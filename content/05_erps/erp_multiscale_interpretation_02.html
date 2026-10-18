@@ -80,8 +80,6 @@
 				<a href="/textbook/content/01_getting_started/challenge.html">1.1 Introducing HNN</a>
 				<a href="/textbook/content/01_getting_started/template_model.html">1.2 Template Model</a>
 				<a href="/textbook/content/01_getting_started/installation.html">1.3 Installation</a>
-				<a href="/textbook/content/01_getting_started/following_along.html">1.4 Follow Along with the Textbook</a>
-				<a href="/textbook/content/01_getting_started/simulation_workflow.html">1.5 Simulation Workflow</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -118,15 +116,17 @@
 		    <div class="submenu">
 
 				<a href="/textbook/content/05_erps/erp_overview.html">4.1 Intro and Overview Lecture</a>
-				<a href="/textbook/content/05_erps/erp_getting_started.html">4.2 Getting Started</a>
-				<a href="/textbook/content/05_erps/erp_initial_simulation.html">4.3 Simulate an ERP using the Default Parameters</a>
-				<a href="/textbook/content/05_erps/erp_scaling_smoothing.html">4.4 Simulation Scaling and Smoothing</a>
-				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_01.html">4.5.1 Multiscale Interpretation Part I</a>
-				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_02.html">4.5.2 Multiscale Interpretation Part II</a>
-				<a href="/textbook/content/05_erps/erp_adjust_evoked_drives.html">4.6 Adjusting Evoked Drives</a>
-				<a href="/textbook/content/05_erps/erp_adjusting_network_parameters.html">4.7 Adjusting Network Parameters And Testing Hypotheses</a>
-				<a href="/textbook/content/05_erps/erp_hypotheses_to_validation.html">4.8 From Hypotheses to Validation Targets</a>
-				<a href="/textbook/content/05_erps/erp_conclusion.html">4.9 Concluding Remarks</a>
+				<a href="/textbook/content/05_erps/erp_following_along.html">4.2 Following Along</a>
+				<a href="/textbook/content/05_erps/erp_getting_started.html">4.3 Getting Started</a>
+				<a href="/textbook/content/05_erps/erp_simulation_workflow.html">4.4 Simulation Workflow</a>
+				<a href="/textbook/content/05_erps/erp_initial_simulation.html">4.5 Simulate the Default Network</a>
+				<a href="/textbook/content/05_erps/erp_scaling_smoothing.html">4.6 Simulation Scaling and Smoothing</a>
+				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_01.html">4.7.1 Multiscale Interpretation Part I</a>
+				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_02.html">4.7.2 Multiscale Interpretation Part II</a>
+				<a href="/textbook/content/05_erps/erp_adjust_evoked_drives.html">4.8 Adjusting Evoked Drives</a>
+				<a href="/textbook/content/05_erps/erp_adjusting_network_parameters.html">4.9 Adjusting Network Parameters And Testing Hypotheses</a>
+				<a href="/textbook/content/05_erps/erp_hypotheses_to_validation.html">4.10 From Hypotheses to Validation Targets</a>
+				<a href="/textbook/content/05_erps/erp_conclusion.html">4.11 Concluding Remarks</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -285,7 +285,6 @@
         </div>
     </div>
 
-    <div id="main-scroll-container">
     <div id="main">
     <div id="content-wrapper">
     <div id="content">
@@ -315,21 +314,16 @@
 
 
 <!--
-# Title: 4.5.2 Multiscale Interpretation Part II
+# Title: 4.7.2 Multiscale Interpretation Part II
 # Updated: 2026-07-15
 #
 # Contributors:
     # Dylan Daniels <dylan_s_daniels@alumni.brown.edu>
 -->
-<h1>4.5.2 Multiscale Interpretation Part II</h1>
+<h1>4.7.2 Multiscale Interpretation Part II</h1>
 <div id="video-container" class="text-align: center;" data-src="https://drive.google.com/file/d/1Kog80FF6LNL_fQJhWeTEJifztElon_PM/preview" style="padding: 10px 0px 30px 0px;">
 
 </div>
-<div class="collapsible-section collapsible-api-notebook">
-<h5 class="collapsible-header">
-API Walkthrough
-</h5>
-<div class="collapsible-content">
 <div class='markdown-cell'>
     <h2>First Proximal Drive (Contd…)</h2>
 
@@ -348,9 +342,8 @@ layer-specific dipoles without any smoothing.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            fig = plot_combined_raster_hist(
+                    <code class='language-python'>
+                        fig = plot_combined_raster_hist(
     dipole=unsmoothed_dipole,
     net=net_default_gui,
 )
@@ -360,8 +353,7 @@ for ax in fig.axes:
         ax,
         show_origin_line=False,
     )
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -423,9 +415,8 @@ the object so we can view all of its attributes.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            # create a pointer variable for "evprox1"
+                    <code class='language-python'>
+                        # create a pointer variable for "evprox1"
 evprox1 = net_default.external_drives["evprox1"]
 
 # print the keys
@@ -436,8 +427,7 @@ print(
     sep="\n",
 )
 
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -470,9 +460,8 @@ and values that are the numerical weights for those connections.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            # below, we set up a loop to print the keys and values
+                    <code class='language-python'>
+                        # below, we set up a loop to print the keys and values
 # for each of synapse types
 
 synapse_types = ["weights_ampa", "weights_nmda"]
@@ -495,8 +484,7 @@ for synapse_weights in synapse_types:
         print(
             evprox1["weights_nmda"],
         )
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -577,9 +565,8 @@ distal drive.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            fig = plot_initial_gui_figure(
+                    <code class='language-python'>
+                        fig = plot_initial_gui_figure(
     net_default_gui,
     processed_dipole,
     threshold_experimental_dpl,
@@ -596,8 +583,7 @@ add_outline_to_subplot(
     fig.axes[1],
     x_bounds=[54, 110],
 )
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -632,9 +618,8 @@ observation further.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            fig = plot_combined_raster_hist(
+                    <code class='language-python'>
+                        fig = plot_combined_raster_hist(
     dipole=unsmoothed_dipole,
     net=net_default_gui,
 )
@@ -647,8 +632,7 @@ for ax in fig.axes:
         x_bounds=[54, 110],
         show_origin_line=False,
     )
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -721,8 +705,6 @@ other to push current up and down the apical dendrites.</p>
 
 
 <!-- markdown cell -->
-</div>
-</div>
         <!-- footer area -->
         <!----------------->
         <div class="footer-area">
@@ -734,13 +716,13 @@ other to push current up and down the apical dendrites.</p>
                 </div>
                 <div class="previous-text">
                     <p>Previous</p>
-                    <a>4.5.1 Multiscale Interpretation Part I</a>
+                    <a>4.7.1 Multiscale Interpretation Part I</a>
                 </div>
             </div>
             <div class="next-area" data-link="/textbook/content/05_erps/erp_adjust_evoked_drives.html">
                 <div class="next-text">
                     <p>Next</p>
-                    <a>4.6 Adjusting Evoked Drives</a>
+                    <a>4.8 Adjusting Evoked Drives</a>
                 </div>
                 <div class="next-icon">
                     <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -751,8 +733,7 @@ other to push current up and down the apical dendrites.</p>
         </div> <!-- close footer -->
     </div> <!-- close content -->
     </div> <!-- close content wrapper -->
-</div> <!-- close main -->
-</div> <!-- close main scroll container --><!------------------------ #
+</div> <!-- close main --><!------------------------ #
 # Code syntax highlighting #
 # ------------------------->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>

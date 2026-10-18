@@ -80,8 +80,6 @@
 				<a href="/textbook/content/01_getting_started/challenge.html">1.1 Introducing HNN</a>
 				<a href="/textbook/content/01_getting_started/template_model.html">1.2 Template Model</a>
 				<a href="/textbook/content/01_getting_started/installation.html">1.3 Installation</a>
-				<a href="/textbook/content/01_getting_started/following_along.html">1.4 Follow Along with the Textbook</a>
-				<a href="/textbook/content/01_getting_started/simulation_workflow.html">1.5 Simulation Workflow</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -118,15 +116,17 @@
 		    <div class="submenu">
 
 				<a href="/textbook/content/05_erps/erp_overview.html">4.1 Intro and Overview Lecture</a>
-				<a href="/textbook/content/05_erps/erp_getting_started.html">4.2 Getting Started</a>
-				<a href="/textbook/content/05_erps/erp_initial_simulation.html">4.3 Simulate an ERP using the Default Parameters</a>
-				<a href="/textbook/content/05_erps/erp_scaling_smoothing.html">4.4 Simulation Scaling and Smoothing</a>
-				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_01.html">4.5.1 Multiscale Interpretation Part I</a>
-				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_02.html">4.5.2 Multiscale Interpretation Part II</a>
-				<a href="/textbook/content/05_erps/erp_adjust_evoked_drives.html">4.6 Adjusting Evoked Drives</a>
-				<a href="/textbook/content/05_erps/erp_adjusting_network_parameters.html">4.7 Adjusting Network Parameters And Testing Hypotheses</a>
-				<a href="/textbook/content/05_erps/erp_hypotheses_to_validation.html">4.8 From Hypotheses to Validation Targets</a>
-				<a href="/textbook/content/05_erps/erp_conclusion.html">4.9 Concluding Remarks</a>
+				<a href="/textbook/content/05_erps/erp_following_along.html">4.2 Following Along</a>
+				<a href="/textbook/content/05_erps/erp_getting_started.html">4.3 Getting Started</a>
+				<a href="/textbook/content/05_erps/erp_simulation_workflow.html">4.4 Simulation Workflow</a>
+				<a href="/textbook/content/05_erps/erp_initial_simulation.html">4.5 Simulate the Default Network</a>
+				<a href="/textbook/content/05_erps/erp_scaling_smoothing.html">4.6 Simulation Scaling and Smoothing</a>
+				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_01.html">4.7.1 Multiscale Interpretation Part I</a>
+				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_02.html">4.7.2 Multiscale Interpretation Part II</a>
+				<a href="/textbook/content/05_erps/erp_adjust_evoked_drives.html">4.8 Adjusting Evoked Drives</a>
+				<a href="/textbook/content/05_erps/erp_adjusting_network_parameters.html">4.9 Adjusting Network Parameters And Testing Hypotheses</a>
+				<a href="/textbook/content/05_erps/erp_hypotheses_to_validation.html">4.10 From Hypotheses to Validation Targets</a>
+				<a href="/textbook/content/05_erps/erp_conclusion.html">4.11 Concluding Remarks</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -285,7 +285,6 @@
         </div>
     </div>
 
-    <div id="main-scroll-container">
     <div id="main">
     <div id="content-wrapper">
     <div id="content">
@@ -315,21 +314,16 @@
 
 
 <!--
-# Title: 4.7 Adjusting Network Parameters And Testing Hypotheses
+# Title: 4.9 Adjusting Network Parameters And Testing Hypotheses
 # Updated: 2026-07-26
 #
 # Contributors:
     # Dylan Daniels <dylan_s_daniels@alumni.brown.edu>
 -->
-<h1>4.7 Adjusting Network Parameters And Testing Hypotheses</h1>
+<h1>4.9 Adjusting Network Parameters And Testing Hypotheses</h1>
 <div id="video-container" class="text-align: center;" data-src="https://drive.google.com/file/d/1H0rhgltr6Mh77XOBS7jEEKybqoZuKDJY/preview" style="padding: 10px 0px 30px 0px;">
 
 </div>
-<div class="collapsible-section collapsible-api-notebook">
-<h5 class="collapsible-header">
-API Walkthrough
-</h5>
-<div class="collapsible-content">
 <div class='markdown-cell'>
     <h2>Hand Tuning Drive Parameters</h2>
 
@@ -365,11 +359,9 @@ printing the keys in the <code>cell_types</code> data dictionary.</p>
 
 <!-- code cell -->
 <div class='code-cell'>
-    <div class='code-scroll-wrapper'>
-        <code class='language-python'>
-            print(list(net_default_gui.cell_types.keys()))
-        </code>
-    </div>
+    <code class='language-python'>
+        print(list(net_default_gui.cell_types.keys()))
+    </code>
 </div>
 
 
@@ -407,9 +399,8 @@ decay time for each synapse type</p></li>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            l5_pyr_celltype = net_default_gui.cell_types["L5_pyramidal"]
+                    <code class='language-python'>
+                        l5_pyr_celltype = net_default_gui.cell_types["L5_pyramidal"]
 l5_pyr_object = l5_pyr_celltype["cell_object"]
 
 print(
@@ -418,8 +409,7 @@ print(
     l5_pyr_object.synapses,
     sep="\n\n"
 )
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -452,9 +442,8 @@ above. We can inspect them using the object's <code>__dict__</code></p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            l5_pyr_soma = l5_pyr_object.sections["soma"]
+                    <code class='language-python'>
+                        l5_pyr_soma = l5_pyr_object.sections["soma"]
 
 print(
     'Printout for sections["soma"]:',
@@ -463,8 +452,7 @@ print(
     f"    {list(l5_pyr_soma.__dict__.keys())}",
     sep="\n",
 )
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -500,11 +488,9 @@ for the <code>soma</code> with:</p>
 
 <!-- code cell -->
 <div class='code-cell'>
-    <div class='code-scroll-wrapper'>
-        <code class='language-python'>
-            l5_pyr_object.sections["soma"].mechs
-        </code>
-    </div>
+    <code class='language-python'>
+        l5_pyr_object.sections["soma"].mechs
+    </code>
 </div>
 
 
@@ -544,11 +530,9 @@ un-comment the cell and rerun it.</p>
 
 <!-- code cell -->
 <div class='code-cell'>
-    <div class='code-scroll-wrapper'>
-        <code class='language-python'>
-            # l5_pyr_object.to_dict()
-        </code>
-    </div>
+    <code class='language-python'>
+        # l5_pyr_object.to_dict()
+    </code>
 </div>
 
 
@@ -576,15 +560,13 @@ condition).</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            fig = plot_initial_gui_figure(
+                    <code class='language-python'>
+                        fig = plot_initial_gui_figure(
     net_default_gui,
     processed_dipole,
     suprathreshold_dpl,
 )
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -639,11 +621,9 @@ print the first entry to examine its properties</p>
 
 <!-- code cell -->
 <div class='code-cell'>
-    <div class='code-scroll-wrapper'>
-        <code class='language-python'>
-            net_default_gui.connectivity[0]
-        </code>
-    </div>
+    <code class='language-python'>
+        net_default_gui.connectivity[0]
+    </code>
 </div>
 
 
@@ -688,13 +668,11 @@ copying" the default network. We'll call this network
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            from copy import deepcopy  
+                    <code class='language-python'>
+                        from copy import deepcopy  
 
 net_02 = read_network_configuration("gui_default.json")
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -723,16 +701,14 @@ were correctly updated.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            net_02.set_global_synaptic_gains(
+                    <code class='language-python'>
+                        net_02.set_global_synaptic_gains(
     e_e=2,
     e_i=2,
 )
 
 print(net_02.get_global_synaptic_gains())
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -758,9 +734,8 @@ print(net_02.get_global_synaptic_gains())
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            with chosen_backend(ncores):
+                    <code class='language-python'>
+                        with chosen_backend(ncores):
     net_02_dpl_01 = simulate_dipole(
         net=net_02,
         tstop=170.0,
@@ -771,8 +746,7 @@ print(net_02.get_global_synaptic_gains())
 processed_dpl_02_01 = net_02_dpl_01[0].copy()
 processed_dpl_02_01.smooth(30).scale(3000)
 
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -789,39 +763,37 @@ Building the NEURON model
 
         [Done]
 Trial 1: 0.03 ms...
+Trial 1: 10.0 ms...
 
-        Trial 1: 10.0 ms...
-Trial 1: 20.0 ms...
+        Trial 1: 20.0 ms...
 Trial 1: 30.0 ms...
-
-        Trial 1: 40.0 ms...
+Trial 1: 40.0 ms...
 Trial 1: 50.0 ms...
-Trial 1: 60.0 ms...
 
-        Trial 1: 70.0 ms...
-Trial 1: 80.0 ms...
+        Trial 1: 60.0 ms...
+Trial 1: 70.0 ms...
 
-        Trial 1: 90.0 ms...
+        Trial 1: 80.0 ms...
+Trial 1: 90.0 ms...
 Trial 1: 100.0 ms...
-Trial 1: 110.0 ms...
-Trial 1: 120.0 ms...
 
-        Trial 1: 130.0 ms...
+        Trial 1: 110.0 ms...
+Trial 1: 120.0 ms...
+Trial 1: 130.0 ms...
 Trial 1: 140.0 ms...
 
         Trial 1: 150.0 ms...
 Trial 1: 160.0 ms...
 
-        &lt;hnn_core.dipole.Dipole at 0x7f5a20666660&gt;
+        &lt;hnn_core.dipole.Dipole at 0x7f9d1597cda0&gt;
                     </div>
                 </div>
 
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            # plot the data using our custom function
+                    <code class='language-python'>
+                        # plot the data using our custom function
 fig = plot_initial_gui_figure(
     net_02,
     processed_dpl_02_01,
@@ -837,8 +809,7 @@ fig.axes[1].plot(
 )
 
 fig.axes[1].legend();
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -892,11 +863,9 @@ off, without needing to re-simulate it later. We'll call the copy
 
 <!-- code cell -->
 <div class='code-cell'>
-    <div class='code-scroll-wrapper'>
-        <code class='language-python'>
-            net_02_checkpoint_01 = deepcopy(net_02)
-        </code>
-    </div>
+    <code class='language-python'>
+        net_02_checkpoint_01 = deepcopy(net_02)
+    </code>
 </div>
 
 
@@ -912,9 +881,8 @@ method, and you can then load it at a later time with the same
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            from hnn_core import write_network_configuration
+                    <code class='language-python'>
+                        from hnn_core import write_network_configuration
 
 save_to_disk = False
 
@@ -923,8 +891,7 @@ if save_to_disk:
         net_02_checkpoint_01,
         "net_02_checkpoint_01.json",
     )
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -946,17 +913,15 @@ pyramidal neurons will yield an overall stronger response.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            net_02.set_global_synaptic_gains(
+                    <code class='language-python'>
+                        net_02.set_global_synaptic_gains(
     e_e=1,
     e_i=1,
     i_e=0.5,  # i.e., 50%
 )
 
 print(net_02.get_global_synaptic_gains())
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -975,9 +940,8 @@ print(net_02.get_global_synaptic_gains())
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            with chosen_backend(ncores):
+                    <code class='language-python'>
+                        with chosen_backend(ncores):
     net_02_dpl_02 = simulate_dipole(
         net=net_02,
         tstop=170.0,
@@ -988,8 +952,7 @@ print(net_02.get_global_synaptic_gains())
 processed_dpl_02_02 = net_02_dpl_02[0].copy()
 processed_dpl_02_02.smooth(30).scale(3000)
 
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -1019,25 +982,23 @@ Trial 1: 70.0 ms...
         Trial 1: 80.0 ms...
 Trial 1: 90.0 ms...
 Trial 1: 100.0 ms...
+Trial 1: 110.0 ms...
 
-        Trial 1: 110.0 ms...
-Trial 1: 120.0 ms...
+        Trial 1: 120.0 ms...
 Trial 1: 130.0 ms...
 Trial 1: 140.0 ms...
 Trial 1: 150.0 ms...
+Trial 1: 160.0 ms...
 
-        Trial 1: 160.0 ms...
-
-        &lt;hnn_core.dipole.Dipole at 0x7f5a1739d6a0&gt;
+        &lt;hnn_core.dipole.Dipole at 0x7f9d1a581c40&gt;
                     </div>
                 </div>
 
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            # plot the data using our custom function
+                    <code class='language-python'>
+                        # plot the data using our custom function
 fig = plot_initial_gui_figure(
     net_02,
     processed_dpl_02_02,
@@ -1060,8 +1021,7 @@ fig.axes[1].plot(
 )
 
 fig.axes[1].legend();
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -1117,8 +1077,6 @@ targets for validation in follow-up experiments</p>
 
 
 <!-- markdown cell -->
-</div>
-</div>
         <!-- footer area -->
         <!----------------->
         <div class="footer-area">
@@ -1130,13 +1088,13 @@ targets for validation in follow-up experiments</p>
                 </div>
                 <div class="previous-text">
                     <p>Previous</p>
-                    <a>4.6 Adjusting Evoked Drives</a>
+                    <a>4.8 Adjusting Evoked Drives</a>
                 </div>
             </div>
             <div class="next-area" data-link="/textbook/content/05_erps/erp_hypotheses_to_validation.html">
                 <div class="next-text">
                     <p>Next</p>
-                    <a>4.8 From Hypotheses to Validation Targets</a>
+                    <a>4.10 From Hypotheses to Validation Targets</a>
                 </div>
                 <div class="next-icon">
                     <svg class="svg-arrow" width="25" height="25" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1147,8 +1105,7 @@ targets for validation in follow-up experiments</p>
         </div> <!-- close footer -->
     </div> <!-- close content -->
     </div> <!-- close content wrapper -->
-</div> <!-- close main -->
-</div> <!-- close main scroll container --><!------------------------ #
+</div> <!-- close main --><!------------------------ #
 # Code syntax highlighting #
 # ------------------------->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>

@@ -80,8 +80,6 @@
 				<a href="/textbook/content/01_getting_started/challenge.html">1.1 Introducing HNN</a>
 				<a href="/textbook/content/01_getting_started/template_model.html">1.2 Template Model</a>
 				<a href="/textbook/content/01_getting_started/installation.html">1.3 Installation</a>
-				<a href="/textbook/content/01_getting_started/following_along.html">1.4 Follow Along with the Textbook</a>
-				<a href="/textbook/content/01_getting_started/simulation_workflow.html">1.5 Simulation Workflow</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -118,15 +116,17 @@
 		    <div class="submenu">
 
 				<a href="/textbook/content/05_erps/erp_overview.html">4.1 Intro and Overview Lecture</a>
-				<a href="/textbook/content/05_erps/erp_getting_started.html">4.2 Getting Started</a>
-				<a href="/textbook/content/05_erps/erp_initial_simulation.html">4.3 Simulate an ERP using the Default Parameters</a>
-				<a href="/textbook/content/05_erps/erp_scaling_smoothing.html">4.4 Simulation Scaling and Smoothing</a>
-				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_01.html">4.5.1 Multiscale Interpretation Part I</a>
-				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_02.html">4.5.2 Multiscale Interpretation Part II</a>
-				<a href="/textbook/content/05_erps/erp_adjust_evoked_drives.html">4.6 Adjusting Evoked Drives</a>
-				<a href="/textbook/content/05_erps/erp_adjusting_network_parameters.html">4.7 Adjusting Network Parameters And Testing Hypotheses</a>
-				<a href="/textbook/content/05_erps/erp_hypotheses_to_validation.html">4.8 From Hypotheses to Validation Targets</a>
-				<a href="/textbook/content/05_erps/erp_conclusion.html">4.9 Concluding Remarks</a>
+				<a href="/textbook/content/05_erps/erp_following_along.html">4.2 Following Along</a>
+				<a href="/textbook/content/05_erps/erp_getting_started.html">4.3 Getting Started</a>
+				<a href="/textbook/content/05_erps/erp_simulation_workflow.html">4.4 Simulation Workflow</a>
+				<a href="/textbook/content/05_erps/erp_initial_simulation.html">4.5 Simulate the Default Network</a>
+				<a href="/textbook/content/05_erps/erp_scaling_smoothing.html">4.6 Simulation Scaling and Smoothing</a>
+				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_01.html">4.7.1 Multiscale Interpretation Part I</a>
+				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_02.html">4.7.2 Multiscale Interpretation Part II</a>
+				<a href="/textbook/content/05_erps/erp_adjust_evoked_drives.html">4.8 Adjusting Evoked Drives</a>
+				<a href="/textbook/content/05_erps/erp_adjusting_network_parameters.html">4.9 Adjusting Network Parameters And Testing Hypotheses</a>
+				<a href="/textbook/content/05_erps/erp_hypotheses_to_validation.html">4.10 From Hypotheses to Validation Targets</a>
+				<a href="/textbook/content/05_erps/erp_conclusion.html">4.11 Concluding Remarks</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -285,7 +285,6 @@
         </div>
     </div>
 
-    <div id="main-scroll-container">
     <div id="main">
     <div id="content-wrapper">
     <div id="content">
@@ -374,9 +373,8 @@ directions provided.</strong></p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            try:
+                    <code class='language-python'>
+                        try:
     import mpi4py  : F401
 except ModuleNotFoundError:
     raise ModuleNotFoundError(
@@ -388,8 +386,7 @@ except ModuleNotFoundError:
         "The easiest way to install HNN-Core with MPI support is to use the `conda Package Installation` method described in the link above."
     ) from None
 
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -403,11 +400,9 @@ except ModuleNotFoundError:
 
 <!-- code cell -->
 <div class='code-cell'>
-    <div class='code-scroll-wrapper'>
-        <code class='language-python'>
-            from hnn_core import MPIBackend
-        </code>
-    </div>
+    <code class='language-python'>
+        from hnn_core import MPIBackend
+    </code>
 </div>
 
 
@@ -421,14 +416,12 @@ except ModuleNotFoundError:
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            import matplotlib.pyplot as plt
+                    <code class='language-python'>
+                        import matplotlib.pyplot as plt
 
 from hnn_core import simulate_dipole, neymotin_2020_model
 from hnn_core.viz import plot_dipole
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -444,17 +437,15 @@ drive:</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            net = neymotin_2020_model()
+                    <code class='language-python'>
+                        net = neymotin_2020_model()
 
 weights_ampa = {'L2_pyramidal': 5.4e-5, 'L5_pyramidal': 5.4e-5}
 net.add_bursty_drive(
     'bursty', tstart=50., burst_rate=10, burst_std=20., numspikes=2,
     spike_isi=10, n_drive_cells=10, location='distal',
     weights_ampa=weights_ampa, event_seed=278)
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -470,12 +461,10 @@ processors (cores) specified by <code>n_procs</code> using MPI.</p>
 
             <!-- code cell -->
             <div class='code-cell'>
-                <div class='code-scroll-wrapper'>
-                    <code class='language-python'>
-                        with MPIBackend(n_procs=4, mpi_cmd='mpiexec'):
+                <code class='language-python'>
+                    with MPIBackend(n_procs=4, mpi_cmd='mpiexec'):
 dpls = simulate_dipole(net, tstop=210., n_trials=1)
-                    </code>
-                </div>
+                </code>
             </div>
 
 
@@ -497,7 +486,8 @@ Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-en
 Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
 
         [Done]
-Trial 1: 0.03 ms...
+
+        Trial 1: 0.03 ms...
 
         Trial 1: 10.0 ms...
 
@@ -554,12 +544,10 @@ approximately 4 times faster!</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            plot_dipole(dpls, show=False)
+                    <code class='language-python'>
+                        plot_dipole(dpls, show=False)
 plt.show()
-                        </code>
-                    </div>
+                    </code>
                 </div>
 
 
@@ -607,8 +595,7 @@ plt.show()
         </div> <!-- close footer -->
     </div> <!-- close content -->
     </div> <!-- close content wrapper -->
-</div> <!-- close main -->
-</div> <!-- close main scroll container --><!------------------------ #
+</div> <!-- close main --><!------------------------ #
 # Code syntax highlighting #
 # ------------------------->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>

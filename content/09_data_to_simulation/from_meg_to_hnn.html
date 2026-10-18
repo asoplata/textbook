@@ -80,8 +80,6 @@
 				<a href="/textbook/content/01_getting_started/challenge.html">1.1 Introducing HNN</a>
 				<a href="/textbook/content/01_getting_started/template_model.html">1.2 Template Model</a>
 				<a href="/textbook/content/01_getting_started/installation.html">1.3 Installation</a>
-				<a href="/textbook/content/01_getting_started/following_along.html">1.4 Follow Along with the Textbook</a>
-				<a href="/textbook/content/01_getting_started/simulation_workflow.html">1.5 Simulation Workflow</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -118,15 +116,17 @@
 		    <div class="submenu">
 
 				<a href="/textbook/content/05_erps/erp_overview.html">4.1 Intro and Overview Lecture</a>
-				<a href="/textbook/content/05_erps/erp_getting_started.html">4.2 Getting Started</a>
-				<a href="/textbook/content/05_erps/erp_initial_simulation.html">4.3 Simulate an ERP using the Default Parameters</a>
-				<a href="/textbook/content/05_erps/erp_scaling_smoothing.html">4.4 Simulation Scaling and Smoothing</a>
-				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_01.html">4.5.1 Multiscale Interpretation Part I</a>
-				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_02.html">4.5.2 Multiscale Interpretation Part II</a>
-				<a href="/textbook/content/05_erps/erp_adjust_evoked_drives.html">4.6 Adjusting Evoked Drives</a>
-				<a href="/textbook/content/05_erps/erp_adjusting_network_parameters.html">4.7 Adjusting Network Parameters And Testing Hypotheses</a>
-				<a href="/textbook/content/05_erps/erp_hypotheses_to_validation.html">4.8 From Hypotheses to Validation Targets</a>
-				<a href="/textbook/content/05_erps/erp_conclusion.html">4.9 Concluding Remarks</a>
+				<a href="/textbook/content/05_erps/erp_following_along.html">4.2 Following Along</a>
+				<a href="/textbook/content/05_erps/erp_getting_started.html">4.3 Getting Started</a>
+				<a href="/textbook/content/05_erps/erp_simulation_workflow.html">4.4 Simulation Workflow</a>
+				<a href="/textbook/content/05_erps/erp_initial_simulation.html">4.5 Simulate the Default Network</a>
+				<a href="/textbook/content/05_erps/erp_scaling_smoothing.html">4.6 Simulation Scaling and Smoothing</a>
+				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_01.html">4.7.1 Multiscale Interpretation Part I</a>
+				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_02.html">4.7.2 Multiscale Interpretation Part II</a>
+				<a href="/textbook/content/05_erps/erp_adjust_evoked_drives.html">4.8 Adjusting Evoked Drives</a>
+				<a href="/textbook/content/05_erps/erp_adjusting_network_parameters.html">4.9 Adjusting Network Parameters And Testing Hypotheses</a>
+				<a href="/textbook/content/05_erps/erp_hypotheses_to_validation.html">4.10 From Hypotheses to Validation Targets</a>
+				<a href="/textbook/content/05_erps/erp_conclusion.html">4.11 Concluding Remarks</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -285,7 +285,6 @@
         </div>
     </div>
 
-    <div id="main-scroll-container">
     <div id="main">
     <div id="content-wrapper">
     <div id="content">
@@ -478,71 +477,133 @@ inv = make_inverse_operator(epochs.info, fwd, cov)
                     </div>
                     <div class='output-code'>
 
-        Opening raw data file /Users/austinsoplata/mne_data/MNE-somato-data/sub-01/meg/sub-01_task-somato_meg.fif...
-    Range : 237600 ... 506999 =    791.189 ...  1688.266 secs
-Ready.
-Reading 0 ... 269399  =      0.000 ...   897.077 secs...
-Filtering raw data in 1 contiguous segment
-Setting up band-pass filter from 1 - 40 Hz
+        Opening raw data file /home/runner/mne_data/MNE-somato-data/sub-01/meg/sub-01_task-somato_meg.fif...
 
-FIR filter parameters
----------------------
-Designing a one-pass, zero-phase, non-causal bandpass filter:
-- Windowed time-domain design (firwin) method
-- Hamming window with 0.0194 passband ripple and 53 dB stopband attenuation
-- Lower passband edge: 1.00
-- Lower transition bandwidth: 1.00 Hz (-6 dB cutoff frequency: 0.50 Hz)
-- Upper passband edge: 40.00 Hz
-- Upper transition bandwidth: 10.00 Hz (-6 dB cutoff frequency: 45.00 Hz)
-- Filter length: 993 samples (3.307 s)
+            Range : 237600 ... 506999 =    791.189 ...  1688.266 secs
 
-Finding events on: STI 014
-111 events found on stim channel STI 014
-Event IDs: [1]
-Not setting metadata
-111 matching events found
-No baseline correction applied
-0 projection items activated
-Using data from preloaded Raw for 111 events and 112 original time points ...
-0 bad epochs dropped
-Reading forward solution from /Users/austinsoplata/mne_data/MNE-somato-data/derivatives/sub-01/sub-01_task-somato-fwd.fif...
-    Reading a source space...
-    [done]
-    Reading a source space...
-    [done]
-    2 source spaces read
-    Desired named matrix (kind = 3523 (FIFF_MNE_FORWARD_SOLUTION_GRAD)) not available
-    Read MEG forward solution (8155 sources, 306 channels, free orientations)
-    Source spaces transformed to the forward solution coordinate frame
-Reducing data rank from 306 -&gt; 306
+        Ready.
+
+        Reading 0 ... 269399  =      0.000 ...   897.077 secs...
+
+        Filtering raw data in 1 contiguous segment
+
+        Setting up band-pass filter from 1 - 40 Hz
+
+
+
+        FIR filter parameters
+
+        ---------------------
+
+        Designing a one-pass, zero-phase, non-causal bandpass filter:
+
+        - Windowed time-domain design (firwin) method
+
+        - Hamming window with 0.0194 passband ripple and 53 dB stopband attenuation
+
+        - Lower passband edge: 1.00
+
+        - Lower transition bandwidth: 1.00 Hz (-6 dB cutoff frequency: 0.50 Hz)
+
+        - Upper passband edge: 40.00 Hz
+
+        - Upper transition bandwidth: 10.00 Hz (-6 dB cutoff frequency: 45.00 Hz)
+
+        - Filter length: 993 samples (3.307 s)
+
+
+
+        Finding events on: STI 014
+
+        111 events found on stim channel STI 014
+
+        Event IDs: [1]
+
+        Not setting metadata
+
+        111 matching events found
+
+        No baseline correction applied
+
+        0 projection items activated
+
+        Using data from preloaded Raw for 111 events and 112 original time points ...
+
+        0 bad epochs dropped
+
+        Reading forward solution from /home/runner/mne_data/MNE-somato-data/derivatives/sub-01/sub-01_task-somato-fwd.fif...
+
+            Reading a source space...
+
+            [done]
+
+            Reading a source space...
+
+            [done]
+
+            2 source spaces read
+
+            Desired named matrix (kind = 3523 (FIFF_MNE_FORWARD_SOLUTION_GRAD)) not available
+
+            Read MEG forward solution (8155 sources, 306 channels, free orientations)
+
+            Source spaces transformed to the forward solution coordinate frame
+
+        Reducing data rank from 306 -&gt; 306
 
         Estimating covariance using EMPIRICAL
-Done.
-Number of samples used : 12432
-[done]
-Converting forward solution to surface orientation
-    No patch info available. The standard source space normals will be employed in the rotation to the local surface coordinates....
-    Converting to surface-based source orientations...
-    [done]
-Computing inverse operator with 306 channels.
-    306 out of 306 channels remain after picking
-Selected 306 channels
-Creating the depth weighting matrix...
-    204 planar channels
-    limit = 7615/8155 = 10.004172
-    scale = 5.17919e-08 exp = 0.8
-Applying loose dipole orientations to surface source spaces: 0.2
-Whitening the forward solution.
-Computing rank from covariance with rank=None
-    Using tolerance 2e-12 (2.2e-16 eps * 306 dim * 29  max singular value)
-    Estimated rank (mag + grad): 64
-    MEG: rank 64 computed from 306 data channels with 0 projectors
-    Setting small MEG eigenvalues to zero (without PCA)
-Creating the source covariance matrix
-Adjusting source covariance matrix.
-Computing SVD of whitened and weighted lead field matrix.
-    largest singular value = 2.42284
-    scaling factor to adjust the trace = 3.86104e+18 (nchan = 306 nzero = 242)
+
+        Done.
+
+        Number of samples used : 12432
+
+        [done]
+
+        Converting forward solution to surface orientation
+
+            No patch info available. The standard source space normals will be employed in the rotation to the local surface coordinates....
+
+            Converting to surface-based source orientations...
+
+            [done]
+
+        Computing inverse operator with 306 channels.
+
+            306 out of 306 channels remain after picking
+
+        Selected 306 channels
+
+        Creating the depth weighting matrix...
+
+            204 planar channels
+
+            limit = 7615/8155 = 10.004172
+
+            scale = 5.17919e-08 exp = 0.8
+
+        Applying loose dipole orientations to surface source spaces: 0.2
+
+        Whitening the forward solution.
+
+        Computing rank from covariance with rank=None
+
+            Using tolerance 2e-12 (2.2e-16 eps * 306 dim * 29  max singular value)
+
+            Estimated rank (mag + grad): 64
+
+            MEG: rank 64 computed from 306 data channels with 0 projectors
+
+            Setting small MEG eigenvalues to zero (without PCA)
+
+        Creating the source covariance matrix
+
+        Adjusting source covariance matrix.
+
+        Computing SVD of whitened and weighted lead field matrix.
+
+            largest singular value = 2.42284
+
+            scaling factor to adjust the trace = 3.86104e+18 (nchan = 306 nzero = 242)
 
                     </div>
                 </div>
@@ -583,17 +644,28 @@ stc = apply_inverse(evoked, inv, lambda2, method='MNE',
                     <div class='output-code'>
 
         Preparing the inverse operator for use...
-    Scaled noise and source covariance from nave = 1 to nave = 111
-    Created the regularized inverter
-    The projection vectors do not apply to these channels.
-    Created the whitener using a noise covariance matrix with rank 64 (242 small eigenvalues omitted)
-Applying inverse operator to &quot;1&quot;...
-    Picked 306 channels from the data
-    Computing inverse...
-    Eigenleads need to be weighted ...
-    Computing residual...
-    Explained  86.1% variance
-[done]
+
+            Scaled noise and source covariance from nave = 1 to nave = 111
+
+            Created the regularized inverter
+
+            The projection vectors do not apply to these channels.
+
+            Created the whitener using a noise covariance matrix with rank 64 (242 small eigenvalues omitted)
+
+        Applying inverse operator to &quot;1&quot;...
+
+            Picked 306 channels from the data
+
+            Computing inverse...
+
+            Eigenleads need to be weighted ...
+
+            Computing residual...
+
+            Explained  86.1% variance
+
+        [done]
 
                     </div>
                 </div>
@@ -627,7 +699,8 @@ label_s1 = mne.read_labels_from_annot(subject, parc='aparc.a2009s', hemi=hemi,
                     <div class='output-code'>
 
         Reading labels from parcellation...
-   read 1 labels from /Users/austinsoplata/mne_data/MNE-somato-data/derivatives/freesurfer/subjects/01/label/rh.aparc.a2009s.annot
+
+           read 1 labels from /home/runner/mne_data/MNE-somato-data/derivatives/freesurfer/subjects/01/label/rh.aparc.a2009s.annot
 
                     </div>
                 </div>
@@ -886,46 +959,72 @@ with JoblibBackend(n_jobs=2):
 
         Joblib will run 2 trial(s) in parallel by distributing trials over 2 jobs.
 
-        Loading custom mechanism files from /opt/anaconda3/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/arm64/.libs/libnrnmech.so
+        Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
 Building the NEURON model
-Loading custom mechanism files from /opt/anaconda3/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/arm64/.libs/libnrnmech.so
+Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
 Building the NEURON model
-[Done]
-[Done]
+
+        [Done]
 Trial 1: 0.03 ms...
+[Done]
 Trial 2: 0.03 ms...
-Trial 1: 10.0 ms...
+
+        Trial 1: 10.0 ms...
 Trial 2: 10.0 ms...
-Trial 1: 20.0 ms...
+
+        Trial 1: 20.0 ms...
 Trial 2: 20.0 ms...
-Trial 2: 30.0 ms...
+
+        Trial 2: 30.0 ms...
 Trial 1: 30.0 ms...
-Trial 2: 40.0 ms...
+
+        Trial 2: 40.0 ms...
 Trial 1: 40.0 ms...
-Trial 2: 50.0 ms...
+
+        Trial 2: 50.0 ms...
 Trial 1: 50.0 ms...
-Trial 2: 60.0 ms...
+
+        Trial 2: 60.0 ms...
 Trial 1: 60.0 ms...
-Trial 2: 70.0 ms...
+
+        Trial 2: 70.0 ms...
 Trial 1: 70.0 ms...
-Trial 2: 80.0 ms...
-Trial 1: 80.0 ms...
-Trial 2: 90.0 ms...
-Trial 1: 90.0 ms...
-Trial 2: 100.0 ms...
-Trial 1: 100.0 ms...
-Trial 2: 110.0 ms...
-Trial 1: 110.0 ms...
-Trial 2: 120.0 ms...
-Trial 1: 120.0 ms...
-Trial 2: 130.0 ms...
-Trial 1: 130.0 ms...
-Trial 2: 140.0 ms...
-Trial 1: 140.0 ms...
-Trial 1: 150.0 ms...
-Trial 2: 150.0 ms...
-Trial 2: 160.0 ms...
-Trial 1: 160.0 ms...
+
+        Trial 2: 80.0 ms...
+
+        Trial 1: 80.0 ms...
+
+        Trial 2: 90.0 ms...
+
+        Trial 1: 90.0 ms...
+
+        Trial 2: 100.0 ms...
+
+        Trial 1: 100.0 ms...
+
+        Trial 2: 110.0 ms...
+
+        Trial 1: 110.0 ms...
+
+        Trial 2: 120.0 ms...
+
+        Trial 1: 120.0 ms...
+
+        Trial 2: 130.0 ms...
+
+        Trial 1: 130.0 ms...
+
+        Trial 2: 140.0 ms...
+
+        Trial 1: 140.0 ms...
+
+        Trial 2: 150.0 ms...
+
+        Trial 1: 150.0 ms...
+
+        Trial 2: 160.0 ms...
+
+        Trial 1: 160.0 ms...
 
                     </div>
                 </div>
@@ -1044,8 +1143,7 @@ href="https://doi.org/10.7554/eLife.51214">https://doi.org/10.7554/eLife.51214</
         </div> <!-- close footer -->
     </div> <!-- close content -->
     </div> <!-- close content wrapper -->
-</div> <!-- close main -->
-</div> <!-- close main scroll container --><!------------------------ #
+</div> <!-- close main --><!------------------------ #
 # Code syntax highlighting #
 # ------------------------->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>

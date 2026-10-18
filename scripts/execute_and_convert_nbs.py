@@ -459,11 +459,9 @@ def _extract_html_from_nb(
             code_cell_html = textwrap.dedent(f"""
                 <!-- code cell -->
                 <div class='{code_cell_classes}'>
-                    <div class='code-scroll-wrapper'>
-                        <code class='language-python'>
-                            {code_contents}
-                        </code>
-                    </div>
+                    <code class='language-python'>
+                        {code_contents}
+                    </code>
                 </div>
             """)
             html_output.append(code_cell_html)
