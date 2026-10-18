@@ -80,6 +80,8 @@
 				<a href="/textbook/content/01_getting_started/challenge.html">1.1 Introducing HNN</a>
 				<a href="/textbook/content/01_getting_started/template_model.html">1.2 Template Model</a>
 				<a href="/textbook/content/01_getting_started/installation.html">1.3 Installation</a>
+				<a href="/textbook/content/01_getting_started/following_along.html">1.4 Follow Along with the Textbook</a>
+				<a href="/textbook/content/01_getting_started/simulation_workflow.html">1.5 Simulation Workflow</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -116,17 +118,15 @@
 		    <div class="submenu">
 
 				<a href="/textbook/content/05_erps/erp_overview.html">4.1 Intro and Overview Lecture</a>
-				<a href="/textbook/content/05_erps/erp_following_along.html">4.2 Following Along</a>
-				<a href="/textbook/content/05_erps/erp_getting_started.html">4.3 Getting Started</a>
-				<a href="/textbook/content/05_erps/erp_simulation_workflow.html">4.4 Simulation Workflow</a>
-				<a href="/textbook/content/05_erps/erp_initial_simulation.html">4.5 Simulate the Default Network</a>
-				<a href="/textbook/content/05_erps/erp_scaling_smoothing.html">4.6 Simulation Scaling and Smoothing</a>
-				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_01.html">4.7.1 Multiscale Interpretation Part I</a>
-				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_02.html">4.7.2 Multiscale Interpretation Part II</a>
-				<a href="/textbook/content/05_erps/erp_adjust_evoked_drives.html">4.8 Adjusting Evoked Drives</a>
-				<a href="/textbook/content/05_erps/erp_adjusting_network_parameters.html">4.9 Adjusting Network Parameters And Testing Hypotheses</a>
-				<a href="/textbook/content/05_erps/erp_hypotheses_to_validation.html">4.10 From Hypotheses to Validation Targets</a>
-				<a href="/textbook/content/05_erps/erp_conclusion.html">4.11 Concluding Remarks</a>
+				<a href="/textbook/content/05_erps/erp_getting_started.html">4.2 Getting Started</a>
+				<a href="/textbook/content/05_erps/erp_initial_simulation.html">4.3 Simulate an ERP using the Default Parameters</a>
+				<a href="/textbook/content/05_erps/erp_scaling_smoothing.html">4.4 Simulation Scaling and Smoothing</a>
+				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_01.html">4.5.1 Multiscale Interpretation Part I</a>
+				<a href="/textbook/content/05_erps/erp_multiscale_interpretation_02.html">4.5.2 Multiscale Interpretation Part II</a>
+				<a href="/textbook/content/05_erps/erp_adjust_evoked_drives.html">4.6 Adjusting Evoked Drives</a>
+				<a href="/textbook/content/05_erps/erp_adjusting_network_parameters.html">4.7 Adjusting Network Parameters And Testing Hypotheses</a>
+				<a href="/textbook/content/05_erps/erp_hypotheses_to_validation.html">4.8 From Hypotheses to Validation Targets</a>
+				<a href="/textbook/content/05_erps/erp_conclusion.html">4.9 Concluding Remarks</a>
 			</div>
 		</div>
 		<div class="sidebar-list">
@@ -285,6 +285,7 @@
         </div>
     </div>
 
+    <div id="main-scroll-container">
     <div id="main">
     <div id="content-wrapper">
     <div id="content">
@@ -349,12 +350,14 @@ and around the HNN network model.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <code class='language-python'>
-                        import matplotlib.pyplot as plt
+                    <div class='code-scroll-wrapper'>
+                        <code class='language-python'>
+                            import matplotlib.pyplot as plt
 
 from hnn_core import neymotin_2020_model, simulate_dipole
 from hnn_core.network_models import add_erp_drives_to_jones_model
-                    </code>
+                        </code>
+                    </div>
                 </div>
 
 
@@ -374,12 +377,14 @@ potential (ERP) example for details.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <code class='language-python'>
-                        net = neymotin_2020_model()
+                    <div class='code-scroll-wrapper'>
+                        <code class='language-python'>
+                            net = neymotin_2020_model()
 add_erp_drives_to_jones_model(net)
 
 net.set_cell_positions(inplane_distance=30.)
-                    </code>
+                        </code>
+                    </div>
                 </div>
 
 
@@ -394,10 +399,12 @@ placement of each electrode.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <code class='language-python'>
-                        net.plot_cells(show=False)
+                    <div class='code-scroll-wrapper'>
+                        <code class='language-python'>
+                            net.plot_cells(show=False)
 plt.show()
-                    </code>
+                        </code>
+                    </div>
                 </div>
 
 
@@ -440,11 +447,13 @@ for details.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <code class='language-python'>
-                        depths = list(range(-325, 2150, 100))
+                    <div class='code-scroll-wrapper'>
+                        <code class='language-python'>
+                            depths = list(range(-325, 2150, 100))
 electrode_pos = [(135, 135, dep) for dep in depths]
 net.add_electrode_array('shank1', electrode_pos)
-                    </code>
+                        </code>
+                    </div>
                 </div>
 
 
@@ -465,13 +474,15 @@ MPI</a> will speed up computation considerably.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <code class='language-python'>
-                        print(net.rec_arrays)
+                    <div class='code-scroll-wrapper'>
+                        <code class='language-python'>
+                            print(net.rec_arrays)
 net.plot_cells(show=False)
 plt.show()
 
 dpl = simulate_dipole(net, tstop=170)
-                    </code>
+                        </code>
+                    </div>
                 </div>
 
 
@@ -503,7 +514,8 @@ dpl = simulate_dipole(net, tstop=170)
                     <div class='output-code'>
 
         Joblib will run 1 trial(s) in parallel by distributing trials over 1 jobs.
-Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
+
+        Loading custom mechanism files from /usr/share/miniconda/envs/textbook-stable-env/lib/python3.12/site-packages/hnn_core/mod/x86_64/libnrnmech.so
 Building the NEURON model
 
         [Done]
@@ -557,8 +569,9 @@ applied in two steps). Decimation speeds up plotting significantly.</p>
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <code class='language-python'>
-                        trial_idx = 0
+                    <div class='code-scroll-wrapper'>
+                        <code class='language-python'>
+                            trial_idx = 0
 window_len = 10  # ms
 decimate = [5, 4]  # from 40k to 8k to 2k
 
@@ -567,14 +580,16 @@ dpl[trial_idx].smooth(window_len=window_len)
 
 # Use the same smoothing window on the LFP traces to allow comparison to dipole
 electrode_data = net.rec_arrays['shank1'][trial_idx].smooth(window_len=window_len)
-                    </code>
+                        </code>
+                    </div>
                 </div>
 
 
                 <!-- code cell -->
                 <div class='code-cell'>
-                    <code class='language-python'>
-                        fig, axs = plt.subplots(4, 1,
+                    <div class='code-scroll-wrapper'>
+                        <code class='language-python'>
+                            fig, axs = plt.subplots(4, 1,
                         sharex=True,
                         figsize=(6, 8),
                         gridspec_kw={'height_ratios': [1, 2, 2, 2]})
@@ -603,7 +618,8 @@ axs[3].set_ylabel('Electrode depth (um)')
 axs[3].set_title('CSD Plot')
 plt.tight_layout()
 plt.show()
-                    </code>
+                        </code>
+                    </div>
                 </div>
 
 
@@ -668,7 +684,8 @@ href="https://doi.org/10.1016/j.neuron.2011.09.029">https://doi.org/10.1016/j.ne
         </div> <!-- close footer -->
     </div> <!-- close content -->
     </div> <!-- close content wrapper -->
-</div> <!-- close main --><!------------------------ #
+</div> <!-- close main -->
+</div> <!-- close main scroll container --><!------------------------ #
 # Code syntax highlighting #
 # ------------------------->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
