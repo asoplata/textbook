@@ -1,13 +1,13 @@
 <!--
-# Title: 5.1 Intro and Overview Lecture
-# Updated: 2026-07-10
+# Title: 4.1 Intro and Overview Lecture
+# Updated: 2026-10-16
 #
 # Contributors:
     # Stephanie Jones <stephanie_jones@brown.edu>
     # Dylan Daniels <dylan_s_daniels@alumni.brown.edu>
 -->
 
-# 5.1 Introduction and ERP Overview
+# 4.1 Introduction and ERP Overview
 
 Welcome to the HNN ERP tutorial!
 
@@ -15,7 +15,7 @@ This walkthrough is designed to teach you to use **both** the Graphical User Int
 
 In order to understand the workflow and initial parameter sets provided with this walkthrough, we recommend that you watch the ERP overview video below. We additionally provide a brief scientific background in the accompanying text below, but note that the video overview provides a more comprehensive introduction.
 
-You will need a working installation of `hnn-core` to following along with the walkthrough. If you have not yet installed HNN, the subsequent page [5.2: Following Along](https://jonescompneurolab.github.io/textbook/content/05_erps/erp_following_along.html), will guide you through the necessary steps.
+You will need a working installation of `hnn-core` to following along with the walkthrough. If you have not yet installed HNN, please visit our [Follow Along with the Textbook](../01_getting_started/following_along.html) page, which will guide you through the necessary steps to get started.
 
 ## Overview Video
 

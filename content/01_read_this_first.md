@@ -3,8 +3,9 @@
 # Updated: 2026-10-05
 #
 # Contributors:
-    # Austin E. Soplata
     # Dylan Daniels
+    # Stephanie R. Jones
+    # Austin E. Soplata
 -->
 
 ## 1. Read This First!
@@ -17,9 +18,9 @@ First is the GUI, short for "Graphical User Interface". An example is shown belo
 
 ![Example of basic GUI operation, displaying simulation results of a default ERP simulation.](https://raw.githubusercontent.com/jonescompneurolab/jones-website/master/images/textbook/content/04_using_hnn_gui/4-1-quickstart/images/fig_03_run_first.png)
 
-It is designed to teach users the ins-and-outs of simulating commonly-measured MEG/EEG signals. It allows users to freely explore the properties of the template network model, including the network connections and biophysical properties of the cells and synapses. Users can modify or add new exogenous inputs that activate the network (which we refer to as the "external drives"), adjust key simulation parameters, simulate multiple trials of a network model, and visualize cell- and circuit-level output data such as layer-specific dipoles, cell-specific spiking, spectrograms, and more. 
+It is designed to teach users the ins-and-outs of simulating commonly-measured MEG/EEG signals. It allows users to freely explore the properties of the template network model, including the network connections and biophysical properties of the cells and synapses. Users can modify or add new exogenous inputs that activate the network (which we refer to as the "external drives"), adjust key simulation parameters, simulate multiple trials of a network model, and visualize cell- and circuit-level output data such as layer-specific dipoles, cell-specific spiking, spectrograms, and more.
 
-There is no Python programming required for starting or using the GUI. This allows users to learn how science is accomplished with HNN-Core using just the GUI and the accompanying Textbook website. 
+There is no Python programming required for starting or using the GUI. This allows users to learn how science is accomplished with HNN-Core using just the GUI and the accompanying Textbook website.
 
 You can run the GUI two different ways:
 
@@ -50,11 +51,11 @@ You can use the API (without installing it locally) via the [Google Colab notebo
 
 Using the API means programming in Python, but modern AI/LLMs can be extremely helpful for learning basic programming. Python is a very popular programming language in neuroscience, so learning how to read it will help in the long run.
 
-To help our less "programming-savvy" users get comfortable with the API (and Python programming in general), our GUI video tutorials for simulating ERPs and rhythms (see, e.g., the [Simulating ERPs](05_erps/erp_overview.html) section) include accompanying instructions showing how to accomplish the *same* tasks using the API. The API walkthroughs also include additional code explanations that are designed to help users build the knowledge and confidence needed to use the API for scientific research. 
+To help our less "programming-savvy" users get comfortable with the API (and Python programming in general), our GUI video tutorials for simulating ERPs and rhythms (see, e.g., the [Simulating ERPs](05_erps/erp_overview.html) section) include accompanying instructions showing how to accomplish the *same* tasks using the API. The API walkthroughs also include additional code explanations that are designed to help users build the knowledge and confidence needed to use the API for scientific research.
 
-All API tutorials on this Textbook website, [such as the one here](08_using_hnn_api/plot_firing_pattern.html), have a button at the top marked **Download Notebook** where you can download the page and code as a Jupyter notebook file. If you have installed HNN-Core locally, then you can edit and/or run the code in these notebook files and build your own workflows off of them. 
+All API tutorials on this Textbook website, [such as the one here](08_using_hnn_api/plot_firing_pattern.html), have a button at the top marked **Download Notebook** where you can download the page and code as a Jupyter notebook file. If you have installed HNN-Core locally, then you can edit and/or run the code in these notebook files and build your own workflows off of them.
 
-In order to run notebooks locally, you will need to activate your hnn-core Conda environment (see [our Installation Guide] for details) and run `pip install notebook` followed by `jupyter notebook` in either the Terminal (macOS/Linux) or Command Prompt (Windows). This will open the Jupyter interface in your browser, which will allow you to open and interactively run `.ipynb` files. 
+In order to run notebooks locally, you will need to activate your hnn-core Conda environment (see [our Installation Guide] for details) and run `pip install notebook` followed by `jupyter notebook` in either the Terminal (macOS/Linux) or Command Prompt (Windows). This will open the Jupyter interface in your browser, which will allow you to open and interactively run `.ipynb` files.
 
 Another way to use notebooks is to download and install [VS Code](https://code.visualstudio.com/download) which is a popular code editor. In VS Code, you can load a notebook file, then select your Conda environment as the environment to use, then execute the notebook. (Note: VS Code will automatically prompt you to install the `notebook` dependency if you need it.)
 

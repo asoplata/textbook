@@ -1,6 +1,6 @@
 <!--
-# Title: 2.3 Installation
-# Updated: 2025-03-06
+# Title: 1.3 Installation
+# Updated: 2026-10-15
 #
 # Contributors:
     # Austin Soplata
@@ -8,9 +8,9 @@
     # Dylan Daniels
 -->
 
-# 2.3 Installation
+# 1.3 Installation
 
-## Running HNN in the cloud
+## Running HNN in the cloud (no installation)
 
 ### Google CoLab
 
@@ -27,37 +27,30 @@ HNN is available for free, public use on the [Neuroscience Gateway Portal (NSG)]
 
 ## Local Installation - Simple
 
-If you want to install HNN-Core on your local computer, follow these steps. This will install both the API and the GUI; if you don't know what those terms mean, then please [see this page before proceeding](../read_this_first.html).
-
-(For more complex installation questions, such as installing on Brown's OSCAR environment, installing with MPI speedup, installing for development, etc., see the **Local Installation - Detailed** section later).
+If you want to install HNN-Core on your local computer, follow these steps. This will install both the API and the GUI. (For more complex installation questions, such as installing on Brown's OSCAR environment, installing with MPI speedup, installing for development, etc., see the **Local Installation - Detailed** section later).
 
 1. Install the [Anaconda Python Distribution](https://www.anaconda.com/download/success) (also known as "Conda"). If you are unsure which version to install, download the Graphical Installer for the Anaconda Distribution, though any option works. If you are unfamiliar with using Anaconda/Conda virtual environments, [you can find guidance about them here](https://www.anaconda.com/docs/getting-started/working-with-conda/conda-intro-tutorial).
 
 2. If you are on Windows, then you must **download** and **install** the program at this link, which is the NEURON cell simulator: [https://github.com/neuronsimulator/nrn/releases/download/8.2.7/nrn-8.2.7.w64-mingw-py-39-310-311-312-313-setup.exe](https://github.com/neuronsimulator/nrn/releases/download/8.2.7/nrn-8.2.7.w64-mingw-py-39-310-311-312-313-setup.exe)
 
-3. AFTER you have done the above, open the "Terminal" app (if on Mac or Linux) or the "Command Prompt" app (if on Windows).
+3. AFTER you have done the above, open the "Terminal" app (if on Mac or Linux) or the "Anaconda Prompt" app (if on Windows).
 
-4. Copy and paste the following command into your Terminal/Anaconda Prompt, then hit Enter to "run" the command:
+4. Copy and paste the following commands into your Terminal/Anaconda Prompt:
 
-```
+```bash
 conda create -y -q -n hnn-core-env python=3.12
-```
-
-5. Activate your new environment by copying, pasting, and running the following command into the same window:
-
-```
 conda activate hnn-core-env
 ```
 
 5. Install HNN-Core using the following command:
 
-```
+```bash
 pip install "hnn_core[all]"
 ```
 
 6. Test that everything installed correctly by copying and pasting the following command into the same window:
 
-```
+```bash
 python -c "
 from hnn_core import neymotin_2020_model, simulate_dipole
 simulate_dipole(neymotin_2020_model(), tstop=20)
@@ -69,7 +62,7 @@ print('--> SUCCESS: The test worked')
 
 8. To quickly start the GUI from inside your environment, just run the command:
 
-```
+```bash
 hnn-gui
 ```
 
@@ -77,18 +70,17 @@ You can find more details about the GUI at [HNN GUI Quickstart](https://jonescom
 
 9. Note: The next time you need to re-enter the Conda Environment (such as after you restart your computer), all you need to do is run
 
-```
+```bash
 conda activate hnn-core-env
 ```
 
 **If you have any questions or problems** while installing HNN, feel free to ask for help on [our GitHub Discussions page][]!
 
-
 ## Local Installation - Detailed
 
 <!-- Which version ------------------------------------------------------- -->
 
-<div class="collapsible-section">
+<div class="collapsible-section collapsible-default">
 <h5 class="collapsible-header"> Which version to install? </h5>
 <div class="collapsible-content">
 
@@ -117,7 +109,7 @@ After you have installed HNN, we recommend you follow the **Testing Your Install
 
 <!-- Conda pkg ------------------------------------------------------- -->
 
-<div class="collapsible-section">
+<div class="collapsible-section collapsible-default">
 <h5 class="collapsible-header"> `conda` Package Installation </h5>
 <div class="collapsible-content">
 
@@ -131,7 +123,7 @@ Note: If you want a minimal install of only the API using `conda`, then follow t
 
 2. Open a Terminal, then create and activate a new Python 3.12 Conda environment by running the following commands:
 
-    ```
+    ```bash
     conda create -y -q -n hnn-core-env python=3.12
     conda activate hnn-core-env
     ```
@@ -140,13 +132,13 @@ Note: If you want a minimal install of only the API using `conda`, then follow t
 
 3. Install our package using the following command:
 
-    ```
+    ```bash
     conda install hnn-core-all -c jonescompneurolab -c conda-forge
     ```
 
 4. (Optional) Run the following command, and write down the number that is output. You can use this number as the number of CPU "Cores", which will *greatly* speed up your simulations.
 
-    ```
+    ```bash
     python -c "import psutil ; print(psutil.cpu_count(logical=False)-1)"
     ```
 
@@ -160,7 +152,7 @@ For Windows users, there are some extra steps since you need to install HNN thro
 
 1. Install WSL: Open the "PowerShell" or "Windows Command Prompt" programs in administrator mode by right-clicking the program icon and selecting "Run as administrator". Then, in the window, run the following command:
 
-    ```
+    ```bash
     wsl --install
     ```
 
@@ -204,7 +196,7 @@ For Windows users, there are some extra steps since you need to install HNN thro
 
 <!-- Pip pkg ------------------------------------------------------- -->
 
-<div class="collapsible-section">
+<div class="collapsible-section collapsible-default">
 <h5 class="collapsible-header"> `pip` Package Installation </h5>
 <div class="collapsible-content">
 
@@ -214,7 +206,7 @@ Please follow the instructions in Steps 1, 2, and 3, *in that order*. This insta
 
 Note that the `pip` installation methods do *not* include all features by default, only the API. If you want to install a specific set of features, you must include all of them in your `pip` install command. For example, if you want HNN GUI support and Optimization support, but not Parallel support, then you would replace the final command in Step 3 with
 
-```
+```bash
 pip install "hnn_core[gui,opt]"
 ```
 
@@ -237,7 +229,7 @@ If you use a virtual environment, you must first create the environment, and the
   and then clicking through the prompts in the window that will pop up. Note that you
   **must restart your computer** after Xcode Command-Line Tools has finished installing!
 
-    ```
+    ```bash
     xcode-select --install
     ```
 
@@ -261,7 +253,7 @@ If you use a virtual environment, you must first create the environment, and the
   similar) via your Anaconda install (or virtual environment), and running the
   following command:
 
-    ```
+    ```bash
     python -c "import neuron"
     ```
 
@@ -273,7 +265,7 @@ The following include instructions on how to install both "Windows Subsystem for
 
 1. Install WSL: Open the "PowerShell" or "Windows Command Prompt" programs in administrator mode by right-clicking the program icon and selecting "Run as administrator". Then, in the window, run the following command:
 
-    ```
+    ```bash
     wsl --install
     ```
 
@@ -307,7 +299,8 @@ The following include instructions on how to install both "Windows Subsystem for
 ## Step 3. `pip` installation types
 
 The instructions shown below are for installing each set of HNN features **separately**, meaning you need to follow the instructions for the features you want. The HNN API is the only feature included in **all install types**. You can easily install multiple sets of HNN features below by combining them like the following:
-```
+
+```bash
 pip install "hnn_core[gui,parallel]"
 ```
 
@@ -316,7 +309,7 @@ pip install "hnn_core[gui,parallel]"
 To install only the HNN API, open a Terminal or Command Prompt using a fresh virtual
 environment, and enter:
 
-```
+```bash
 pip install hnn_core
 ```
 
@@ -328,7 +321,7 @@ For guidance on using the API, see our "Using the HNN API" notebooks in the side
 
 To install HNN with both its API and GUI support, run the following command (make sure to include the "quotes"):
 
-```
+```bash
 pip install "hnn_core[gui]"
 ```
 
@@ -341,7 +334,7 @@ For guidance on using the GUI, see [our quickstart guide here](../04_using_hnn_g
 
 To install HNN with both its API and Optimization support, run the following command (make sure to include the "quotes"):
 
-```
+```bash
 pip install "hnn_core[opt]"
 ```
 
@@ -355,7 +348,7 @@ For guidance on using Optimization, see our "Using the HNN API" notebooks in the
 
 To install HNN with both its API and Joblib support, run the following command (make sure to include the "quotes"):
 
-```
+```bash
 pip install "hnn_core[parallel]"
 ```
 
@@ -379,7 +372,7 @@ Unfortunately, we do not officially support MPI usage on native Windows due to t
 
 2. Create and activate a new `conda` environment using commands like the following:
 
-    ```
+    ```bash
     conda create -y -q -n hnn-core-env python=3.12
     conda activate hnn-core-env
     ```
@@ -388,7 +381,7 @@ Unfortunately, we do not officially support MPI usage on native Windows due to t
 
 3. (MacOS only) Copy, paste, and run the following commands to set some environment variables for your `conda` environment:
 
-    ```
+    ```bash
     mkdir -p $CONDA_PREFIX/etc/conda/activate.d $CONDA_PREFIX/etc/conda/deactivate.d
     echo "export OLD_DYLD_FALLBACK_LIBRARY_PATH=\$DYLD_FALLBACK_LIBRARY_PATH" >> $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
     echo "export DYLD_FALLBACK_LIBRARY_PATH=\$DYLD_FALLBACK_LIBRARY_PATH:\${CONDA_PREFIX}/lib" >> $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
@@ -400,7 +393,7 @@ Unfortunately, we do not officially support MPI usage on native Windows due to t
 
 4. (Linux or Windows (WSL) only) Copy, paste, and run the following commands to set some environment variables for your `conda` environment:
 
-    ```
+    ```bash
     mkdir -p $CONDA_PREFIX/etc/conda/activate.d $CONDA_PREFIX/etc/conda/deactivate.d
     echo "export OLD_LD_LIBRARY_PATH=\$LD_LIBRARY_PATH" >> $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
     echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\${CONDA_PREFIX}/lib" >> $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
@@ -412,19 +405,19 @@ Unfortunately, we do not officially support MPI usage on native Windows due to t
 
 5. Run the following command to install your MPI dependencies:
 
-    ```
+    ```bash
     conda install -y -q "openmpi>5" mpi4py -c conda-forge
     ```
 
 6. Finally, install the `pip` package of `hnn_core` using the following command (make sure to include the "quotes"):
 
-    ```
+    ```bash
     pip install "hnn_core[parallel]"
     ```
 
 7. Let's test that the install worked. Run the following command:
 
-    ```
+    ```bash
     python -c "
     from hnn_core import neymotin_2020_model, MPIBackend, simulate_dipole
     with MPIBackend():
@@ -434,7 +427,7 @@ Unfortunately, we do not officially support MPI usage on native Windows due to t
 
     You should see output the looks somewhat similar to the following; this verifies that MPI, HNN, NEURON, and Python are all working together.
 
-    ```
+    ```bash
     /opt/anaconda3/envs/hnn-core-env/lib/python3.12/site-packages/hnn_core/dipole.py:85: UserWarning: No external drives or biases loaded
       warnings.warn("No external drives or biases loaded", UserWarning)
     MPI will run 1 trial(s) sequentially by distributing network neurons over 11 processes.
@@ -465,7 +458,7 @@ Unfortunately, we do not officially support MPI usage on native Windows due to t
 
 <!-- Pip src ------------------------------------------------------- -->
 
-<div class="collapsible-section">
+<div class="collapsible-section collapsible-default">
 <h5 class="collapsible-header"> `pip` Source Installation </h5>
 <div class="collapsible-content">
 
@@ -494,7 +487,7 @@ If you use a virtual environment, you must first create the environment, and the
   and then clicking through the prompts in the window that will pop up. Note that you
   **must restart your computer** after Xcode Command-Line Tools has finished installing!
 
-    ```
+    ```bash
     xcode-select --install
     ```
 
@@ -517,7 +510,7 @@ If you use a virtual environment, you must first create the environment, and the
   similar) via your Anaconda install (or virtual environment), and running the
   following command:
 
-    ```
+    ```bash
     python -c "import neuron"
     ```
 
@@ -531,7 +524,7 @@ The following includes instructions on how to install both "Windows Subsystem fo
 
 1. Install WSL: Open the "PowerShell" or "Windows Command Prompt" programs in administrator mode by right-clicking the program icon and selecting "Run as administrator". Then, in the window, run the following command:
 
-    ```
+    ```bash
     wsl --install
     ```
 
@@ -587,7 +580,7 @@ Unfortunately, we do not officially support MPI usage on native Windows due to t
 
 1. Create and activate a new `conda` environment using commands like the following:
 
-    ```
+    ```bash
     conda create -y -q -n hnn-core-env python=3.12
     conda activate hnn-core-env
     ```
@@ -596,7 +589,7 @@ Unfortunately, we do not officially support MPI usage on native Windows due to t
 
 2. (MacOS only) Copy, paste, and run the following commands to set some environment variables for your `conda` environment:
 
-    ```
+    ```bash
     mkdir -p $CONDA_PREFIX/etc/conda/activate.d $CONDA_PREFIX/etc/conda/deactivate.d
     echo "export OLD_DYLD_FALLBACK_LIBRARY_PATH=\$DYLD_FALLBACK_LIBRARY_PATH" >> $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
     echo "export DYLD_FALLBACK_LIBRARY_PATH=\$DYLD_FALLBACK_LIBRARY_PATH:\${CONDA_PREFIX}/lib" >> $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
@@ -608,7 +601,7 @@ Unfortunately, we do not officially support MPI usage on native Windows due to t
 
 3. (Linux or Windows (WSL) only) Copy, paste, and run the following commands to set some environment variables for your `conda` environment:
 
-    ```
+    ```bash
     mkdir -p $CONDA_PREFIX/etc/conda/activate.d $CONDA_PREFIX/etc/conda/deactivate.d
     echo "export OLD_LD_LIBRARY_PATH=\$LD_LIBRARY_PATH" >> $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
     echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\${CONDA_PREFIX}/lib" >> $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
@@ -620,7 +613,7 @@ Unfortunately, we do not officially support MPI usage on native Windows due to t
 
 4. Run the following command to install your MPI dependencies:
 
-    ```
+    ```bash
     conda install -y -q "openmpi>5" mpi4py -c conda-forge
     ```
 
@@ -647,7 +640,7 @@ steps](https://docs.github.com/en/get-started/git-basics/set-up-git#authenticati
    in the top right.) As an example, if you wanted to download `asoplata`'s fork, you
    could run the following command:
 
-    ```
+    ```bash
     git clone https://github.com/asoplata/hnn-core.git
     ```
 
@@ -657,7 +650,7 @@ steps](https://docs.github.com/en/get-started/git-basics/set-up-git#authenticati
    you want to use. If, for example, you want to install the GUI, Optimization, and
    Parallel features, you can use the following command:
 
-    ```
+    ```bash
     pip install --editable ".[gui,opt,parallel]"
     ```
 
@@ -665,7 +658,7 @@ steps](https://docs.github.com/en/get-started/git-basics/set-up-git#authenticati
     then you should instead use the following command, which installs all features including
     **special** features used in development:
 
-    ```
+    ```bash
     pip install --editable ".[dev]"
     ```
 
@@ -683,7 +676,7 @@ steps](https://docs.github.com/en/get-started/git-basics/set-up-git#authenticati
 
 <span style="height: 30px;" />
 
-<div class="collapsible-section">
+<div class="collapsible-section collapsible-default">
 <h5 class="collapsible-header"> Testing Your Installation </h5>
 <div class="collapsible-content">
 
@@ -691,7 +684,7 @@ steps](https://docs.github.com/en/get-started/git-basics/set-up-git#authenticati
 
 To check whether HNN was installed correctly, you can run the following command:
 
-```
+```bash
 python -c "
 from hnn_core import neymotin_2020_model, simulate_dipole
 simulate_dipole(neymotin_2020_model(), tstop=20)
@@ -703,7 +696,7 @@ This will run a very short test simulation, and should not give any Error messag
 
 If you installed MPI, it is **strongly recommended** to test your install. You can test that HNN, NEURON, and MPI were all installed correctly and can talk to each other by running the following command:
 
-```
+```bash
 python -c "
 from hnn_core import neymotin_2020_model, MPIBackend, simulate_dipole
 with MPIBackend():
