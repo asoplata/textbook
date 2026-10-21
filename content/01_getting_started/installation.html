@@ -321,20 +321,21 @@
 </ol>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">xcode-select</span> <span class="at">--install</span></span></code></pre></div>
 <ol start="5" type="1">
-<li>Copy and paste the following commands into your Terminal/Anaconda Prompt:</li>
+<li><p>If you have “Low Battery” mode activated on your computer, please turn it off.</p></li>
+<li><p>Copy and paste the following commands into your Terminal/Anaconda Prompt:</p></li>
 </ol>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-y</span> <span class="at">-q</span> <span class="at">-n</span> hnn-core-env python=3.12</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate hnn-core-env</span></code></pre></div>
-<ol start="6" type="1">
-<li>If you get an error about needing to accept the Terms of service, then enter the following commands, then afterwards re-try step 5.</li>
+<ol start="7" type="1">
+<li>If you get an error about needing to accept the Terms of service, then enter the following commands, then afterwards re-try step 6.</li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> tos accept <span class="at">--override-channels</span> <span class="at">--channel</span> https://repo.anaconda.com/pkgs/main</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> tos accept <span class="at">--override-channels</span> <span class="at">--channel</span> https://repo.anaconda.com/pkgs/r</span></code></pre></div>
-<ol start="7" type="1">
+<ol start="8" type="1">
 <li>Install HNN-Core using the following command:</li>
 </ol>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="st">&quot;hnn_core[all]&quot;</span></span></code></pre></div>
-<ol start="8" type="1">
+<ol start="9" type="1">
 <li>Test that everything installed correctly by copying and pasting the following command into the same window:</li>
 </ol>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;</span></span>
@@ -342,17 +343,17 @@
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">simulate_dipole(neymotin_2020_model(), tstop=20)</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="st">print(&#39;--&gt; SUCCESS: The test worked&#39;)</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;</span></span></code></pre></div>
-<ol start="9" type="1">
+<ol start="10" type="1">
 <li><p>That’s it! HNN should now be installed. Proceed to the rest of <a href="../preface.html">our HNN Textbook</a> to get started.</p></li>
 <li><p>To quickly start the GUI from inside your environment, just run the command:</p></li>
 </ol>
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">hnn-gui</span></span></code></pre></div>
 <p>You can find more details about the GUI at <a href="https://jonescompneurolab.github.io/textbook/content/04_using_hnn_gui/gui_quickstart.html">HNN GUI Quickstart</a>.</p>
-<ol start="11" type="1">
+<ol start="12" type="1">
 <li>Note: The next time you need to re-enter the Conda Environment (such as after you restart your computer), all you need to do is run</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate hnn-core-env</span></code></pre></div>
-<ol start="12" type="1">
+<ol start="13" type="1">
 <li>If you wish to run a Jupyter notebook file that you downloaded from this Textbook website, then inside your Conda environment, first install Jupyter notebooks using</li>
 </ol>
 <div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install notebook</span></code></pre></div>
